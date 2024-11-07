@@ -8,6 +8,7 @@ interface RegisterData {
   telefone: string;
   login: string;
   senha: string;
+  tipo: boolean;
 }
 
 // Função de registro de usuário
