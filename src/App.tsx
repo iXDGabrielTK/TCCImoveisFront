@@ -7,6 +7,7 @@ import ImoveisPage from "./pages/ImoveisPage.tsx";
 import LoginForm from "./components/LoginForm.tsx";
 import CadastroImovelForm from "./components/CadastroImovelForm.tsx";
 import VistoriaForm from "./components/VistoriaForm.tsx";
+import HomePage from './pages/HomePage';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,8 @@ const App: React.FC = () => {
                   throw new Error('Função não implementada.');
               } }/>} />
           <Route path="/vistoria" element={<VistoriaForm/>} />
+          <Route path="/home" element={<HomePage />} />
+
       </Routes>
     </Router>
   );

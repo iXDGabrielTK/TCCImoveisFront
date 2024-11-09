@@ -1,0 +1,96 @@
+/* src/styles/HomePage.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  .home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333;
+    min-height: 100vh;
+    color: #fff;
+  }
+  
+  .navbar {
+    width: 100%;
+    background-color: #6d6d6d;
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  
+  .navbar .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    
+  }
+  
+  .navbar .logo-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .navbar .logo-image {
+    width: 50px;
+    height: 50px;
+    background-color: #4a90e2;
+    border-radius: 50%;
+  }
+  
+  .navbar .menu-button {
+    background-color: #ff4f4f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .imoveis-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .imovel-card {
+    background-color: #6d6d6d;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .imovel-card img {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .imovel-card h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .imovel-card p {
+    font-size: 1rem;
+    margin: 5px 0;
+  }
+  
