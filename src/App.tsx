@@ -5,7 +5,8 @@ import Register from './pages/Register';
 import ImoveisPage from "./pages/ImoveisPage.tsx";
 { /*import CadastroImovelForm from "./components/CadastroImovelForm.tsx";*/}
 import LoginForm from "./components/LoginForm.tsx";
-import CadastroImovelForm from "./components/CadastroImovelForm.tsx"; // Importe a página de registro
+import CadastroImovelForm from "./components/CadastroImovelForm.tsx";
+import VistoriaForm from "./components/VistoriaForm.tsx";
 
 const App: React.FC = () => {
   return (
@@ -15,8 +16,9 @@ const App: React.FC = () => {
         <Route path="/register" element={<Register />} /> {/* Rota de Registro */}
           <Route path="/imoveis" element={<ImoveisPage />} />
           <Route path="/registerImoveis" element={<CadastroImovelForm onClose={function(): void {
-                  throw new Error('Function not implemented.');
+                  throw new Error('Função não implementada.');
               } }/>} />
+          <Route path="/vistoria" element={<VistoriaForm/>} />
       </Routes>
     </Router>
   );

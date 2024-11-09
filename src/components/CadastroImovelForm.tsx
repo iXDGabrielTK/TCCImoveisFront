@@ -53,7 +53,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
         try {
             await api.post('/imoveis', data);
-            alert('Imóvel cadastrado com sucesso!');
             onClose();
         } catch (error) {
             console.error('Erro ao cadastrar imóvel:', error);

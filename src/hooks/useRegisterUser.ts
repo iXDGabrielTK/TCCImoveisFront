@@ -11,7 +11,6 @@ interface RegisterData {
   tipo: boolean;
 }
 
-// Função de registro de usuário
 const registerUser = (data: RegisterData): Promise<AxiosResponse<unknown>> => {
   return api.post('/usuarios', data);
 };
