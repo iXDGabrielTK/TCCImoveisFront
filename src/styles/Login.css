@@ -15,6 +15,7 @@ body{
   background-color: #ffffff;
   padding: 3rem 4rem;
   border-radius: 8px;
+  /*noinspection CssRedundantUnit*/
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   width: 400px;
   max-width: 90%;
@@ -42,15 +43,14 @@ body{
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: #ffffff !important; /* Força fundo branco */
-  color: #333 !important; /* Força texto escuro */
+  background-color: #ffffff !important;
+  color: #333 !important;
   transition: border-color 0.3s;
 }
 
-
 .login-form input:focus {
-  border-color: #007bff; /* Cor de borda ao focar no campo */
-  outline: none; /* Remove o outline padrão */
+  border-color: #007bff;
+  outline: none;
 }
 
 .login-form button {
@@ -70,7 +70,6 @@ body{
   background-color: #0056b3;
 }
 
-/* Reset básico para garantir estilos consistentes */
 *,
 *::before,
 *::after {
@@ -87,7 +86,7 @@ input {
 .register-link {
   display: block;
   text-align: center;
-  margin-top: 1.5rem; /* Ajuste o valor conforme necessário */
+  margin-top: 1.5rem;
   font-size: 0.9rem;
   color: #555;
 }
