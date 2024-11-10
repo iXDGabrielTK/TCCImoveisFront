@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import { FaUser, FaPhone, FaLock } from 'react-icons/fa';
 
 const RegisterForm: React.FC = () => {
     const [nome, setNome] = useState('');
@@ -14,9 +15,7 @@ const RegisterForm: React.FC = () => {
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
-
         const data = { nome, telefone, login, senha, tipo, ...(tipo ? {} : { cpf }) };
-        console.log("Tipo selecionado:", tipo);
         try {
             setIsPending(true);
             setIsError(false);
@@ -27,7 +26,6 @@ const RegisterForm: React.FC = () => {
             } else {
                 await api.post('/funcionarios', data);
             }
-
             setIsSuccess(true);
         } catch (error) {
             console.error("Erro ao registrar usuário:", error);
@@ -40,39 +38,42 @@ const RegisterForm: React.FC = () => {
     return (
         <form onSubmit={handleRegister} className="register-form">
             <h2>Registrar Usuário</h2>
-            <label>
-                Nome:
-                <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
-            </label>
-            <label>
-                Tipo de Usuário:
-                <select value={tipo ? "Visitante" : "Funcionário"} onChange={(e) => setTipo(e.target.value === "Visitante")} required>
+            <div className="input-group">
+                <FaUser className="icon" />
+                <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+            </div>
+            <div className="input-group">
+                <FaUser className="icon" />
+                <select
+                    value={tipo ? "Visitante" : "Funcionário"}
+                    onChange={(e) => setTipo(e.target.value === "Visitante")}
+                    required
+                >
                     <option value="Visitante">Visitante</option>
                     <option value="Funcionário">Funcionário</option>
                 </select>
-            </label>
+            </div>
             {!tipo && (
-                <label>
-                    CPF:
-                    <input type="text" value={cpf} onChange={(e) => setCpf(e.target.value)} required />
-                </label>
+                <div className="input-group">
+                    <FaUser className="icon" />
+                    <input type="text" placeholder="CPF" value={cpf} onChange={(e) => setCpf(e.target.value)} required />
+                </div>
             )}
-            <label>
-                Telefone:
-                <input type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
-            </label>
-            <label>
-                Login:
-                <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} required />
-            </label>
-            <label>
-                Senha:
-                <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
-            </label>
+            <div className="input-group">
+                <FaPhone className="icon" />
+                <input type="text" placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+            </div>
+            <div className="input-group">
+                <FaUser className="icon" />
+                <input type="text" placeholder="Login" value={login} onChange={(e) => setLogin(e.target.value)} required />
+            </div>
+            <div className="input-group">
+                <FaLock className="icon" />
+                <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+            </div>
             <button type="submit" disabled={isPending}>Registrar</button>
-
-            {isError && <p style={{ color: 'red' }}>Erro ao registrar usuário. Tente novamente.</p>}
-            {isSuccess && <p style={{ color: 'green' }}>Usuário registrado com sucesso!</p>}
+            {isError && <p className="error-message">Erro ao registrar usuário. Tente novamente.</p>}
+            {isSuccess && <p className="success-message">Usuário registrado com sucesso!</p>}
         </form>
     );
 };

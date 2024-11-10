@@ -6,16 +6,8 @@ const HomePage: React.FC = () => {
     const imoveis = [
       { id: 1, imageUrl: 'url_da_imagem', descricaoImovel: 'Descrição 1', precoImovel: 1000 },
     ];
-  
+
     return (
-      <div className="home-page">
-        <div className="navbar">
-          <div className="logo-text">Nome Empresa</div>
-          <div className="logo-container">
-            <div className="logo-image"></div>
-          </div>
-          <button className="menu-button">Menu</button>
-        </div>
         <div className="imoveis-grid">
           {imoveis.map((imovel) => (
             <div key={imovel.id} className="imovel-card">
@@ -25,7 +17,6 @@ const HomePage: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
     );
   };
   

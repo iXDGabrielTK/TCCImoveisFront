@@ -7,9 +7,6 @@
   height: 100vh;
   background-color: #f0f2f5;
 }
-body{
-  display: block !important;
-}
 
 .login-form {
   background-color: #ffffff;
@@ -28,37 +25,36 @@ body{
   color: #333;
 }
 
-.login-form label {
-  display: block;
-  text-align: left;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #555;
-}
-
-.login-form input {
-  width: 100%;
-  padding: 0.75rem;
+.input-group {
+  display: flex;
+  align-items: center;
+  background-color: #e0e7ff;
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
   margin-bottom: 1.25rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  background-color: #ffffff !important;
-  color: #333 !important;
-  transition: border-color 0.3s;
 }
 
-.login-form input:focus {
-  border-color: #007bff;
+.input-group .icon {
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.input-group input {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 0.5rem 0;
   outline: none;
+  color: #333;
+  font-size: 1rem;
 }
 
 .login-form button {
   width: 100%;
   padding: 0.75rem;
   border: none;
-  border-radius: 4px;
-  background-color: #007bff;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
   color: white;
   font-size: 1rem;
   font-weight: bold;
@@ -67,25 +63,10 @@ body{
 }
 
 .login-form button:hover {
-  background-color: #0056b3;
-}
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-input {
-  background-color: #ffffff !important;
-  color: #333 !important;
+  background: linear-gradient(90deg, #0056b3, #004494);
 }
 
 .register-link {
-  display: block;
-  text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9rem;
   color: #555;

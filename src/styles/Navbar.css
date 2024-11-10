@@ -3,8 +3,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0 1rem;
     background-color: #7f7f7f;
+    height: 60px;
+    max-height: 60px;
+    width: 100vw; /* Garante que a barra de navegação ocupe toda a largura */
+    box-sizing: border-box; /* Garante que o padding não afete a largura total */
+
 }
 
 .company-name {
@@ -12,11 +17,25 @@
     color: white;
 }
 
-.logo {
-    width: 40px;
-    height: 40px;
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.logo-image {
+    width: 80px; /* Mantém o tamanho da logo */
+    height: 80px;
+    max-height: 100%; /* Garante que a logo não ultrapasse a altura da navbar */
     background-color: #4a90e2;
     border-radius: 50%;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 .menu-button .dropdown {
@@ -25,19 +44,25 @@
 }
 
 .dropbtn {
-    background-color: #7f7f7f;
+    background-color: #4CAF50;
     color: white;
     font-size: 16px;
     border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
+    top: 100%;
+    right: 0;
     background-color: #f1f1f1;
-    min-width: 160px;
+    min-width: 10rem;
+    /*noinspection CssRedundantUnit*/
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 10;
 }
 
 .dropdown:hover .dropdown-content {
