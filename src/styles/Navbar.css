@@ -1,20 +1,20 @@
-/* src/styles/Navbar.css */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
-    background-color: #7f7f7f;
-    height: 60px;
-    max-height: 60px;
-    width: 100vw; /* Garante que a barra de navegação ocupe toda a largura */
-    box-sizing: border-box; /* Garante que o padding não afete a largura total */
-
+    background-color: #14453e; 
+    height: 80px;
+    max-height: 80px;
+    width: 100vw;
+    box-sizing: border-box;
 }
 
 .company-name {
-    font-size: 1.5rem;
-    color: white;
+    font-family: verdana;
+    font-size: 2rem;
+    color: #e8e8e8; 
+    font-weight: bold; 
 }
 
 .logo-container {
@@ -25,10 +25,10 @@
 }
 
 .logo-image {
-    width: 80px; /* Mantém o tamanho da logo */
+    width: 80px;
     height: 80px;
-    max-height: 100%; /* Garante que a logo não ultrapasse a altura da navbar */
-    background-color: #4a90e2;
+    max-height: 100%;
+    background-color: white; 
     border-radius: 50%;
 }
 
@@ -38,42 +38,51 @@
     position: relative;
 }
 
-.menu-button .dropdown {
-    position: relative;
-    display: inline-block;
-}
-
 .dropbtn {
-    background-color: #4CAF50;
+    background-color: #4CAF50; 
     color: white;
     font-size: 16px;
+    font-weight: bold;
     border: none;
-    padding: 10px;
+    padding: 12px 20px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dropbtn:hover {
+    background-color: #a0e8af; 
 }
 
 .dropdown-content {
-    display: none;
+    display: block;
+    overflow: hidden;
     position: absolute;
     top: 100%;
     right: 0;
     background-color: #f1f1f1;
     min-width: 10rem;
-    /*noinspection CssRedundantUnit*/
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 1s ease-in, opacity 0.5s ease-out;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 10;
+    border-radius: 8px; 
 }
 
+
 .dropdown:hover .dropdown-content {
-    display: block;
+    max-height: 200px;
+    opacity: 1;
+    transition: max-height 1s ease-out, opacity 1s ease-in; 
 }
 
 .dropdown-content a {
-    color: black;
+    color: #2b2b2b; 
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: background-color 0.3s ease;
 }
 
 .dropdown-content a:hover {
