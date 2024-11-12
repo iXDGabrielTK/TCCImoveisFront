@@ -1,32 +1,62 @@
+/* Estrutura básica */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ocupa a altura total da viewport */
+}
+
+.main-content {
+    flex-grow: 1; /* Expande o conteúdo principal para ocupar o espaço entre o topo e o rodapé */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Estilização do footer */
 .footer {
     background-color: #14453e;
-    color: #e8e8e8; 
+    color: #e8e8e8;
+    padding: 20px;
     display: flex;
-    justify-content: space-around; 
-    align-items: flex-start; 
-    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: flex-start;
     box-sizing: border-box;
     width: 100%;
-    height: max-content;
-    bottom: 0;
+    margin-top: auto; /* Empurra o footer para o final da página */
 }
 
 .footer-section {
-    flex: 1; 
+    flex: 1;
     text-align: center;
-    margin: 0 10px; 
+    margin: 0 10px;
 }
 
 .footer-section h4 {
     font-size: 1.2rem;
-    color: #a0e8af; 
-    margin: 0; 
+    color: #a0e8af;
+    margin: 0;
     font-weight: bold;
 }
 
-.footer-section p {
+.footer-section p,
+.footer-section a {
     font-size: 0.9rem;
     color: #e8e8e8;
+    margin: 5px 0;
     line-height: 1.6;
 }
 
@@ -42,11 +72,17 @@
     color: #a0e8af;
 }
 
+/* Responsividade */
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 10px;
+    }
 
-.footer-section p,
-.footer-section a {
-    font-size: 0.9rem;
-    color: #e8e8e8;
-    margin: 5px 0;
-    line-height: 1.6;
+    .footer-section {
+        margin-bottom: 20px;
+        flex: none;
+        width: 100%;
+    }
 }

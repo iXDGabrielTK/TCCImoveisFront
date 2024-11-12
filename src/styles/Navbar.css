@@ -1,9 +1,10 @@
+/* Estilo padrão para o Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
-    background-color: #14453e; 
+    background-color: #14453e;
     height: 80px;
     max-height: 80px;
     width: 100vw;
@@ -11,10 +12,10 @@
 }
 
 .company-name {
-    font-family: verdana;
+    font-family: verdana, serif;
     font-size: 2rem;
-    color: #e8e8e8; 
-    font-weight: bold; 
+    color: #e8e8e8;
+    font-weight: bold;
 }
 
 .logo-container {
@@ -28,7 +29,7 @@
     width: 80px;
     height: 80px;
     max-height: 100%;
-    background-color: white; 
+    background-color: white;
     border-radius: 50%;
 }
 
@@ -39,7 +40,7 @@
 }
 
 .dropbtn {
-    background-color: #4CAF50; 
+    background-color: #4CAF50;
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -51,7 +52,7 @@
 }
 
 .dropbtn:hover {
-    background-color: #a0e8af; 
+    background-color: #a0e8af;
 }
 
 .dropdown-content {
@@ -64,27 +65,32 @@
     min-width: 10rem;
     max-height: 0;
     opacity: 0;
-    transition: max-height 1s ease-in, opacity 0.5s ease-out;
+    transition: max-height 0s ease-in, opacity 1ms ease-out;
+    /*noinspection CssRedundantUnit*/
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    border-radius: 8px; 
+    border-radius: 8px;
 }
-
 
 .dropdown:hover .dropdown-content {
     max-height: 200px;
     opacity: 1;
-    transition: max-height 1s ease-out, opacity 1s ease-in; 
+    transition: max-height 1ms ease-out, opacity 0.2s ease-in;
 }
 
-.dropdown-content a {
-    color: #2b2b2b; 
+.dropdown-content a, .dropdown-content button {
+    color: #2b2b2b;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.dropdown-content a:hover {
+.dropdown-content a:hover, .dropdown-content button:hover {
     background-color: #ddd;
 }

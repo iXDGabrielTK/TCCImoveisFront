@@ -1,39 +1,38 @@
-/* src/components/LoginForm.tsx */
 import { FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa';
-import api from "../services/api.ts";
+import { login as loginService } from "../services/auth"; // Renomeando para evitar conflitos
 import '../styles/Login.css';
 
 function LoginForm() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [login, setLogin] = useState(''); // Nome do campo correto para login
+    const [senha, setSenha] = useState(''); // Nome do campo correto para senha
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    async function handleCreateUser(e: FormEvent) {
+    async function handleLogin(e: FormEvent) {
         e.preventDefault();
-        const data = {
-            login: username,
-            senha: password
+        try {
+            await loginService(login, senha); // Chamando o login do serviço com os parâmetros corretos
+            console.log("Login bem-sucedido! Usuário autenticado.");
+            navigate('/home');
+        } catch (error) {
+            console.error('Erro ao fazer login:', error);
+            setError('Credenciais inválidas');
         }
-        await api.post('/usuarios/login', data)
-            .then(() => {
-                console.log("Login bem-sucedido! Usuário autenticado.");
-            }).catch(error => {
-                console.log(error);
-            });
     }
 
     return (
         <div className="login-page">
-            <form className="login-form" onSubmit={ (e) => handleCreateUser(e) }>
+            <form className="login-form" onSubmit={handleLogin}>
                 <h2>USER LOGIN</h2>
                 <div className="input-group">
                     <FaUser className="icon" />
                     <input
                         type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Login"
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
                         required
                     />
                 </div>
@@ -41,13 +40,14 @@ function LoginForm() {
                     <FaLock className="icon" />
                     <input
                         type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Senha"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
                         required
                     />
                 </div>
                 <button type="submit">LOGIN</button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <div className="register-link">
                     Não tem uma conta? <Link to="/register">Cadastre-se</Link>
                 </div>

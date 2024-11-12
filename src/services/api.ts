@@ -1,13 +1,25 @@
 // src/services/api.ts
 import axios from 'axios';
+import { getToken } from './auth';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', 
+    baseURL: 'http://localhost:8080',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
-export const fetchImoveis = async () => {
-  const response = await api.get('/imoveis');
-  return response.data;
-};
+api.interceptors.request.use(
+    (config) => {
+        const token = getToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export default api;

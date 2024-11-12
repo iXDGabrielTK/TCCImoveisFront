@@ -43,12 +43,14 @@ body {
     flex-direction: column;
     align-items: center;
     color: #2b2b2b;
+    /*noinspection CssRedundantUnit*/
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .imovel-card:hover {
     transform: translateY(-5px);
+    /*noinspection CssRedundantUnit*/
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.25);
 }
 
@@ -71,3 +73,4 @@ body {
     margin: 5px 0;
     color: #536878;
 }
+
