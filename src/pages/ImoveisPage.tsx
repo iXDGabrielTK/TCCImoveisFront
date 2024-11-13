@@ -1,14 +1,26 @@
+// src/pages/ImoveisPage.tsx
 import React, { useState } from 'react';
-import { useFetchImoveis } from '../hooks/useFetchImoveis';
-import { Imovel } from '../types/Imovel';
 import CadastroImovelForm from '../components/CadastroImovelForm';
+import ImoveisGrid from '../components/ImoveisGrid';
+import ImovelDetalhes from '../components/ImovelDetalhes';
+import { Imovel } from '../types/Imovel'; // Importe a interface correta
 
 const ImoveisPage: React.FC = () => {
-    const imoveis = useFetchImoveis();
     const [isCadastroModalOpen, setCadastroModalOpen] = useState(false);
+    const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null); // Define como Imovel | null
 
     const handleOpenCadastroModal = () => setCadastroModalOpen(true);
     const handleCloseCadastroModal = () => setCadastroModalOpen(false);
+
+    // Função para abrir o modal de detalhes com o imóvel selecionado
+    const handleOpenDetalhesModal = (imovel: Imovel) => {
+        setSelectedImovel(imovel);
+    };
+
+    // Função para fechar o modal de detalhes
+    const handleCloseDetalhesModal = () => {
+        setSelectedImovel(null);
+    };
 
     return (
         <div className="imoveis-page">
@@ -27,44 +39,15 @@ const ImoveisPage: React.FC = () => {
                 </div>
             )}
 
-            <div className="imoveis-grid">
-                {Array.isArray(imoveis) && imoveis.map((imovel: Imovel) => (
-                    <div key={imovel.id} className="imovel-card">
-                        <img src={imovel.imageUrl} alt={imovel.descricaoImovel}/>
-                        <h2>{imovel.descricaoImovel}</h2>
-                        <p>Valor: R$ {imovel.precoImovel}</p>
-                        <p>Tamanho: {imovel.tamanhoImovel} m²</p>
-                        <p>Status: {imovel.statusImovel ? "Disponível" : "Indisponível"}</p>
-                        <p>Tipo: {imovel.tipoImovel ? "Residencial" : "Comercial"}</p>
-                        <p>Responsável: {imovel.funcionario?.nome || "Não informado"}</p>
-                        <p>
-                            Endereço: {imovel.enderecoImovel ? `${imovel.enderecoImovel.rua}, ${imovel.enderecoImovel.numero} - ${imovel.enderecoImovel.cidade}` : "Endereço não disponível"}
-                        </p>
-                        {imovel.historicoManutencao && imovel.historicoManutencao.length > 0 && (
-                            <div className="historico-manutencao">
-                                <h4>Histórico de Manutenção</h4>
-                                <ul>
-                                    {imovel.historicoManutencao.map((manutencao, index) => (
-                                        <li key={index}>{manutencao.descricao} - {manutencao.data}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        {imovel.vistorias && imovel.vistorias.length > 0 && (
-                            <div className="vistorias">
-                                <h4>Vistorias</h4>
-                                <ul>
-                                    {imovel.vistorias.map((vistoria, index) => (
-                                        <li key={index}>Data: {vistoria.data}, Status: {vistoria.status}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+            <ImoveisGrid onImovelClick={handleOpenDetalhesModal} /> {/* Passe o manipulador para o grid */}
+
+            {selectedImovel && (
+                <div className="modal-overlay" onClick={handleCloseDetalhesModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <ImovelDetalhes imovel={selectedImovel} onClose={handleCloseDetalhesModal} />
                     </div>
-                ))}
-                {!Array.isArray(imoveis) && <p>Carregando imóveis...</p>}
-                {Array.isArray(imoveis) && imoveis.length === 0 && <p>Nenhum imóvel disponível no momento.</p>}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

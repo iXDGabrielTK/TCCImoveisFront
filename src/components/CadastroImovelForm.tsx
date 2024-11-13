@@ -36,20 +36,18 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log(funcionarioLogin);
+
         const data = {
             tipoImovel: tipo,
             descricaoImovel: descricao,
             statusImovel: status,
             tamanhoImovel: parseFloat(tamanho),
             precoImovel: parseFloat(preco),
-            imageUrl: imagem,
+            urlFoto: imagem,
             enderecoImovel: endereco,
             historicoManutencao,
             funcionario: { login: funcionarioLogin }
         };
-
-        console.log(data);
 
         try {
             await api.post('/imoveis', data);

@@ -1,36 +1,34 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/HomePage.tsx
+import React, { useState } from 'react';
 import '../styles/HomePage.css';
 import Footer from '../components/Footer';
-import api from "../services/api.ts";
-import { Imovel } from "../types/Imovel";
+import ImoveisGrid from '../components/ImoveisGrid';
+import ImovelDetalhes from '../components/ImovelDetalhes';
+import { Imovel } from '../types/Imovel';
 
 const HomePage: React.FC = () => {
-    const [imoveis, setImoveis] = useState<Imovel[]>([]);
+    const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null);
 
-    useEffect(() => {
-        const fetchImoveis = async () => {
-            try {
-                const response = await api.get('/imoveis');
-                console.log('Dados recebidos:', response.data);
-                setImoveis(response.data);
-            } catch (error) {
-                console.error('Erro ao buscar imóveis:', error);
-            }
-        };
-        fetchImoveis();
-    }, []);
+    // Função para abrir o modal com o imóvel selecionado
+    const handleOpenDetalhesModal = (imovel: Imovel) => {
+        setSelectedImovel(imovel);
+    };
+
+    // Função para fechar o modal
+    const handleCloseDetalhesModal = () => {
+        setSelectedImovel(null);
+    };
 
     return (
         <div className="home-page">
-            <div className="imoveis-grid">
-                {imoveis.map((imovel) => (
-                    <div key={imovel.id} className="imovel-card">
-                        <img src={imovel.imageUrl} alt={imovel.descricaoImovel} className="imovel-image" />
-                        <h2 className="imovel-title">{imovel.descricaoImovel}</h2>
-                        <p className="imovel-price">Valor: R$ {imovel.precoImovel}</p>
+            <ImoveisGrid onImovelClick={handleOpenDetalhesModal} /> {/* Passe a função para ImoveisGrid */}
+            {selectedImovel && (
+                <div className="modal-overlay" onClick={handleCloseDetalhesModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <ImovelDetalhes imovel={selectedImovel} onClose={handleCloseDetalhesModal} />
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
             <Footer />
         </div>
     );

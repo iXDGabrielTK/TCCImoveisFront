@@ -1,8 +1,8 @@
 export interface Imovel {
-    id?: string;
+    idImovel?: number;
     funcionario: Funcionario;
-    tipoImovel: boolean;
-    imageUrl: string;
+    tipoImovel: string;
+    fotosImovel: { urlFotoImovel: string }[];
     descricaoImovel?: string;
     statusImovel: boolean;
     tamanhoImovel: number;

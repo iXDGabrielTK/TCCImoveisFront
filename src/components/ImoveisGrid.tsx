@@ -1,32 +1,37 @@
-// src/components/ImoveisGrid.tsx
 import React, { useEffect, useState } from 'react';
+import { Imovel } from '../types/Imovel';
 import api from '../services/api';
 import '../styles/ImoveisGrid.css';
 
-interface Imovel {
-    id: string;
-    descricaoImovel: string;
-    precoImovel: number;
-    imageUrl: string;
+interface ImoveisGridProps {
+    onImovelClick: (imovel: Imovel) => void;
 }
 
-const ImoveisGrid: React.FC = () => {
+const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
 
     useEffect(() => {
-        async function fetchImoveis() {
-            const response = await api.get('/imoveis');
-            setImoveis(response.data);
-        }
+        const fetchImoveis = async () => {
+            try {
+                const response = await api.get('/imoveis');
+                setImoveis(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar imóveis:", error);
+            }
+        };
         fetchImoveis();
     }, []);
 
     return (
         <div className="imoveis-grid">
             {imoveis.map((imovel) => (
-                <div key={imovel.id} className="imovel-card">
-                    <img src={imovel.imageUrl} alt={imovel.descricaoImovel} />
-                    <h3>{imovel.descricaoImovel}</h3>
+                <div key={imovel.idImovel} className="imovel-card" onClick={() => onImovelClick(imovel)}>
+                    {imovel.fotosImovel?.length ? (
+                        <img src={imovel.fotosImovel[0].urlFotoImovel} alt={imovel.tipoImovel} />
+                    ) : (
+                        <div className="no-image">Sem imagem</div>
+                    )}
+                    <h3>{imovel.tipoImovel}</h3>
                     <p>Valor: R$ {imovel.precoImovel}</p>
                 </div>
             ))}

@@ -9,7 +9,6 @@ import VistoriaForm from './components/VistoriaForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from "./components/PrivateRoute.tsx";
-
 const App: React.FC = () => {
     return (
         <Router>
