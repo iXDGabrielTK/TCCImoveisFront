@@ -12,7 +12,11 @@ interface ImovelDetalhesProps {
 }
 
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
-    const imageUrls = imovel.fotosImovel.map((foto) => foto.urlFotoImovel);
+    // Processa as URLs das imagens do imóvel
+    const imageUrls = imovel.fotosImovel?.length
+        ? imovel.fotosImovel
+        : ["https://via.placeholder.com/300x200?text=Sem+Imagens"];
+
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [periodo, setPeriodo] = useState<string>('Manhã');
     const [nomeVisitante, setNomeVisitante] = useState<string>('');
@@ -64,42 +68,42 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     return (
         <div className="imovel-detalhes-modal">
             <div className="imovel-detalhes-content">
-                <button onClick={onClose} className="close-button">Fechar</button>
-                <Slider images={imageUrls}/>
-                <div className="imovel-info">
-                    <div className="header">
-                        <h1>{imovel.tipoImovel ? "Residencial" : "Comercial"}</h1>
-                    </div>
-                    <p><em>{imovel.descricaoImovel}</em></p>
-                    <hr/>
-                    <p><strong>Valor:</strong> R$ {imovel.precoImovel}</p>
-                    <p><strong>Tamanho:</strong> {imovel.tamanhoImovel} m²</p>
-                    <p><strong>Status:</strong> {imovel.statusImovel ? "Disponível" : "Indisponível"}</p>
-                    <p><strong>Rua:</strong> {imovel.enderecoImovel?.rua || "Não informado"}</p>
-                    <p><strong>Número:</strong> {imovel.enderecoImovel?.numero || "Não informado"}</p>
-                    <p><strong>Cidade:</strong> {imovel.enderecoImovel?.cidade || "Não informado"}</p>
+                {/* Seção da imagem */}
+                <div className="imovel-detalhes-left">
+                    <Slider images={imageUrls} />
+                </div>
 
-                    <div style={{marginTop: '20px', width: '100%'}}>
+                {/* Seção das informações */}
+                <div className="imovel-detalhes-right">
+                    <button onClick={onClose} className="close-button">Fechar</button>
+                    <div className="imovel-info">
+                        <div className="header">
+                            <h1>{imovel.tipoImovel ? "Residencial" : "Comercial"}</h1>
+                        </div>
+                        <p><em>{imovel.descricaoImovel}</em></p>
+                        <hr />
+                        <p><strong>Valor:</strong> R$ {imovel.precoImovel}</p>
+                        <p><strong>Tamanho:</strong> {imovel.tamanhoImovel} m²</p>
+                        <p><strong>Status:</strong> {imovel.statusImovel ? "Disponível" : "Indisponível"}</p>
+                        <p><strong>Rua:</strong> {imovel.enderecoImovel?.rua || "Não informado"}</p>
+                        <p><strong>Número:</strong> {imovel.enderecoImovel?.numero || "Não informado"}</p>
+                        <p><strong>Cidade:</strong> {imovel.enderecoImovel?.cidade || "Não informado"}</p>
+                    </div>
+                    <div>
                         <input
                             type="text"
                             placeholder="Nome do visitante"
                             value={nomeVisitante}
                             onChange={(e) => setNomeVisitante(e.target.value)}
-                            style={{ marginBottom: '10px', width: '100%' }}
                         />
-                        <div style={{marginBottom: '10px'}}>
-                            <DatePicker
-                                selected={startDate}
-                                onChange={(date) => setStartDate(date)}
-                                filterDate={isWeekdayOrHoliday}
-                                dayClassName={(date) =>
-                                    isWeekdayOrHoliday(date) ? '' : 'disabled-day'
-                                }
-                                placeholderText="Selecione uma data"
-                                minDate={new Date()}
-                            />
-                        </div>
-                        <div className="radio-container">
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            filterDate={isWeekdayOrHoliday}
+                            placeholderText="Selecione uma data"
+                            minDate={new Date()}
+                        />
+                        <div>
                             <label>
                                 <input
                                     type="radio"
@@ -119,14 +123,13 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                                 Tarde
                             </label>
                         </div>
+                        <button onClick={handleAgendarVisita}>Agendar uma visita</button>
                     </div>
-                    <button className="agendar-visita" onClick={handleAgendarVisita}>
-                        Agendar uma visita
-                    </button>
                 </div>
             </div>
         </div>
     );
+
 };
 
 export default ImovelDetalhes;

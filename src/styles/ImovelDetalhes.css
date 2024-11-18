@@ -7,22 +7,39 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     z-index: 1000;
 }
 
+
 .imovel-detalhes-content {
-    position: relative; /* Para o botão "Fechar" alinhar-se ao contêiner */
     display: flex;
-    background: #fff;
+    background-color: #fff;
+    width: 80%; /* Define a largura total do modal */
+    height: 70%; /* Altura do modal */
     border-radius: 8px;
     overflow: hidden;
-    max-height: 90%;
-    max-width: 1300px;
-    width: 80%;
-    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.imovel-detalhes-left {
+    flex: 1; /* Ocupa metade do espaço */
+    background-color: #f9f9f9; /* Cor de fundo opcional */
 }
 
+.imovel-detalhes-right {
+    flex: 1; /* Ocupa metade do espaço */
+    padding: 20px; /* Espaçamento interno */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.img-slider {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz com que a imagem preencha o espaço */
+    border-radius: 0;
+}
 .header {
     display: flex;
     align-items: center;

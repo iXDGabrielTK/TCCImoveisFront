@@ -15,17 +15,27 @@ const RegisterForm: React.FC = () => {
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
-        const data = { nome, telefone, login, senha, tipo, ...(tipo ? {} : { cpf }) };
+
+        // Dados comuns a todos os usuários
+        const data: any = {
+            nome,
+            telefone,
+            login,
+            senha,
+            tipo: tipo ? "visitante" : "funcionario", // Determina o tipo de usuário
+        };
+
+        // Adiciona o CPF somente se for funcionário
+        if (!tipo) {
+            data.cpf = cpf;
+        }
+
         try {
             setIsPending(true);
             setIsError(false);
             setIsSuccess(false);
 
-            if (tipo) {
-                await api.post('/visitantes', data);
-            } else {
-                await api.post('/funcionarios', data);
-            }
+            await api.post("/usuarios", data); // Envia para o endpoint /usuarios
             setIsSuccess(true);
         } catch (error) {
             console.error("Erro ao registrar usuário:", error);
@@ -34,6 +44,7 @@ const RegisterForm: React.FC = () => {
             setIsPending(false);
         }
     };
+
 
     return (
         <form onSubmit={handleRegister} className="register-form">

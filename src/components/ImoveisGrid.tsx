@@ -25,12 +25,17 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
     return (
         <div className="imoveis-grid">
             {imoveis.map((imovel) => (
-                <div key={imovel.idImovel} className="imovel-card" onClick={() => onImovelClick(imovel)}>
-                    {imovel.fotosImovel?.length ? (
-                        <img src={imovel.fotosImovel[0].urlFotoImovel} alt={imovel.tipoImovel} />
+                <div
+                    key={imovel.idImovel || Math.random()} // Garantia de chave única, mesmo que idImovel esteja ausente
+                    className="imovel-card"
+                    onClick={() => onImovelClick(imovel)}
+                >
+                    {imovel.fotosImovel && imovel.fotosImovel.length > 0 ? (
+                        <img src={imovel.fotosImovel[0]} alt={`Foto do imóvel ${imovel.tipoImovel}`} />
                     ) : (
                         <div className="no-image">Sem imagem</div>
                     )}
+
                     <h3>{imovel.tipoImovel}</h3>
                     <p>Valor: R$ {imovel.precoImovel}</p>
                 </div>
