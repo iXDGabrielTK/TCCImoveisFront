@@ -1,19 +1,19 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa';
-import { login as loginService } from "../services/auth"; // Renomeando para evitar conflitos
+import { login as loginService } from "../services/auth";
 import '../styles/Login.css';
 
 function LoginForm() {
-    const [login, setLogin] = useState(''); // Nome do campo correto para login
-    const [senha, setSenha] = useState(''); // Nome do campo correto para senha
+    const [login, setLogin] = useState('');
+    const [senha, setSenha] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
         try {
-            await loginService(login, senha); // Chamando o login do serviço com os parâmetros corretos
+            await loginService(login, senha);
             console.log("Login bem-sucedido! Usuário autenticado.");
             navigate('/home');
         } catch (error) {

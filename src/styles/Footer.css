@@ -1,4 +1,3 @@
-/* Estrutura básica */
 * {
     margin: 0;
     padding: 0;
@@ -15,19 +14,21 @@ html, body {
 .content-wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ocupa a altura total da viewport */
+    min-height: 100vh;
 }
 
 .main-content {
-    flex-grow: 1; /* Expande o conteúdo principal para ocupar o espaço entre o topo e o rodapé */
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
 }
 
-/* Estilização do footer */
 .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     background-color: #14453e;
     color: #e8e8e8;
     padding: 20px;
@@ -36,7 +37,7 @@ html, body {
     align-items: flex-start;
     box-sizing: border-box;
     width: 100%;
-    margin-top: auto; /* Empurra o footer para o final da página */
+    margin-top: auto;
 }
 
 .footer-section {
@@ -72,7 +73,6 @@ html, body {
     color: #a0e8af;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .footer {
         flex-direction: column;

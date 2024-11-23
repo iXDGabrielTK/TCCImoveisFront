@@ -1,0 +1,61 @@
+.custom-date-picker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.custom-date-picker-label {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.custom-date-picker-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.custom-date-picker-error {
+    font-size: 0.8rem;
+    color: red;
+}
+
+.react-datepicker__day--holiday {
+    color: red !important; /* Deixa os dias de feriado em vermelho */
+    font-weight: bold;     /* Deixa os números em negrito */
+    background-color: #ffe6e6; /* Fundo levemente avermelhado */
+    border-radius: 50%;    /* Aplica borda arredondada */
+}
+
+.react-datepicker__day--holiday:hover {
+    background-color: #ffcccc; /* Fundo vermelho mais intenso ao passar o mouse */
+}
+
+/* Dias de feriado no DatePicker */
+.react-datepicker__day--holiday {
+    color: red !important; /* Destaca o texto em vermelho */
+    font-weight: bold;     /* Deixa os números em negrito */
+    background-color: #ffe6e6; /* Fundo levemente avermelhado */
+    border-radius: 50%;    /* Aplica borda arredondada */
+    cursor: not-allowed;   /* Mostra que o dia não é clicável */
+    opacity: 0.7;          /* Deixa o dia com opacidade reduzida */
+}
+
+/* Estilo de hover para feriados */
+.react-datepicker__day--holiday:hover {
+    background-color: #ffcccc; /* Fundo vermelho mais intenso ao passar o mouse */
+    color: red;
+}
+
+.react-datepicker__day--holiday {
+    color: red !important;
+    font-weight: bold;
+    background-color: #ffe6e6;
+    border-radius: 50%;
+    cursor: not-allowed;
+}

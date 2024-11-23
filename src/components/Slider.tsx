@@ -5,14 +5,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../styles/Slider.css";
 
-
 interface SliderProps {
     images: string[];
 }
 
 function Slider({ images }: SliderProps) {
     if (!images.length) {
-        // Caso não haja imagens, exiba a mensagem
         return (
             <div className="no-image-available">
                 <p>Sem imagens disponíveis</p>
@@ -23,8 +21,8 @@ function Slider({ images }: SliderProps) {
     return (
         <div className="slider-container">
             <Swiper
-                modules={[Navigation, Pagination, Autoplay]} // Certifique-se de que esses módulos estão corretos
-                spaceBetween={0}
+                modules={[Navigation, Pagination, Autoplay]}
+                spaceBetween={5}
                 slidesPerView={1}
                 navigation={true}
                 pagination={{ clickable: true }}
@@ -35,7 +33,6 @@ function Slider({ images }: SliderProps) {
                     <SwiperSlide key={index}>
                         <img className="img-slider" src={image} alt={`Slide ${index + 1}`} />
                     </SwiperSlide>
-
                 ))}
             </Swiper>
         </div>

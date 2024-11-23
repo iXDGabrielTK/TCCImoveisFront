@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import Slider from './Slider';
 import { Imovel } from '../types/Imovel';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/ImovelDetalhes.css';
 import { getHolidays } from '../types/holidays';
+import CustomDatePicker from './CustomDatePicker';
 
 interface ImovelDetalhesProps {
     imovel: Imovel;
     onClose: () => void;
 }
 
+
+
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
-    // Processa as URLs das imagens do imóvel
-    const imageUrls = imovel.fotosImovel?.length
+    const imageUrls = Array.isArray(imovel.fotosImovel)
         ? imovel.fotosImovel
-        : ["https://via.placeholder.com/300x200?text=Sem+Imagens"];
+        : typeof imovel.fotosImovel === 'string'
+            ? imovel.fotosImovel.split(',').map((url) => url.trim())
+            : ["https://via.placeholder.com/300x200?text=Sem+Imagens"];
 
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [periodo, setPeriodo] = useState<string>('Manhã');
@@ -30,7 +32,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     };
 
     const handleAgendarVisita = async () => {
-        if (!startDate || !nomeVisitante) {
+        if (!startDate || !nomeVisitante.trim()) {
             alert("Por favor, selecione uma data e insira seu nome.");
             return;
         }
@@ -39,7 +41,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
             nomeVisitante,
             imovelId: imovel.idImovel,
             dataAgendamento: startDate.toISOString(),
-            horarioMarcado: periodo === 'Tarde'
+            horarioMarcado: periodo === 'Tarde',
         };
 
         try {
@@ -68,18 +70,13 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     return (
         <div className="imovel-detalhes-modal">
             <div className="imovel-detalhes-content">
-                {/* Seção da imagem */}
                 <div className="imovel-detalhes-left">
                     <Slider images={imageUrls} />
                 </div>
-
-                {/* Seção das informações */}
                 <div className="imovel-detalhes-right">
                     <button onClick={onClose} className="close-button">Fechar</button>
                     <div className="imovel-info">
-                        <div className="header">
-                            <h1>{imovel.tipoImovel ? "Residencial" : "Comercial"}</h1>
-                        </div>
+                        <h1>{imovel.tipoImovel ? "Residencial" : "Comercial"}</h1>
                         <p><em>{imovel.descricaoImovel}</em></p>
                         <hr />
                         <p><strong>Valor:</strong> R$ {imovel.precoImovel}</p>
@@ -89,21 +86,23 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                         <p><strong>Número:</strong> {imovel.enderecoImovel?.numero || "Não informado"}</p>
                         <p><strong>Cidade:</strong> {imovel.enderecoImovel?.cidade || "Não informado"}</p>
                     </div>
-                    <div>
+                    <div className="agendamento-container">
+                        <h2>Agendar Visita</h2>
                         <input
                             type="text"
                             placeholder="Nome do visitante"
                             value={nomeVisitante}
                             onChange={(e) => setNomeVisitante(e.target.value)}
                         />
-                        <DatePicker
+                        <CustomDatePicker
                             selected={startDate}
-                            onChange={(date) => setStartDate(date)}
+                            onChange={(date: Date | null) => setStartDate(date)} // Define o tipo explicitamente
                             filterDate={isWeekdayOrHoliday}
                             placeholderText="Selecione uma data"
                             minDate={new Date()}
+                            locale="pt-BR"
                         />
-                        <div>
+                        <div className="radio-container">
                             <label>
                                 <input
                                     type="radio"
@@ -123,13 +122,12 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                                 Tarde
                             </label>
                         </div>
-                        <button onClick={handleAgendarVisita}>Agendar uma visita</button>
+                        <button onClick={handleAgendarVisita} className="agendar-visita">Agendar uma visita</button>
                     </div>
                 </div>
             </div>
         </div>
     );
-
 };
 
 export default ImovelDetalhes;

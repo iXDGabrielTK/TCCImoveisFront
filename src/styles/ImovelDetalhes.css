@@ -1,3 +1,4 @@
+/* Ajustes para o modal */
 .imovel-detalhes-modal {
     display: flex;
     align-items: center;
@@ -11,91 +12,52 @@
     z-index: 1000;
 }
 
-
 .imovel-detalhes-content {
     display: flex;
     background-color: #fff;
-    width: 80%; /* Define a largura total do modal */
-    height: 70%; /* Altura do modal */
+    width: 90%;
+    max-width: 1100px;
+    height: 85%;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
+
 .imovel-detalhes-left {
-    flex: 1; /* Ocupa metade do espaço */
-    background-color: #f9f9f9; /* Cor de fundo opcional */
+    flex: 1.5; /* Reduz a proporção da imagem */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.swiper-button-prev:after, .swiper-button-next:after{
+    position: fixed;
+    padding: 10px;
+}
+
+.imovel-detalhes-left img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .imovel-detalhes-right {
-    flex: 1; /* Ocupa metade do espaço */
-    padding: 20px; /* Espaçamento interno */
+    flex: 2.5; /* Aumenta a proporção da seção de informações */
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-}
-
-.img-slider {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Faz com que a imagem preencha o espaço */
-    border-radius: 0;
-}
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.carousel-container {
-    position: relative;
-    flex: 3;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.main-slider {
-    width: 100%;
-    height: 80vh;
-    margin-bottom: 10px;
-    max-height: 80vh;
-}
-
-.main-slide img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.thumbnail-slider {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.thumbnail-slide {
-    margin: 0 5px;
-}
-
-.thumbnail-slide img {
-    width: 60px;
-    height: auto;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: transform 0.3s ease;
-}
-
-.thumbnail-slide img:hover {
-    transform: scale(1.05);
+    justify-content: flex-start;
+    gap: 15px;
 }
 
 .imovel-info {
-    flex: 1;
-    padding-left: 20px;
-    max-width: 400px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 1.5;
+    color: #333;
 }
 
 .imovel-info h1 {
@@ -105,27 +67,133 @@
 }
 
 .imovel-info p {
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 8px;
+    color: #555;
 }
 
+/* Botão de fechar */
 .close-button {
     position: absolute;
     top: 10px;
-    right: 10px;
-    background: red;
+    right: 15px;
+    background: #ff4d4d;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    z-index: 2;
+    z-index: 10;
+    transition: background-color 0.3s;
 }
 
-/* Botão de Agendar Visita */
+.close-button:hover {
+    background-color: #e60000;
+}
+
+/* Área de agendamento */
+.agendamento-container {
+    margin-top: 20px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.agendamento-container h2 {
+    font-size: 1.4rem;
+    color: #6a0dad;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.react-datepicker-wrapper {
+    width: 100%; /* Faz o DatePicker ocupar a largura total do contêiner */
+}
+
+.react-datepicker__input-container input {
+    font-size: 14px; /* Ajusta o tamanho da fonte */
+    padding: 8px 10px; /* Reduz o preenchimento interno */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%; /* Mantém responsivo */
+    max-width: 300px; /* Define um limite máximo */
+
+}
+
+.custom-date-picker {
+    font-size: 14px;
+    padding: 8px 10px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.react-datepicker {
+    font-size: 0.85rem; /* Reduz o tamanho geral */
+    width: auto; /* Ajusta a largura */
+}
+
+
+.react-datepicker-wrapper {
+    width: 100%; /* Faz o DatePicker ocupar a largura total do contêiner */
+}
+
+.react-datepicker__month-container{
+
+}
+
+.react-datepicker__header__dropdown,
+.react-datepicker__header__dropdown--scroll{
+
+}
+.agendamento-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.react-datepicker {
+    font-size: 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.react-datepicker__input-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.radio-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.radio-container label {
+    font-size: 1rem;
+    color: #333;
+}
+
+.radio-container input[type="radio"] {
+    margin-right: 5px;
+}
+
 .agendar-visita {
-    width: 60%;
+    width: 100%;
     padding: 10px 20px;
     font-size: 1rem;
     background-color: #6a0dad;
@@ -134,67 +202,62 @@
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    margin-top: 20px;
     transition: background-color 0.3s;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 10px;
 }
 
 .agendar-visita:hover {
     background-color: #5a0bbf;
 }
 
-.radio-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.radio-container label {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-.radio-container input[type="radio"] {
-    margin-right: 5px;
-}
-
-.react-datepicker__day--selected,
-.react-datepicker__day--in-selecting-range,
-.react-datepicker__day--in-range,
-.react-datepicker__month-text--selected,
-.react-datepicker__month-text--in-selecting-range,
-.react-datepicker__month-text--in-range,
-.react-datepicker__quarter-text--selected,
-.react-datepicker__quarter-text--in-selecting-range,
-.react-datepicker__quarter-text--in-range,
-.react-datepicker__year-text--selected,
-.react-datepicker__year-text--in-selecting-range,
-.react-datepicker__year-text--in-range {
-    background-color: #6a0dad !important;
-    color: #fff;
-}
-
-.react-datepicker__navigation:hover {
-    opacity: 40%;
-}
-
-button[type="button"], button[type="submit"] {
-    width: 100%;
-    max-width: 30px;
-    align-self: center;
+.react-datepicker__navigation {
     background-color: transparent;
-    color: #000000;
-    padding: 10px;
-    font-weight: bold;
     border: none;
-    border-radius: 5px;
+    outline: none;
 }
 
-.disabled-day {
-    color: #FF0000 !important;
+.react-datepicker__navigation-icon::before {
+    content: '';
+    border: solid #007bff;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 5px;
+}
+
+.react-datepicker__navigation--previous .react-datepicker__navigation-icon::before {
+    transform: rotate(135deg);
+    width: 10px;
+    height: 10px;
+}
+
+.react-datepicker__navigation--next .react-datepicker__navigation-icon::before {
+    transform: rotate(-45deg);
+    width: 10px;
+    height: 10px;
+}
+
+/* Estilização dos dias da semana e dias */
+.react-datepicker__day-name,
+.react-datepicker__day {
+    color: #333;
+    font-size: 0.9rem;
+    width: 2.5rem;
+    line-height: 2.5rem;
+}
+
+.react-datepicker__day--selected {
+    background-color: #6a0dad;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .imovel-detalhes-content {
+        flex-direction: column; /* Empilha as seções verticalmente */
+    }
+
+    .imovel-detalhes-left,
+    .imovel-detalhes-right {
+        flex: none;
+        max-width: 100%;
+    }
 }

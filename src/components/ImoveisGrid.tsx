@@ -15,6 +15,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
             try {
                 const response = await api.get('/imoveis');
                 setImoveis(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error("Erro ao buscar imóveis:", error);
             }
@@ -26,16 +27,18 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
         <div className="imoveis-grid">
             {imoveis.map((imovel) => (
                 <div
-                    key={imovel.idImovel || Math.random()} // Garantia de chave única, mesmo que idImovel esteja ausente
+                    key={imovel.idImovel || Math.random()}
                     className="imovel-card"
                     onClick={() => onImovelClick(imovel)}
                 >
-                    {imovel.fotosImovel && imovel.fotosImovel.length > 0 ? (
-                        <img src={imovel.fotosImovel[0]} alt={`Foto do imóvel ${imovel.tipoImovel}`} />
-                    ) : (
-                        <div className="no-image">Sem imagem</div>
-                    )}
-
+                    <img
+                        src={
+                            imovel.fotosImovel && imovel.fotosImovel.length > 0
+                                ? imovel.fotosImovel[0]
+                                : "https://via.placeholder.com/300x200?text=Sem+Imagens"
+                        }
+                        alt={`Foto do imóvel ${imovel.tipoImovel}`}
+                    />
                     <h3>{imovel.tipoImovel}</h3>
                     <p>Valor: R$ {imovel.precoImovel}</p>
                 </div>
