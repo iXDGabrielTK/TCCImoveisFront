@@ -10,8 +10,6 @@ interface ImovelDetalhesProps {
     onClose: () => void;
 }
 
-
-
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     const imageUrls = Array.isArray(imovel.fotosImovel)
         ? imovel.fotosImovel
@@ -26,9 +24,9 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     const holidays = getHolidays(new Date().getFullYear());
 
     const isWeekdayOrHoliday = (date: Date) => {
-        const day = date.getDay();
+        const day = date.getDay(); // 0 = Domingo, 6 = Sábado
         const formattedDate = date.toISOString().split('T')[0];
-        return day !== 0 && day !== 6 && !holidays.includes(formattedDate);
+        return day !== 0 && day !== 6 && !holidays.includes(formattedDate); // Feriados e fins de semana não são válidos
     };
 
     const handleAgendarVisita = async () => {
