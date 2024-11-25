@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from './Slider';
 import { Imovel } from '../types/Imovel';
 import '../styles/ImovelDetalhes.css';
@@ -23,31 +23,25 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
 
     const holidays = getHolidays(new Date().getFullYear());
 
-    const isWeekdayOrHoliday = (date: Date) => {
-        const day = date.getDay(); // 0 = Domingo, 6 = Sábado
-        const formattedDate = date.toISOString().split('T')[0];
-        return day !== 0 && day !== 6 && !holidays.includes(formattedDate); // Feriados e fins de semana não são válidos
-    };
-
     const handleAgendarVisita = async () => {
         if (!startDate || !nomeVisitante.trim()) {
             alert("Por favor, selecione uma data e insira seu nome.");
             return;
         }
 
+        const formattedDate = startDate.toISOString().split('T')[0];
+
         const data = {
             nomeVisitante,
             imovelId: imovel.idImovel,
-            dataAgendamento: startDate.toISOString(),
+            dataAgendamento: formattedDate,
             horarioMarcado: periodo === 'Tarde',
         };
 
         try {
             const response = await fetch('http://localhost:8080/agendamentos/agendar', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
 
@@ -86,41 +80,43 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                     </div>
                     <div className="agendamento-container">
                         <h2>Agendar Visita</h2>
-                        <input
-                            type="text"
-                            placeholder="Nome do visitante"
-                            value={nomeVisitante}
-                            onChange={(e) => setNomeVisitante(e.target.value)}
-                        />
-                        <CustomDatePicker
-                            selected={startDate}
-                            onChange={(date: Date | null) => setStartDate(date)} // Define o tipo explicitamente
-                            filterDate={isWeekdayOrHoliday}
-                            placeholderText="Selecione uma data"
-                            minDate={new Date()}
-                            locale="pt-BR"
-                        />
-                        <div className="radio-container">
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="Manhã"
-                                    checked={periodo === 'Manhã'}
-                                    onChange={() => setPeriodo('Manhã')}
-                                />
-                                Manhã
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="Tarde"
-                                    checked={periodo === 'Tarde'}
-                                    onChange={() => setPeriodo('Tarde')}
-                                />
-                                Tarde
-                            </label>
-                        </div>
-                        <button onClick={handleAgendarVisita} className="agendar-visita">Agendar uma visita</button>
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Nome do visitante"
+                                value={nomeVisitante}
+                                onChange={(e) => setNomeVisitante(e.target.value)}
+                            />
+                            <CustomDatePicker
+                                selected={startDate}
+                                onChange={(date: Date | null) => setStartDate(date)}
+                                holidays={holidays}
+                                errorMessage={!startDate ? "Selecione uma data válida" : undefined}
+                            />
+                            <div className="radio-container">
+                                <label>
+                                    <input
+                                        type="radio"
+                                        value="Manhã"
+                                        checked={periodo === 'Manhã'}
+                                        onChange={() => setPeriodo('Manhã')}
+                                    />
+                                    Manhã
+                                </label>
+                                <label>
+                                    <input
+                                        type="radio"
+                                        value="Tarde"
+                                        checked={periodo === 'Tarde'}
+                                        onChange={() => setPeriodo('Tarde')}
+                                    />
+                                    Tarde
+                                </label>
+                            </div>
+                            <button onClick={handleAgendarVisita} className="agendar-visita">
+                                Agendar uma visita
+                            </button>
+                        </>
                     </div>
                 </div>
             </div>
