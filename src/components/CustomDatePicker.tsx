@@ -1,17 +1,17 @@
 import React from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import { ptBR } from 'date-fns/locale'; // Certifique-se de que o locale está correto
-import 'react-datepicker/dist/react-datepicker.css'; // Estilos do DatePicker
-import '../styles/CustomDatePicker.css'; // CSS personalizado
+import { ptBR } from 'date-fns/locale';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../styles/CustomDatePicker.css';
 
-registerLocale('pt-BR', ptBR); // Registrar o locale no DatePicker
+registerLocale('pt-BR', ptBR);
 
 type CustomDatePickerProps = {
     label?: string;
     errorMessage?: string;
-    holidays?: string[]; // Lista de feriados
-    selected?: Date; // Data atualmente selecionada
-    onChange: (date: Date | null) => void; // Função chamada ao alterar a data
+    holidays?: string[];
+    selected?: Date;
+    onChange: (date: Date | null) => void;
 };
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
@@ -21,21 +21,21 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                                                                selected,
                                                                onChange,
                                                            }) => {
-    // Adiciona uma classe para marcar feriados
+
     const dayClassName = (date: Date) => {
-        const formattedDate = date.toISOString().split('T')[0]; // Formata a data para comparação
-        return holidays.includes(formattedDate) ? 'holiday' : ''; // Classe 'holiday' para feriados
+        const formattedDate = date.toISOString().split('T')[0];
+        return holidays.includes(formattedDate) ? 'holiday' : '';
     };
 
     return (
         <div className="custom-date-picker-container">
             {label && <label className="custom-date-picker-label">{label}</label>}
             <DatePicker
-                selected={selected} // Propriedade que reflete a data selecionada
+                selected={selected}
                 onChange={(date) => {
                     if (date) {
-                        console.log("Data selecionada no DatePicker:", date); // Log para depuração
-                        onChange(date); // Atualiza o estado no componente pai
+                        console.log("Data selecionada no DatePicker:", date);
+                        onChange(date);
                     } else {
                         console.error("Erro: Nenhuma data foi selecionada.");
                     }

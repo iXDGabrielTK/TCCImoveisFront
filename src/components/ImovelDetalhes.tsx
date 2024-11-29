@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Slider from './Slider';
 import { Imovel } from '../types/Imovel';
 import '../styles/ImovelDetalhes.css';
@@ -88,11 +88,12 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                                 onChange={(e) => setNomeVisitante(e.target.value)}
                             />
                             <CustomDatePicker
-                                selected={startDate}
+                                selected={startDate || undefined}
                                 onChange={(date: Date | null) => setStartDate(date)}
                                 holidays={holidays}
                                 errorMessage={!startDate ? "Selecione uma data válida" : undefined}
                             />
+
                             <div className="radio-container">
                                 <label>
                                     <input
