@@ -1,7 +1,11 @@
-import React, {FormEvent, useState} from 'react';
+import React, { FormEvent, useState } from 'react';
 import api from '../services/api';
 
-const VistoriaForm: React.FC = () => {
+interface VistoriaFormProps {
+    onClose: () => void;
+}
+
+const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
     const [laudo, setLaudo] = useState('');
     const [dataVistoria, setDataVistoria] = useState('');
     const [endereco, setEndereco] = useState({
@@ -15,7 +19,7 @@ const VistoriaForm: React.FC = () => {
 
     const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setEndereco(prevEndereco => ({
+        setEndereco((prevEndereco) => ({
             ...prevEndereco,
             [name]: value,
         }));
@@ -23,11 +27,11 @@ const VistoriaForm: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log(endereco);
+
         const data = {
-            laudoVistoria : laudo,
-            dataVistoria: dataVistoria,
-            endereco: endereco
+            laudoVistoria: laudo,
+            dataVistoria,
+            endereco,
         };
 
         try {
@@ -37,34 +41,42 @@ const VistoriaForm: React.FC = () => {
 
             await api.post('/vistorias', data);
             setIsSuccess(true);
+            onClose(); // Fecha o modal após sucesso
         } catch (error) {
             console.error('Erro ao cadastrar vistoria:', error);
+            setIsError(true);
         } finally {
-        setIsPending(false);
-    }
+            setIsPending(false);
+        }
     };
-    return (
-        <form className="vistoria-form" onSubmit={handleSubmit}>
-                <h2>Registrar Vistoria</h2>
-                <label>Laudo:
-                    <input type="text" value={laudo} onChange={(e) => setLaudo(e.target.value)}/>
-                </label>
-                <label>Data:
-                    <input type="date" value={dataVistoria} onChange={(e) => setDataVistoria(e.target.value)}/>
-                </label>
-                <label>Rua:
-                    <input type="text" name="rua" value={endereco.rua} onChange={handleEnderecoChange}/>
-                </label>
-                <label>Numero:
-                    <input type="text" name="numero" value={endereco.numero} onChange={handleEnderecoChange}/>
-                </label>
-                <label>Complemento:
-                    <input type="text" name="complemento" value={endereco.complemento} onChange={handleEnderecoChange}/>
-                </label>
-                <button type="submit" disabled={isPending}>Registrar</button>
 
-                {isError && <p style={{ color: 'red' }}>Erro ao registrar vistoria. Tente novamente.</p>}
-                {isSuccess && <p style={{ color: 'green' }}>Vistoria registrada com sucesso!</p>}
+    return (
+        <form className="form-step" onSubmit={handleSubmit}>
+            <h2>Registrar Vistoria</h2>
+            <label>
+                Laudo:
+                <input type="text" value={laudo} onChange={(e) => setLaudo(e.target.value)} />
+            </label>
+            <label>
+                Data:
+                <input type="date" value={dataVistoria} onChange={(e) => setDataVistoria(e.target.value)} />
+            </label>
+            <label>
+                Rua:
+                <input type="text" name="rua" value={endereco.rua} onChange={handleEnderecoChange} />
+            </label>
+            <label>
+                Número:
+                <input type="text" name="numero" value={endereco.numero} onChange={handleEnderecoChange} />
+            </label>
+            <label>
+                Complemento:
+                <input type="text" name="complemento" value={endereco.complemento} onChange={handleEnderecoChange} />
+            </label>
+            <button type="submit" className="btn-submit-form" disabled={isPending}>Registrar</button>
+
+            {isError && <p style={{ color: 'red' }}>Erro ao registrar vistoria. Tente novamente.</p>}
+            {isSuccess && <p style={{ color: 'green' }}>Vistoria registrada com sucesso!</p>}
         </form>
     );
 };

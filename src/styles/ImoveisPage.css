@@ -1,0 +1,91 @@
+.btn-close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4d4d;
+    color: #333;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1050;
+}
+
+.btn-close-modal:hover {
+    background-color: #e00000;
+    color: #000;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+
+.btn-submit-form {
+    background-color: #28a745;
+}
+
+.btn-submit-form:hover {
+    background-color: #218838;
+}
+
+.btn-cadastrar-imovel {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.btn-cadastrar-imovel:hover {
+    background-color: #218838;
+}
+
+.btn-registrar-vistoria {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-registrar-vistoria:hover {
+    background-color: #0056b3;
+}
+
+.button-group {
+    padding-left: 1%;
+    display: flex;
+    gap: 10px;
+    margin: 1% 0;
+}

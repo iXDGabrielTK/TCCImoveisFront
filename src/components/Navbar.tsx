@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import CancelamentoPopup from "./CancelamentoPupupProps.tsx";
+import CancelamentoPopup from "./AgendamentoPopUp.tsx";
 import { logout, getToken } from "../services/auth";
 import "../styles/Navbar.css";
 
@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
                         ) : (
                             <>
                                 <button onClick={() => setShowPopup(true)}>
-                                    Cancelar Agendamentos
+                                    Agendamentos
                                 </button>
                                 <button onClick={handleLogout}>Logout</button>
                             </>

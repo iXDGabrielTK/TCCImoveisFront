@@ -5,7 +5,6 @@ import Register from './pages/Register';
 import ImoveisPage from './pages/ImoveisPage';
 import LoginForm from './components/LoginForm';
 import CadastroImovelForm from './components/CadastroImovelForm';
-import VistoriaForm from './components/VistoriaForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from "./components/PrivateRoute.tsx";
@@ -16,7 +15,6 @@ const App: React.FC = () => {
                 <Route path="/" element={<MainLayout />}>
                     <Route path="imoveis" element={<ImoveisPage />} />
                     <Route path="registerImoveis" element={<CadastroImovelForm onClose={() => {}} />} />
-                    <Route path="vistoria" element={<VistoriaForm />} />
                     <Route
                         path="/home"
                         element={

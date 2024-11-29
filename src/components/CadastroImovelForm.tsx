@@ -28,7 +28,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
     const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setEndereco(prevEndereco => ({
+        setEndereco((prevEndereco) => ({
             ...prevEndereco,
             [name]: value,
         }));
@@ -46,7 +46,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             urlFoto: imagem,
             enderecoImovel: endereco,
             historicoManutencao,
-            funcionario: { login: funcionarioLogin }
+            funcionario: { login: funcionarioLogin },
         };
 
         try {
@@ -57,8 +57,8 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         }
     };
 
-    const nextStep = () => setStep(prevStep => prevStep + 1);
-    const prevStep = () => setStep(prevStep => prevStep - 1);
+    const nextStep = () => setStep((prevStep) => prevStep + 1);
+    const prevStep = () => setStep((prevStep) => prevStep - 1);
 
     return (
         <form className="form-carousel" onSubmit={handleSubmit}>
@@ -92,7 +92,9 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                     <label>Funcionário Responsável (Login):
                         <input type="text" value={funcionarioLogin} onChange={(e) => setFuncionarioLogin(e.target.value)} />
                     </label>
-                    <button type="button" onClick={nextStep}>Próximo ➔</button>
+                    <button type="button" className="btn-next-step" onClick={nextStep} name="nextStepButton" id="nextStepButton">
+                        Próximo ➔
+                    </button>
                 </div>
             )}
 
@@ -120,8 +122,12 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         <input type="text" name="cep" value={endereco.cep} onChange={handleEnderecoChange} />
                     </label>
                     <div className="navigation-buttons">
-                        <button type="button" onClick={prevStep}>⬅ Voltar</button>
-                        <button type="submit">Cadastrar Imóvel</button>
+                        <button type="button" className="btn-prev-step" onClick={prevStep} name="prevStepButton" id="prevStepButton">
+                            ⬅ Voltar
+                        </button>
+                        <button type="submit" className="btn-submit-form" name="submitButton" id="submitButton">
+                        Cadastrar Imóvel
+                        </button>
                     </div>
                 </div>
             )}

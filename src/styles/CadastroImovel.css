@@ -1,3 +1,4 @@
+/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -9,10 +10,6 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-}
-
-body {
-    background-color: #333333;
 }
 
 .modal-content {
@@ -38,9 +35,16 @@ body {
     color: #333;
 }
 
-/* Ajustes para o form-step */
+/* Formulário de Cadastro de Imóvel */
+.form-carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .form-step {
-    max-width: 100%;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -48,18 +52,16 @@ body {
     box-sizing: border-box;
 }
 
-label {
+.form-step label {
     font-weight: bold;
     color: #333;
     display: flex;
     flex-direction: column;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select,
-textarea {
+.form-step input,
+.form-step select,
+.form-step textarea {
     padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -69,17 +71,17 @@ textarea {
     box-sizing: border-box;
 }
 
-/* Estilo específico para textarea de Histórico de Manutenção */
-textarea {
-    resize: vertical; /* Permite redimensionar apenas verticalmente */
-    max-width: 100%; /* Limita a largura ao máximo do container */
-    min-height: 80px; /* Altura mínima */
-    max-height: 200px; /* Altura máxima para evitar que cresça demais */
+/* Específico para textarea de Histórico de Manutenção */
+.form-step textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
 }
 
-button[type="button"],
-button[type="submit"] {
-    width: 100%;
+/* Botões do formulário */
+.btn-next-step,
+.btn-prev-step,
+.btn-submit-form {
     max-width: 150px;
     align-self: center;
     background-color: #007BFF;
@@ -92,43 +94,50 @@ button[type="submit"] {
     text-align: center;
 }
 
-button[type="button"]:hover,
-button[type="submit"]:hover {
+.btn-next-step:hover,
+.btn-prev-step:hover,
+.btn-submit-form:hover {
     background-color: #0056b3;
 }
 
+.btn-prev-step {
+    background-color: #6c757d;
+}
+
+.btn-prev-step:hover {
+    background-color: #5a6268;
+}
+
+.btn-submit-form {
+    background-color: #28a745;
+}
+
+.btn-submit-form:hover {
+    background-color: #218838;
+}
+
+/* Navegação entre passos */
 .navigation-buttons {
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
-button {
-    background-color: #4CAF50;
+/* Botão Voltar */
+.btn-prev-step {
+    background-color: #0056b3;
     color: white;
-    padding: 10px 15px;
+    padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
 }
 
-button:hover {
-    background-color: #45a049;
+.btn-prev-step:hover {
+    background-color: #5a6268;
 }
 
-button[type="button"] {
-    background-color: #007BFF;
-}
-
-button[type="button"]:hover {
-    background-color: #0056b3;
-}
-
-button[type="submit"] {
-    background-color: #4CAF50;
-}
-
-button[type="submit"]:hover {
-    background-color: #45a049;
-}

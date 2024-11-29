@@ -196,7 +196,7 @@
     width: 100%;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #6a0dad;
+    background-color: #1bb400;
     color: white;
     border: none;
     border-radius: 5px;
@@ -207,7 +207,7 @@
 }
 
 .agendar-visita:hover {
-    background-color: #5a0bbf;
+    background-color: #47a100;
 }
 
 .react-datepicker__navigation {
