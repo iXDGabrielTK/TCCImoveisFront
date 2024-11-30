@@ -1,117 +1,60 @@
-import React, { useState, useEffect } from "react";
 import "../styles/CancelamentoPopup.css";
-
-interface CancelamentoPopupProps {
-    onClose: () => void;
-}
+import React from "react";
 
 interface Agendamento {
-    id: number;
-    dataAgendamento: string;
-    horarioMarcado: boolean;
+    id: number; // O ID do agendamento
+    dataAgendamento: string; // Data do agendamento (em formato ISO 8601 ou string)
+    nomeVisitante: string; // Nome do visitante
+    horarioMarcado: boolean; // Indica se o horário está marcado
+    cancelado: boolean; // Indica se o agendamento foi cancelado
 }
 
-interface Imovel {
-    id: number;
-    descricaoImovel: string;
+
+interface Props {
+    agendamentos: Agendamento[];
+    onClose: () => void;
+    onCancel: (id: number) => void;
 }
 
-const CancelamentoPopup: React.FC<CancelamentoPopupProps> = ({ onClose }) => {
-    const [imoveis, setImoveis] = useState<Imovel[]>([]);
-    const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
-    const [imovelSelecionado, setImovelSelecionado] = useState<number | null>(
-        null
-    );
-
-    // Carrega os imóveis na inicialização
-    useEffect(() => {
-        fetch("http://localhost:8080/imoveis")
-            .then((response) => response.json())
-            .then((data: Imovel[]) => setImoveis(data))
-            .catch((error) =>
-                console.error("Erro ao carregar imóveis:", error)
-            );
-    }, []);
-
-    // Atualiza os agendamentos ao selecionar um imóvel
-    const handleImovelChange = (id: number) => {
-        setImovelSelecionado(id);
-        if (id) {
-            fetch(`http://localhost:8080/agendamentos?imovelId=${id}`)
-                .then((response) => response.json())
-                .then((data: Agendamento[]) => {
-                    console.log("Agendamentos recebidos:", data); // Verifique o que está sendo retornado
-                    setAgendamentos(data);
-                })
-                .catch((error) => console.error("Erro ao carregar agendamentos:", error));
-        } else {
-            setAgendamentos([]);
-        }
-    };
-
-
-
-    // Cancela um agendamento específico
-    const handleCancelar = async (agendamentoId: number) => {
-        try {
-            await fetch(
-                `http://localhost:8080/agendamentos/cancelar/${agendamentoId}`,
-                {
-                    method: "DELETE",
-                }
-            );
-            alert("Agendamento cancelado com sucesso!");
-            setAgendamentos((prev) =>
-                prev.filter((a) => a.id !== agendamentoId)
-            );
-        } catch (error) {
-            console.error("Erro ao cancelar agendamento:", error);
-            alert("Erro ao cancelar agendamento.");
-        }
-    };
-
+const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel }) => {
     return (
         <div className="popup-overlay">
-            <div className="popup">
-                <button onClick={onClose} className="close-popup">
-                    Fechar
+            <div className="popup-content">
+                <button className="popup-close" onClick={onClose}>
+                    X
                 </button>
-                <h2>Cancelar Agendamentos</h2>
-                <select
-                    onChange={(e) =>
-                        handleImovelChange(Number(e.target.value))
-                    }
-                >
-                    <option value="">Selecione um imóvel</option>
-                    {imoveis.map((imovel) => (
-                        <option key={imovel.id} value={imovel.id}>
-                            {imovel.descricaoImovel}
-                        </option>
-                    ))}
-                </select>
-                <ul>
-                    {agendamentos.length > 0 ? (
-                        agendamentos.map((agendamento) => (
-                            <li key={agendamento.id}>
-                                {agendamento.dataAgendamento} -{" "}
-                                {agendamento.horarioMarcado ? "Tarde" : "Manhã"}
-                                <button
-                                    onClick={() => handleCancelar(agendamento.id)}
-                                    className="cancel-button"
-                                >
-                                    Cancelar
-                                </button>
+                <h2>Seus Agendamentos</h2>
+                {agendamentos.length === 0 ? (
+                    <p>Nenhum agendamento disponível.</p>
+                ) : (
+                    <ul className="agendamento-list">
+                        {agendamentos.map((agendamento) => (
+                            <li key={agendamento.id} className="agendamento-item">
+                                <span
+                                    className={`status-circle ${
+                                        agendamento.cancelado ? "inactive" : "active"
+                                    }`}
+                                ></span>
+                                <span>{agendamento.nomeVisitante}</span>
+                                {!agendamento.cancelado && (
+                                    <button
+                                        className="cancel-button"
+                                        onClick={() => onCancel(agendamento.id)}
+                                        title="Cancelar agendamento"
+                                    >
+                                        Cancelar
+                                    </button>
+                                )}
+                                {agendamento.cancelado && <span>Cancelado</span>}
                             </li>
-                        ))
-                    ) : (
-                        <p>Nenhum agendamento encontrado para este imóvel.</p>
-                    )}
-                </ul>
-
-
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     );
 };
 
-export default CancelamentoPopup;
+
+
+export default AgendamentosPopUp;
