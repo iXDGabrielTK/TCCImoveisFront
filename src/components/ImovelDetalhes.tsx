@@ -24,6 +24,15 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     const holidays = getHolidays(new Date().getFullYear());
 
     const handleAgendarVisita = async () => {
+        const usuarioIdRaw = localStorage.getItem("usuario_Id");
+        console.log("Usuario ID recuperado do localStorage (raw):", usuarioIdRaw);
+        const usuario_Id = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
+        console.log("Usuario ID convertido:", usuario_Id);
+
+
+        console.log("Usuario ID recuperado do localStorage:", usuarioIdRaw); // Verifica o valor antes da conversão
+        console.log("Usuario ID convertido:", usuario_Id); // Verifica o valor após a conversão
+
         if (!startDate || !nomeVisitante.trim()) {
             alert("Por favor, selecione uma data e insira seu nome.");
             return;
@@ -36,7 +45,10 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
             imovelId: imovel.idImovel,
             dataAgendamento: formattedDate,
             horarioMarcado: periodo === 'Tarde',
+            usuario_Id, // Usa o valor convertido
         };
+
+        console.log("Dados enviados para a API:", data);
 
         try {
             const response = await fetch('http://localhost:8080/agendamentos/agendar', {
@@ -58,6 +70,8 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
             alert(`Erro de conexão: ${error}`);
         }
     };
+
+
 
     return (
         <div className="imovel-detalhes-modal">

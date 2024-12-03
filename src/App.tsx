@@ -7,8 +7,7 @@ import CadastroImovelForm from './components/CadastroImovelForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from "./components/PrivateRoute.tsx";
-import AgendamentoPopUp from "./components/AgendamentoPopUp.tsx";
-import RelatorioUsuarios from "./components/RelatorioUsuarios"; // Importar o componente
+import RelatorioUsuarios from "./components/RelatorioUsuarios";
 import RelatorioAgendamentos from "./components/RelatorioAgendamento.tsx";
 import RelatorioVistorias from "./components/RelatorioVistoria.tsx";
 
@@ -18,7 +17,6 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<MainLayout />}>
                     <Route path="imoveis" element={<ImoveisPage />} />
-                    <Route path="agenda" element={<AgendamentoPopUp />} />
                     <Route path="registerImoveis" element={<CadastroImovelForm onClose={() => {}} />} />
 
                     {/* Nova Rota para Relatório de Usuários */}

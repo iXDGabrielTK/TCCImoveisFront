@@ -1,22 +1,33 @@
 import "../styles/CancelamentoPopup.css";
-import React from "react";
+import React, { useState } from "react";
 
 interface Agendamento {
     id: number;
-    dataAgendamento: string; // Data do agendamento (em formato ISO 8601 ou string)
-    nomeVisitante: string;
+    dataAgendamento: string;
     horarioMarcado: boolean;
     cancelado: boolean;
 }
 
-
 interface Props {
     agendamentos: Agendamento[];
     onClose: () => void;
-    onCancel: (id: number) => void;
+    onCancel: (id: number, motivo: string) => void;
 }
 
 const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel }) => {
+    const [showConfirmation, setShowConfirmation] = useState<number | null>(null);
+    const [cancelReason, setCancelReason] = useState<string>("");
+
+    const handleCancel = (id: number) => {
+        if (cancelReason) {
+            onCancel(id, cancelReason);
+            setShowConfirmation(null);
+            setCancelReason("");
+        } else {
+            alert("Por favor, selecione um motivo para cancelar.");
+        }
+    };
+
     return (
         <div className="popup-overlay">
             <div className="popup-content">
@@ -29,23 +40,60 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
                 ) : (
                     <ul className="agendamento-list">
                         {agendamentos.map((agendamento) => (
-                            <li key={agendamento.id} className="agendamento-item">
-                                <span
-                                    className={`status-circle ${
-                                        agendamento.cancelado ? "inactive" : "active"
-                                    }`}
-                                ></span>
-                                <span>{agendamento.nomeVisitante}</span>
-                                {!agendamento.cancelado && (
-                                    <button
-                                        className="cancel-button"
-                                        onClick={() => onCancel(agendamento.id)}
-                                        title="Cancelar agendamento"
-                                    >
-                                        Cancelar
-                                    </button>
+                            <li
+                                key={agendamento.id}
+                                className={`agendamento-item ${
+                                    agendamento.cancelado ? "item-cancelado" : ""
+                                }`}
+                            >
+                                <div className="agendamento-info">
+                                    <span
+                                        className={`status-circle ${
+                                            agendamento.cancelado ? "inactive" : "active"
+                                        }`}
+                                    ></span>
+                                    <span className="date-text">{`${agendamento.dataAgendamento}`}</span>
+                                    {!agendamento.cancelado && (
+                                        <button
+                                            className="cancel-button"
+                                            onClick={() =>
+                                                setShowConfirmation((prev) =>
+                                                    prev === agendamento.id ? null : agendamento.id
+                                                )
+                                            }
+                                        >
+                                            Cancelar
+                                        </button>
+                                    )}
+                                </div>
+                                {!agendamento.cancelado && showConfirmation === agendamento.id && (
+                                    <div className="confirm-cancel">
+                                        <hr className="divider" />
+                                        <div className="cancel-options">
+                                            <select
+                                                value={cancelReason}
+                                                onChange={(e) => setCancelReason(e.target.value)}
+                                                className="reason-select"
+                                            >
+                                                <option value="">Motivo</option>
+                                                <option value="Problema pessoal">
+                                                    Problema pessoal
+                                                </option>
+                                                <option value="Erro no agendamento">
+                                                    Erro no agendamento
+                                                </option>
+                                                <option value="Outro">Outro</option>
+                                            </select>
+                                            <span className="confirmation-text">Tem certeza?</span>
+                                            <button
+                                                className="confirm-button"
+                                                onClick={() => handleCancel(agendamento.id)}
+                                            >
+                                                Sim!
+                                            </button>
+                                        </div>
+                                    </div>
                                 )}
-                                {agendamento.cancelado && <span>Cancelado</span>}
                             </li>
                         ))}
                     </ul>
@@ -54,7 +102,5 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
         </div>
     );
 };
-
-
 
 export default AgendamentosPopUp;

@@ -13,8 +13,15 @@ function LoginForm() {
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
         try {
-            await loginService(login, senha);
-            console.log("Login bem-sucedido! Usuário autenticado.");
+            // Faz o login e obtém os dados retornados
+            const { token, usuario_Id } = await loginService(login, senha);
+
+            // Salva o token e o usuarioId no localStorage
+            console.log('Salvando usuarioId no localStorage:', usuario_Id);
+            localStorage.setItem('token', token);
+            localStorage.setItem('usuarioId', usuario_Id);
+
+            // Redireciona para a página inicial
             navigate('/home');
         } catch (error) {
             console.error('Erro ao fazer login:', error);
