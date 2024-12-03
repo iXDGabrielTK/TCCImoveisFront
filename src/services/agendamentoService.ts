@@ -1,19 +1,24 @@
-import axios from "axios";
+import api from "./api"; // Usa a instância configurada
 
-
+export interface Agendamento {
+    id: number;
+    dataAgendamento: string;
+    nomeVisitante: string;
+    horarioMarcado: boolean; // O front-end agora espera boolean
+    cancelado: boolean;
+}
 
 export const fetchAgendamentos = async (usuarioId: number): Promise<Agendamento[]> => {
     try {
-        const response = await axios.get(`/agendamentos/usuario/${usuarioId}`);
-        console.log("Resposta completa da API:", response); // Verifica a estrutura completa
-        console.log("Dados recebidos da API:", response.data); // Verifica os dados retornados pela API
+        const response = await api.get(`/agendamentos/usuario/${usuarioId}`);
+        console.log("Dados recebidos da API:", response.data);
 
         if (Array.isArray(response.data)) {
             return response.data.map((item) => ({
                 id: item.id,
                 dataAgendamento: item.dataAgendamento,
                 nomeVisitante: item.nomeVisitante,
-                horarioMarcado: item.horarioMarcado,
+                horarioMarcado: item.horarioMarcado === "true",
                 cancelado: item.cancelado,
             }));
         } else {
@@ -26,11 +31,11 @@ export const fetchAgendamentos = async (usuarioId: number): Promise<Agendamento[
     }
 };
 
-
-
-export const cancelarAgendamento = async (id: number) => {
+// Cancela um agendamento
+export const cancelarAgendamento = async (id: number): Promise<void> => {
     try {
-        await axios.put(`/agendamentos/${id}/cancelar`); // Usa o método PUT
+        await api.put(`/agendamentos/${id}/cancelar`);
+        console.log(`Agendamento ${id} cancelado com sucesso`);
     } catch (error) {
         console.error("Erro ao cancelar agendamento:", error);
         throw error;

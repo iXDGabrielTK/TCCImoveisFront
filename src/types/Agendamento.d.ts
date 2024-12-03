@@ -1,7 +1,8 @@
 export interface Agendamento {
     id: number;
-    dataAgendamento: string; // Em formato ISO (ex: "2024-05-01")
+    descricao: string;
+    ativo: boolean;
+    dataAgendamento: string; // ou Date
     nomeVisitante: string;
-    horarioMarcado: boolean;
-    cancelado: boolean;
+    horarioMarcado: string;
 }

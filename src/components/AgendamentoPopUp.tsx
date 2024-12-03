@@ -2,11 +2,11 @@ import "../styles/CancelamentoPopup.css";
 import React from "react";
 
 interface Agendamento {
-    id: number; // O ID do agendamento
+    id: number;
     dataAgendamento: string; // Data do agendamento (em formato ISO 8601 ou string)
-    nomeVisitante: string; // Nome do visitante
-    horarioMarcado: boolean; // Indica se o horário está marcado
-    cancelado: boolean; // Indica se o agendamento foi cancelado
+    nomeVisitante: string;
+    horarioMarcado: boolean;
+    cancelado: boolean;
 }
 
 
