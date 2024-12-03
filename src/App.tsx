@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Register from './pages/Register';
@@ -9,6 +8,10 @@ import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from "./components/PrivateRoute.tsx";
 import AgendamentoPopUp from "./components/AgendamentoPopUp.tsx";
+import RelatorioUsuarios from "./components/RelatorioUsuarios"; // Importar o componente
+import RelatorioAgendamentos from "./components/RelatorioAgendamento.tsx";
+import RelatorioVistorias from "./components/RelatorioVistoria.tsx";
+
 const App: React.FC = () => {
     return (
         <Router>
@@ -17,6 +20,18 @@ const App: React.FC = () => {
                     <Route path="imoveis" element={<ImoveisPage />} />
                     <Route path="agenda" element={<AgendamentoPopUp />} />
                     <Route path="registerImoveis" element={<CadastroImovelForm onClose={() => {}} />} />
+
+                    {/* Nova Rota para Relatório de Usuários */}
+                    <Route
+                        path="relatorio-usuarios"
+                        element={
+                            <PrivateRoute> {/* Apenas usuários autenticados */}
+                                <RelatorioUsuarios />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route path="relatorio-agendamentos" element={<RelatorioAgendamentos />} />
+                    <Route path="relatorio-vistorias" element={<RelatorioVistorias />} />
 
                     <Route
                         path="/home"
