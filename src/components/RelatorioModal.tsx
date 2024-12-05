@@ -13,7 +13,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose, onGene
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="relatorio-modal-content" onClick={(e) => e.stopPropagation()}>
                 <h2>Gerar Relatório</h2>
                 <p>Escolha o tipo de relatório para gerar:</p>
                 <Stack direction="column" spacing={2}>

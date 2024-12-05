@@ -45,7 +45,7 @@ const ImoveisPage: React.FC = () => {
             </div>
             {cadastroModal.isOpen && (
                 <div className="modal-overlay" onClick={cadastroModal.closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button onClick={cadastroModal.closeModal} className="btn-close-modal">
                             Fechar
                         </button>
@@ -55,7 +55,7 @@ const ImoveisPage: React.FC = () => {
             )}
             {vistoriaModal.isOpen && (
                 <div className="modal-overlay" onClick={vistoriaModal.closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button onClick={vistoriaModal.closeModal} className="btn-close-modal">
                             Fechar
                         </button>
@@ -75,7 +75,7 @@ const ImoveisPage: React.FC = () => {
 
             {selectedImovel && (
                 <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
                         <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
                     </div>
                 </div>

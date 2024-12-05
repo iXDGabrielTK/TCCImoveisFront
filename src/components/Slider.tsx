@@ -22,12 +22,16 @@ function Slider({ images }: SliderProps) {
         <div className="slider-container">
             <Swiper
                 modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={5}
+                spaceBetween={10}
                 slidesPerView={1}
-                navigation={true}
+                navigation
                 pagination={{ clickable: true }}
-                autoplay={{ delay: 3000 }}
+                autoplay={{ delay: 2000 }}
                 loop={true}
+                style={{
+                    width: "100%", // Ocupa 100% do contêiner
+                    height: "100%", // Adapta a altura ao contêiner
+                }}
             >
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
@@ -35,6 +39,7 @@ function Slider({ images }: SliderProps) {
                     </SwiperSlide>
                 ))}
             </Swiper>
+
         </div>
     );
 }
