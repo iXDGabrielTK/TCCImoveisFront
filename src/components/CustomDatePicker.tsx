@@ -9,8 +9,9 @@ registerLocale('pt-BR', ptBR);
 type CustomDatePickerProps = {
     label?: string;
     errorMessage?: string;
-    holidays?: string[];
+    holidays?: string[]; // Feriados que serão desabilitados
     selected?: Date;
+    excludeDates?: Date[]; // Datas específicas que serão desabilitadas
     onChange: (date: Date | null) => void;
 };
 

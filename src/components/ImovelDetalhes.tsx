@@ -33,6 +33,18 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     const holidays = getHolidays(new Date().getFullYear());
 
     const handleAgendarVisita = async () => {
+
+        console.log("localStorage contents:", localStorage);
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Você não está autenticado. Por favor, faça login.");
+            console.error("Auth token missing in localStorage.");
+            return;
+        }
+
+        console.log("Retrieved token:", token);
+
         const usuarioIdRaw = localStorage.getItem("usuario_Id");
         const usuario_Id = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
 
@@ -42,7 +54,6 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         }
 
         const formattedDate = startDate.toISOString().split("T")[0];
-
         const data = {
             nomeVisitante,
             imovelId: imovel.idImovel,
@@ -52,26 +63,24 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         };
 
         try {
-            const response = await fetch(
-                "http://localhost:8080/agendamentos/agendar",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                }
-            );
+            const response = await fetch("http://localhost:8080/agendamentos/agendar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
 
-            if (response.ok) {
-                alert("Agendamento realizado com sucesso!");
-                setStartDate(null);
-                setNomeVisitante("");
-                setPeriodo("Manhã");
+            if (!response.ok) {
+                const errorData = await response.json();
+                alert(`Erro ao agendar: ${errorData.error || "Erro desconhecido."}`);
             } else {
-                const errorMessage = await response.text();
-                alert(`Erro ao agendar: ${errorMessage}`);
+                alert("Agendamento realizado com sucesso!");
             }
         } catch (error) {
-            alert(`Erro de conexão: ${error}`);
+            console.error("Erro ao conectar:", error);
+            alert("Erro de conexão. Verifique sua rede e tente novamente.");
         }
     };
 

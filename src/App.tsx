@@ -18,12 +18,10 @@ const App: React.FC = () => {
                 <Route path="/" element={<MainLayout />}>
                     <Route path="imoveis" element={<ImoveisPage />} />
                     <Route path="registerImoveis" element={<CadastroImovelForm onClose={() => {}} />} />
-
-                    {/* Nova Rota para Relatório de Usuários */}
                     <Route
                         path="relatorio-usuarios"
                         element={
-                            <PrivateRoute> {/* Apenas usuários autenticados */}
+                            <PrivateRoute>
                                 <RelatorioUsuarios />
                             </PrivateRoute>
                         }

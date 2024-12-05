@@ -18,6 +18,7 @@ function LoginForm() {
 
             // Salva o token e o usuarioId no localStorage
             console.log('Salvando usuarioId no localStorage:', usuario_Id);
+            console.log('Salvando token no localStorage!');
             localStorage.setItem('token', token);
             localStorage.setItem('usuarioId', usuario_Id);
 
