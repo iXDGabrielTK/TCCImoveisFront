@@ -71,15 +71,15 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 <input type="date" value={dataVistoria} onChange={(e) => setDataVistoria(e.target.value)}/>
             </label>
             <label>
-                Rua da Vistoria:
+                Rua:
                 <input type="text" value={rua} onChange={(e) => setRua(e.target.value)}/>
             </label>
             <label>
-                Número da Vistoria:
+                Número:
                 <input type="text" value={numero} onChange={(e) => setNumero(e.target.value)}/>
             </label>
             <label>
-                Bairro da Vistoria:
+                Bairro:
                 <input type="text" value={bairro} onChange={(e) => setBairro(e.target.value)}/>
             </label>
             <button type="submit" className="btn-submit-form" disabled={isPending}>Registrar</button>

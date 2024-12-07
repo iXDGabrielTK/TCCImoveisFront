@@ -4,6 +4,7 @@ import VistoriaForm from '../components/VistoriaForm';
 import ImoveisGrid from '../components/ImoveisGrid';
 import ImovelDetalhes from '../components/ImovelDetalhes';
 import RelatorioModal from '../components/RelatorioModal';
+import EditarVistoriaModal from '../components/EditarVistoriaModal';
 import '../styles/ImoveisPage.css';
 import { Imovel } from '../types/Imovel';
 import useModal from '../hooks/useModal';
@@ -15,8 +16,15 @@ import ReportIcon from '@mui/icons-material/Assessment';
 const ImoveisPage: React.FC = () => {
     const cadastroModal = useModal();
     const vistoriaModal = useModal();
+    const editarVistoriaModal = useModal();
     const relatorioModal = useModal();
     const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null);
+    const [selectedVistoria, setSelectedVistoria] = useState<string | null>(null);
+
+    const handleCloseEditarVistoriaModal = () => {
+        setSelectedVistoria(null); // Reseta a vistoria selecionada
+        editarVistoriaModal.closeModal();
+    };
 
     const handleOpenDetalhesModal = (imovel: Imovel) => {
         setSelectedImovel(imovel);
@@ -24,23 +32,49 @@ const ImoveisPage: React.FC = () => {
 
     const handleGenerateReport = (tipoRelatorio: string) => {
         console.log(`Gerando relatório: ${tipoRelatorio}`);
-        // Lógica para geração de relatórios (chamada à API ou manipulação de dados).
+        // Lógica para geração de relatórios
     };
 
     return (
         <div className="imoveis-page">
             <div className="button-group">
                 <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
-                    <Button variant="contained" color="success" onClick={cadastroModal.openModal} className="btn-cadastrar-imovel" startIcon={<HomeIcon />}>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={cadastroModal.openModal}
+                        className="btn-cadastrar-imovel"
+                        startIcon={<HomeIcon />}
+                    >
                         Cadastrar Novo Imóvel
                     </Button>
-                    <Button variant="contained" color="primary" onClick={vistoriaModal.openModal} className="btn-registrar-vistoria" startIcon={<DescriptionIcon />}>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={vistoriaModal.openModal}
+                        className="btn-registrar-vistoria"
+                        startIcon={<DescriptionIcon />}
+                    >
                         Registrar Vistoria
                     </Button>
-                    <Button variant="contained" color="secondary" onClick={relatorioModal.openModal} className="btn-gerar-relatorio" startIcon={<ReportIcon />}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={editarVistoriaModal.openModal}
+                        className="btn-editar-vistoria"
+                        startIcon={<DescriptionIcon />}
+                    >
+                        Editar Vistoria
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={relatorioModal.openModal}
+                        className="btn-gerar-relatorio"
+                        startIcon={<ReportIcon />}
+                    >
                         Gerar Relatório
                     </Button>
-
                 </Stack>
             </div>
             {cadastroModal.isOpen && (
@@ -63,6 +97,13 @@ const ImoveisPage: React.FC = () => {
                     </div>
                 </div>
             )}
+            {editarVistoriaModal.isOpen && (
+                <EditarVistoriaModal
+                    isOpen={editarVistoriaModal.isOpen}
+                    onClose={handleCloseEditarVistoriaModal}
+                    selectedVistoria={selectedVistoria} // Passando a vistoria selecionada
+                />
+            )}
             {relatorioModal.isOpen && (
                 <RelatorioModal
                     isOpen={relatorioModal.isOpen}
@@ -74,11 +115,9 @@ const ImoveisPage: React.FC = () => {
             <ImoveisGrid onImovelClick={handleOpenDetalhesModal} />
 
             {selectedImovel && (
-                <div className={"casa"}>
-                    <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
-                        </div>
+                <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
                     </div>
                 </div>
             )}

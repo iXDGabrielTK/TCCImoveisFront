@@ -8,7 +8,9 @@ import "jspdf-autotable";
 interface RelatorioModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onGenerate: (tipoRelatorio: string) => void;
 }
+
 
 const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
     const [selectedMonth, setSelectedMonth] = useState<string>("2024-01");
