@@ -8,6 +8,7 @@ interface VistoriaFormProps {
 const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
     const [laudo, setLaudo] = useState('');
     const [dataVistoria, setDataVistoria] = useState('');
+    const [imovelId, setImovelId] = useState(''); // Novo estado para ID do Imóvel
     const [endereco, setEndereco] = useState({
         rua: '',
         numero: '',
@@ -28,10 +29,20 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token'); // Certifique-se de que o token está sendo recuperado
+        if (!token) {
+            alert('Token de autenticação não encontrado. Faça login novamente.');
+            return;
+        }
+
         const data = {
             laudoVistoria: laudo,
-            dataVistoria,
-            endereco,
+            dataVistoria, // Ex.: "2024-12-07"
+            endereco: {
+                rua: endereco.rua,
+                numero: endereco.numero,
+                complemento: endereco.complemento,
+            },
         };
 
         try {
@@ -39,7 +50,13 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
             setIsError(false);
             setIsSuccess(false);
 
-            await api.post('/vistorias', data);
+            await api.post('/vistorias', data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
             setIsSuccess(true);
             onClose(); // Fecha o modal após sucesso
         } catch (error) {
@@ -50,9 +67,22 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
         }
     };
 
+
+
+
     return (
         <form className="form-step" onSubmit={handleSubmit}>
             <h2>Registrar Vistoria</h2>
+            <label>
+                ID do Imóvel:
+                <input
+                    type="text"
+                    value={imovelId}
+                    onChange={(e) => setImovelId(e.target.value)}
+                    placeholder="Digite o ID do imóvel"
+                    required
+                />
+            </label>
             <label>
                 Laudo:
                 <input type="text" value={laudo} onChange={(e) => setLaudo(e.target.value)} />
