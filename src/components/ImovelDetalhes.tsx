@@ -116,8 +116,8 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                             position: "relative",
                             backgroundColor: "#d9d9d9",
                             borderRadius: "20px",
-                            height: "auto",
-                            maxHeight: "600px", // Limita a altura máxima do slider
+                            height: "100%", //Altera o comprimento vertical do slider 744px
+                            maxHeight: "auto", // Limita a altura máxima do slider
                         }}
                     >
                         <Slider images={imageUrls} />
