@@ -74,9 +74,11 @@ const ImoveisPage: React.FC = () => {
             <ImoveisGrid onImovelClick={handleOpenDetalhesModal} />
 
             {selectedImovel && (
-                <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
-                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
+                <div className={"casa"}>
+                    <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
+                        </div>
                     </div>
                 </div>
             )}

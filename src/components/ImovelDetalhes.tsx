@@ -21,11 +21,14 @@ interface ImovelDetalhesProps {
 
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
     const imageUrls = Array.isArray(imovel.fotosImovel)
-        ? imovel.fotosImovel
-        : (imovel.fotosImovel || "")
-            .split(",")
-            .map((url) => url.trim())
-            .filter((url) => url);
+        ? imovel.fotosImovel.flatMap((foto: string) =>
+            foto.includes(",")
+                ? foto.split(",").map((url: string) => url.trim())
+                : [foto]
+        )
+        : [];
+
+
 
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [periodo, setPeriodo] = useState<string>("Manhã");

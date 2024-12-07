@@ -18,6 +18,16 @@
     color: #000;
 }
 
+.casa{
+    display: flex;
+    flex-direction: column;
+    height: 91.4vh; /* VOLTE AQUI DEPOIS */
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f7f6;
+    color: #2b2b2b;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
