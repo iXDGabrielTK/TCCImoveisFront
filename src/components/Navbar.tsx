@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AgendamentosPopUp from "./AgendamentoPopUp";
+import PerfilPopup from "./PerfilPopup.tsx"; // Importação do componente PerfilPopup
 import { logout, getToken } from "../services/auth";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
 import "../styles/Navbar.css";
 
 const Navbar: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [showPopup, setShowPopup] = useState(false);
+    const [showAgendamentoPopup, setShowAgendamentoPopup] = useState(false);
+    const [showPerfilPopup, setShowPerfilPopup] = useState(false); // Estado para controlar o pop-up de perfil
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const navigate = useNavigate();
 
@@ -49,9 +51,13 @@ const Navbar: React.FC = () => {
         }
     };
 
-    const openPopup = () => {
+    const openAgendamentoPopup = () => {
         fetchUserAgendamentos(); // Busca os agendamentos ao abrir o pop-up
-        setShowPopup(true);
+        setShowAgendamentoPopup(true);
+    };
+
+    const openPerfilPopup = () => {
+        setShowPerfilPopup(true); // Abre o pop-up de perfil
     };
 
     return (
@@ -69,22 +75,24 @@ const Navbar: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                <button onClick={openPopup}>
-                                    Agendamentos
-                                </button>
+                                <button onClick={openAgendamentoPopup}>Agendamentos</button>
+                                <button onClick={openPerfilPopup}>Meu Perfil</button> {/* Novo botão */}
                                 <button onClick={handleLogout}>Logout</button>
                             </>
                         )}
                     </div>
                 </div>
             </div>
-            {showPopup && (
+            {showAgendamentoPopup && (
                 <AgendamentosPopUp
                     agendamentos={agendamentos}
-                    onClose={() => setShowPopup(false)}
+                    onClose={() => setShowAgendamentoPopup(false)}
                     onCancel={handleCancel}
                 />
             )}
+            {showPerfilPopup && (
+                <PerfilPopup onClose={() => setShowPerfilPopup(false)} />
+                )}
         </nav>
     );
 };
