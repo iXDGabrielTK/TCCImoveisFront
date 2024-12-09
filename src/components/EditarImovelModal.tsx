@@ -37,7 +37,7 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
     const [statusImovel, setStatusImovel] = useState<boolean>(true);
     const [tamanhoImovel, setTamanhoImovel] = useState<number>(0);
     const [precoImovel, setPrecoImovel] = useState<number>(0);
-    const [imagem, setImagem] = useState('');
+    const [imagem, setImagem] = useState<string[]>([]); // Array de strings
     const [endereco, setEndereco] = useState({
         rua: '',
         numero: '',
@@ -92,9 +92,12 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             setStatusImovel(imovel.statusImovel || false);
             setTamanhoImovel(imovel.tamanhoImovel || 0);
             setPrecoImovel(imovel.precoImovel || 0);
-
-            setImagem(imovel.fotosImovel || "");
-
+            setHistoricoManutencao(imovel.historicoManutencao || "");
+            setImagem(
+                Array.isArray(imovel.fotosImovel)
+                    ? imovel.fotosImovel.map((foto: any) => foto.urlFotoImovel || "") // Extrai apenas as URLs
+                    : []
+            );
             setEndereco({
                 rua: imovel.enderecoImovel?.rua || '',
                 numero: imovel.enderecoImovel?.numero || '',
@@ -104,8 +107,6 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                 estado: imovel.enderecoImovel?.estado || '',
                 cep: imovel.enderecoImovel?.cep || '',
             });
-
-            setHistoricoManutencao(imovel.historicoManutencao || "");
         } catch (error) {
             console.error("Erro ao buscar detalhes do imóvel:", error);
             setErrorMessage("Erro ao carregar os detalhes do imóvel.");
@@ -114,49 +115,46 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
 
     const handleEnderecoChange = (field: keyof typeof endereco, value: string) => {
         setEndereco((prevEndereco) => ({
-            ...prevEndereco,
-            [field]: value,
+            ...prevEndereco, // Mantém os outros campos do endereço
+            [field]: value, // Atualiza apenas o campo alterado
         }));
     };
 
+    const handleImageInputChange = (value: string) => {
+        setImagem(value.split(",").map((url) => url.trim())); // Divide a string e remove espaços extras
+    };
+
+
     const handleEdit = async () => {
-        if (!selectedImovelId || !tipoImovel || !descricaoImovel || !tamanhoImovel || !precoImovel) {
-            setErrorMessage("Todos os campos devem ser preenchidos.");
+        if (!selectedImovelId) {
+            setErrorMessage("Imóvel não selecionado.");
             return;
         }
 
-        const isAddressValid = Object.values(endereco).every((field) => field.trim() !== '');
-        if (!isAddressValid) {
-            setErrorMessage("Todos os campos do endereço devem ser preenchidos.");
-            return;
-        }
+        // Transforma fotos em um array de strings (URLs)
+        const fotosImovelArray = Array.isArray(imagem)
+            ? imagem.map((foto: any) => foto.urlFotoImovel)
+            : [imagem];
+
+        const data = {
+            tipoImovel,
+            descricaoImovel,
+            statusImovel,
+            tamanhoImovel,
+            precoImovel,
+            fotosImovel: fotosImovelArray, // Garantir que é um array de strings
+            enderecoImovel: endereco, // Certifique-se de que este objeto está completo
+            historicoManutencao,
+        };
+
+        console.log("Payload enviado ao backend:", data);
 
         try {
             setIsLoading(true);
             setErrorMessage("");
             setSuccessMessage("");
 
-            console.log("Final Payload Sent to API:", {
-                tipoImovel,
-                descricaoImovel,
-                statusImovel,
-                tamanhoImovel,
-                precoImovel,
-                imagem,
-                endereco,
-                historicoManutencao,
-            });
-
-            await api.put(`/imoveis/${selectedImovelId}`, {
-                tipoImovel,
-                descricaoImovel,
-                statusImovel,
-                tamanhoImovel,
-                precoImovel,
-                imagem,
-                endereco,
-                historicoManutencao,
-            });
+            await api.put(`/imoveis/${selectedImovelId}`, data);
 
             setSuccessMessage("Imóvel atualizado com sucesso!");
             fetchImoveis();
@@ -266,14 +264,6 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                                     onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="imagem">Imagens:</label>
-                                <input
-                                    id="imagem"
-                                    type="text"
-                                    value={imagem}
-                                    onChange={(e) => setImagem(e.target.value)}
-                                    disabled={isLoading}
-                                />
                                 <label htmlFor="historico">Histórico Manutenção:</label>
                                 <input
                                     id="historico"
@@ -281,6 +271,13 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                                     value={historicoManutencao}
                                     onChange={(e) => setHistoricoManutencao(e.target.value)}
                                     disabled={isLoading}
+                                />
+                                <label htmlFor="fotos">Fotos:</label>
+                                <input
+                                    type="text"
+                                    value={imagem.join(", ")} // Converte o array de strings para uma única string separada por vírgulas
+                                    onChange={(e) => handleImageInputChange(e.target.value)} // Atualiza o estado
+                                    style={{width: "100%"}}
                                 />
                             </div>
                             <div className="endereco-imovel">
@@ -313,21 +310,21 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                                     id="bairro"
                                     type="text"
                                     value={endereco.bairro}
-                                    onChange={(e) => setEndereco({...endereco, bairro: e.target.value})}
+                                    onChange={(e) => handleEnderecoChange('bairro', e.target.value)}
                                 />
                                 <label htmlFor="cidade">Cidade:</label>
                                 <input
                                     id="cidade"
                                     type="text"
                                     value={endereco.cidade}
-                                    onChange={(e) => setEndereco({...endereco, cidade: e.target.value})}
+                                    onChange={(e) => handleEnderecoChange('cidade', e.target.value)}
                                 />
                                 <label htmlFor="estado">Estado:</label>
                                 <input
                                     id="estado"
                                     type="text"
                                     value={endereco.estado}
-                                    onChange={(e) => setEndereco({...endereco, estado: e.target.value})}
+                                    onChange={(e) => handleEnderecoChange('estado', e.target.value)}
                                 />
                                 <label htmlFor="cep">CEP:</label>
                                 <input

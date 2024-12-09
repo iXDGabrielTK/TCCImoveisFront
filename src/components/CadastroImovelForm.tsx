@@ -24,8 +24,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         cep: '',
     });
     const [historicoManutencao, setHistoricoManutencao] = useState('');
-    const [funcionarioLogin, setFuncionarioLogin] = useState('');
-
     const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEndereco((prevEndereco) => ({
@@ -46,7 +44,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             urlFoto: imagem,
             enderecoImovel: endereco,
             historicoManutencao,
-            funcionario: { login: funcionarioLogin },
         };
 
         try {
@@ -88,9 +85,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                     </label>
                     <label>Histórico de Manutenção:
                         <textarea value={historicoManutencao} onChange={(e) => setHistoricoManutencao(e.target.value)} />
-                    </label>
-                    <label>Funcionário Responsável (Login):
-                        <input type="text" value={funcionarioLogin} onChange={(e) => setFuncionarioLogin(e.target.value)} />
                     </label>
                     <button type="button" className="btn-next-step" onClick={nextStep} name="nextStepButton" id="nextStepButton">
                         Próximo ➔

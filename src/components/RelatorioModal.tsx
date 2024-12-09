@@ -17,6 +17,7 @@ import "jspdf-autotable";
 interface RelatorioModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onGenerate: (tiporelatorio: string) => void;
 }
 
 interface Imovel {

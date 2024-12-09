@@ -78,6 +78,8 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
             return;
         }
 
+        const formattedDate = new Date(dataVistoria).toISOString().split('T')[0];
+
         try {
             setIsLoading(true);
             setErrorMessage("");
@@ -85,7 +87,7 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
             await api.put(`/vistorias/${selectedVistoria}`, {
                 tipoVistoria,
                 laudoVistoria,
-                dataVistoria,
+                dataVistoria: formattedDate,
             });
             setSuccessMessage("Vistoria editada com sucesso!");
             fetchVistorias();
@@ -96,6 +98,7 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
             setIsLoading(false);
         }
     };
+
 
 
     const handleCancel = async () => {

@@ -60,3 +60,19 @@
 .botao-submit:hover {
     background-color: #218838;
 }
+
+.botao-excluir{
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #8c8c8c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.botao-excluir:hover {
+    background-color: #000000;
+}
