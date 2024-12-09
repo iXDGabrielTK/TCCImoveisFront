@@ -192,12 +192,14 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                         <Typography variant="h6">Relatório de Agendamentos</Typography>
                         <Typography variant="body2">Selecione o mês e o ano:</Typography>
                         <TextField
+                            className={"select-month"}
                             type="month"
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(e.target.value)}
                             fullWidth
                         />
                         <Button
+                            className={"button-meu-group"}
                             variant="contained"
                             color="primary"
                             onClick={gerarRelatorioAgendamentos}
@@ -240,12 +242,14 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                         <Typography variant="h6">Relatório de Usuários</Typography>
                         <Typography variant="body2">Selecione o mês e o ano:</Typography>
                         <TextField
+                            className={"select-month"}
                             type="month"
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(e.target.value)}
                             fullWidth
                         />
                         <Button
+                            className={"button-meu-group"}
                             variant="contained"
                             color="primary"
                             onClick={gerarRelatorioUsuarios}

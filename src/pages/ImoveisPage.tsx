@@ -19,23 +19,11 @@ const ImoveisPage: React.FC = () => {
     const cadastroModal = useModal();
     const vistoriaModal = useModal();
     const editarVistoriaModal = useModal();
-    const editarImovelModal = useModal(); // Modal para editar imóvel
+    const editarImovelModal = useModal();
     const relatorioModal = useModal();
 
     const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null);
 
-    const handleOpenEditarImovelModal = () => {
-        if (!selectedImovel) {
-            alert('Por favor, selecione um imóvel primeiro.');
-            return;
-        }
-        editarImovelModal.openModal();
-    };
-
-    const handleCloseEditarImovelModal = () => {
-        setSelectedImovel(null); // Reseta o imóvel selecionado
-        editarImovelModal.closeModal();
-    };
 
     const handleGenerateReport = (tipoRelatorio: string) => {
         console.log(`Gerando relatório: ${tipoRelatorio}`);

@@ -94,8 +94,10 @@
 }
 
 .button-group {
-    padding-left: 1%;
     display: flex;
-    gap: 10px;
-    margin: 1% 0;
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    align-items: center; /* Mantém os botões alinhados no eixo vertical */
+    margin-top: 20px; /* Adiciona um espaço abaixo da barra de navegação */
+    gap: 10px; /* Espaçamento entre os botões */
+    padding: 0;
 }
