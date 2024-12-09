@@ -23,15 +23,13 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
         const fetchUser = async () => {
             setLoading(true);
             try {
-                // Obtém o ID do usuário do localStorage
                 const userId = localStorage.getItem("usuarioId");
                 if (!userId) {
                     throw new Error("ID do usuário não encontrado no localStorage.");
                 }
 
-                // Faz a requisição ao back-end para buscar os dados do usuário pelo ID
                 const response = await api.get(`/usuarios/${userId}`);
-                setUser(response.data); // Define os dados do usuário no estado
+                setUser(response.data);
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário:", error);
                 alert("Erro ao carregar dados do usuário. Por favor, tente novamente.");
@@ -52,14 +50,12 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
         try {
             if (user) {
                 const payload = {
-                    tipo: user.tipo_usuario || "visitante", // Adicione o tipo ao payload
+                    tipo: user.tipo_usuario || "visitante",
                     nome: user.nome,
                     telefone: user.telefone,
                     login: user.login,
-                    senha: user.senha, // Apenas envie a senha se ela foi alterada
+                    senha: user.senha,
                 };
-
-                console.log("Payload enviado:", payload);
 
                 const response = await api.put(`/usuarios/${user.id}`, payload);
                 console.log("Alterações salvas com sucesso:", response.data);
@@ -68,6 +64,23 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
         } catch (error) {
             console.error("Erro ao salvar alterações:", error);
             alert("Erro ao salvar alterações. Por favor, tente novamente.");
+        }
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm("Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.")) {
+            try {
+                if (user) {
+                    await api.delete(`/usuarios/${user.id}`);
+                    alert("Conta excluída com sucesso.");
+                    localStorage.removeItem("usuarioId"); // Remove o ID do usuário do localStorage
+                    onClose(); // Fecha o popup
+                    // Opcional: Redirecionar o usuário para a página de login
+                }
+            } catch (error) {
+                console.error("Erro ao excluir conta:", error);
+                alert("Erro ao excluir conta. Por favor, tente novamente.");
+            }
         }
     };
 
@@ -84,27 +97,27 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                             Nome:
                             <input
                                 type="text"
-                                placeholder={user.nome} // Placeholder com valor inicial
-                                value={user.nome} // Mostra o valor atual
-                                onChange={(e) => handleInputChange(e, "nome")} // Atualiza o estado ao digitar
+                                placeholder={user.nome}
+                                value={user.nome}
+                                onChange={(e) => handleInputChange(e, "nome")}
                             />
                         </label>
                         <label>
                             Telefone:
                             <input
                                 type="text"
-                                placeholder={user.telefone} // Placeholder com valor inicial
-                                value={user.telefone} // Mostra o valor atual
-                                onChange={(e) => handleInputChange(e, "telefone")} // Atualiza o estado ao digitar
+                                placeholder={user.telefone}
+                                value={user.telefone}
+                                onChange={(e) => handleInputChange(e, "telefone")}
                             />
                         </label>
                         <label>
                             Login:
                             <input
                                 type="text"
-                                placeholder={user.login} // Placeholder com valor inicial
-                                value={user.login} // Mostra o valor atual
-                                onChange={(e) => handleInputChange(e, "login")} // Atualiza o estado ao digitar
+                                placeholder={user.login}
+                                value={user.login}
+                                onChange={(e) => handleInputChange(e, "login")}
                             />
                         </label>
                         <label>
@@ -112,11 +125,12 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                             <input
                                 type="password"
                                 placeholder="Digite uma nova senha (opcional)"
-                                value={user.senha} // Senha será alterada apenas se o campo for preenchido
-                                onChange={(e) => handleInputChange(e, "senha")} // Atualiza o estado ao digitar
+                                value={user.senha}
+                                onChange={(e) => handleInputChange(e, "senha")}
                             />
                         </label>
-                        <button className='botao-submit' onClick={handleSave}>Salvar Alterações</button>
+                        <button className="botao-submit" onClick={handleSave}>Salvar Alterações</button>
+                        <button className="botao-excluir" onClick={handleDelete}>Excluir Conta</button>
                     </>
                 ) : (
                     <p>Erro ao carregar dados do usuário.</p>
