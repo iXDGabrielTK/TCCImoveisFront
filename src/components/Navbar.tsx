@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Importar useLocation
 import AgendamentosPopUp from "./AgendamentoPopUp";
 import PerfilPopup from "./PerfilPopup.tsx"; // Importação do componente PerfilPopup
 import { logout, getToken } from "../services/auth";
@@ -8,14 +8,20 @@ import "../styles/Navbar.css";
 
 const Navbar: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isFuncionario, setIsFuncionario] = useState<boolean>(false);
     const [showAgendamentoPopup, setShowAgendamentoPopup] = useState(false);
-    const [showPerfilPopup, setShowPerfilPopup] = useState(false); // Estado para controlar o pop-up de perfil
+    const [showPerfilPopup, setShowPerfilPopup] = useState(false);
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const navigate = useNavigate();
+    const location = useLocation(); // Obter a localização atual
 
     const checkLoginStatus = () => {
         const token = getToken();
         setIsLoggedIn(!!token);
+
+        // Verifica o tipo do usuário
+        const tipoUsuario = localStorage.getItem("tipoUsuario");
+        setIsFuncionario(tipoUsuario === "funcionario");
     };
 
     useEffect(() => {
@@ -60,9 +66,16 @@ const Navbar: React.FC = () => {
         setShowPerfilPopup(true); // Abre o pop-up de perfil
     };
 
+    const redirectToHome = () => {
+        navigate("/home"); // Redireciona para a página inicial
+    };
+
+
     return (
         <nav className="navbar">
-            <span className="company-name">Bemco</span>
+            <span className="company-name" onClick={redirectToHome} style={{ cursor: "pointer" }}>
+                Bemco
+            </span>
             <div className="logo-image"></div>
             <div className="menu-button">
                 <div className="dropdown">
@@ -76,7 +89,10 @@ const Navbar: React.FC = () => {
                         ) : (
                             <>
                                 <button onClick={openAgendamentoPopup}>Agendamentos</button>
-                                <button onClick={openPerfilPopup}>Meu Perfil</button> {/* Novo botão */}
+                                <button onClick={openPerfilPopup}>Meu Perfil</button>
+                                {location.pathname === "/home" && isFuncionario && ( // Exibir apenas na página /home e para funcionários
+                                    <Link to="/imoveis">Imóveis</Link>
+                                )}
                                 <button onClick={handleLogout}>Logout</button>
                             </>
                         )}
@@ -92,7 +108,7 @@ const Navbar: React.FC = () => {
             )}
             {showPerfilPopup && (
                 <PerfilPopup onClose={() => setShowPerfilPopup(false)} />
-                )}
+            )}
         </nav>
     );
 };

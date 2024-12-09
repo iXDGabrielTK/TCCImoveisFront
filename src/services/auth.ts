@@ -1,20 +1,24 @@
-// src/services/auth.ts
 import api from './api';
 
 interface LoginResponse {
     token: string;
-    usuario_Id: string; // Assume que a resposta inclui o ID do usuário
+    usuario_Id: string; // ID do usuário retornado pelo back-end
+    tipo: string; // Tipo do usuário (funcionario ou visitante)
 }
 
 export const login = async (login: string, senha: string): Promise<LoginResponse> => {
     try {
         const response = await api.post<LoginResponse>('/usuarios/login', { login, senha });
 
-        const { token, usuario_Id } = response.data;
+        const { token, usuario_Id, tipo } = response.data;
 
         console.log("Salvando usuarioId no localStorage:", usuario_Id);
+        console.log("Salvando tipoUsuario no localStorage:", tipo);
+
+        // Salva as informações no localStorage
         localStorage.setItem('token', token);
-        localStorage.setItem('usuario_Id', usuario_Id);
+        localStorage.setItem('usuarioId', usuario_Id);
+        localStorage.setItem('tipoUsuario', tipo);
 
         return response.data;
     } catch (error: unknown) {
@@ -30,7 +34,8 @@ export const login = async (login: string, senha: string): Promise<LoginResponse
 
 export const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('usuario_Id'); // Remove também o usuarioId
+    localStorage.removeItem('usuarioId');
+    localStorage.removeItem('tipoUsuario');
 };
 
 export const getToken = () => {
@@ -38,5 +43,9 @@ export const getToken = () => {
 };
 
 export const getUsuarioId = () => {
-    return localStorage.getItem('usuario_Id'); // Nova função para recuperar o usuarioId
+    return localStorage.getItem('usuarioId'); // Recupera o ID do usuário do localStorage
+};
+
+export const getTipoUsuario = () => {
+    return localStorage.getItem('tipoUsuario'); // Recupera o tipo do usuário do localStorage
 };

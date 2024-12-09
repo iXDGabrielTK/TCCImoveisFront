@@ -68,18 +68,18 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             doc.text(`Relatório de Vistorias - Imóvel ${selectedImovel}`, 10, 10);
 
             const colunas = [
-                "ID da Vistoria",
-                "ID do Imóvel",
-                "Nome do Imóvel",
-                "Data da Vistoria",
-                "Detalhes",
+                { content: "ID da Vistoria", styles: { halign: "right" } },
+                { content: "ID do Imóvel", styles: { halign: "right" } },
+                { content: "Nome do Imóvel", styles: { halign: "left" } },
+                { content: "Data da Vistoria", styles: { halign: "left" } },
+                { content: "Detalhes", styles: { halign: "left" } },
             ];
             const linhas = dados.map((item: any) => [
-                item.idVistoria,
-                item.idImovel,
-                item.descricaoImovel,
-                item.dataVistoria,
-                item.laudoVistoria,
+                { content: item.idVistoria ?? "N/A", styles: { halign: "right" } },
+                { content: item.idImovel ?? "N/A", styles: { halign: "right" } },
+                { content: item.descricaoImovel ?? "N/A", styles: { halign: "left" } },
+                { content: item.dataVistoria ?? "N/A", styles: { halign: "left" } },
+                { content: item.laudoVistoria ?? "N/A", styles: { halign: "left" } },
             ]);
 
             doc.autoTable({ startY: 20, head: [colunas], body: linhas });
@@ -109,11 +109,15 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             const doc = new jsPDF();
             doc.text(`Relatório de Agendamentos - ${selectedMonth}`, 10, 10);
 
-            const colunas = ["ID do Imóvel", "Nome do Imóvel", "Quantidade de Agendamentos"];
+            const colunas = [
+                { content: "ID do Imóvel", styles: { halign: "right" } },
+                { content: "Nome do Imóvel", styles: { halign: "left" } },
+                { content: "Quantidade de Agendamentos", styles: { halign: "right" } },
+            ];
             const linhas = dados.map((item: any) => [
-                item.idImovel,
-                item.descricaoImovel,
-                item.quantidadeAgendamentos,
+                { content: item.idImovel ?? "N/A", styles: { halign: "right" } },
+                { content: item.descricaoImovel ?? "N/A", styles: { halign: "left" } },
+                { content: item.quantidadeAgendamentos ?? 0, styles: { halign: "right" } },
             ]);
 
             doc.autoTable({ startY: 20, head: [colunas], body: linhas });
@@ -150,11 +154,15 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             const doc = new jsPDF();
             doc.text(`Relatório de Usuários - ${selectedMonth}`, 10, 10);
 
-            const colunas = ["ID do Usuário", "Nome do Usuário", "Quantidade de Acessos"];
+            const colunas = [
+                { content: "ID do Usuário", styles: { halign: "right" } },
+                { content: "Nome do Usuário", styles: { halign: "left" } },
+                { content: "Quantidade de Acessos", styles: { halign: "right" } },
+            ];
             const linhas = dados.map((item: any) => [
-                item.idUsuario,
-                item.nomeUsuario,
-                item.quantidadeAcessos,
+                { content: item.idUsuario ?? "N/A", styles: { halign: "right" } },
+                { content: item.nomeUsuario ?? "N/A", styles: { halign: "left" } },
+                { content: item.quantidadeAcessos ?? 0, styles: { halign: "right" } },
             ]);
 
             doc.autoTable({ startY: 20, head: [colunas], body: linhas });

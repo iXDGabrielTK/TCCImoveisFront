@@ -14,13 +14,15 @@ function LoginForm() {
         e.preventDefault();
         try {
             // Faz o login e obtém os dados retornados
-            const { token, usuario_Id } = await loginService(login, senha);
+            const { token, usuario_Id, tipo } = await loginService(login, senha);
 
-            // Salva o token e o usuarioId no localStorage
+            // Salva os dados no localStorage
             console.log('Salvando usuarioId no localStorage:', usuario_Id);
-            console.log('Salvando token no localStorage!');
             localStorage.setItem('token', token);
+            console.log('Salvando token no localStorage!');
             localStorage.setItem('usuarioId', usuario_Id);
+            console.log('Salvando tipoUsuario no localStorage:', tipo);
+            localStorage.setItem('tipoUsuario', tipo);
 
             // Redireciona para a página inicial
             navigate('/home');
@@ -29,6 +31,8 @@ function LoginForm() {
             setError('Credenciais inválidas');
         }
     }
+
+
 
     return (
         <div className="login-page">

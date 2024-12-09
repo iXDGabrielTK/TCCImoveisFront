@@ -7,9 +7,7 @@ import CadastroImovelForm from './components/CadastroImovelForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from "./components/PrivateRoute.tsx";
-import RelatorioUsuarios from "./components/RelatorioUsuarios";
-import RelatorioAgendamentos from "./components/RelatorioAgendamento.tsx";
-import RelatorioVistorias from "./components/RelatorioVistoria.tsx";
+
 
 const App: React.FC = () => {
     return (
@@ -18,16 +16,6 @@ const App: React.FC = () => {
                 <Route path="/" element={<MainLayout />}>
                     <Route path="imoveis" element={<ImoveisPage />} />
                     <Route path="registerImoveis" element={<CadastroImovelForm onClose={() => {}} />} />
-                    <Route
-                        path="relatorio-usuarios"
-                        element={
-                            <PrivateRoute>
-                                <RelatorioUsuarios />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route path="relatorio-agendamentos" element={<RelatorioAgendamentos />} />
-                    <Route path="relatorio-vistorias" element={<RelatorioVistorias />} />
 
                     <Route
                         path="/home"

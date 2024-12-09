@@ -23,17 +23,32 @@ const RelatorioAgendamentos: React.FC = () => {
             }
 
             const doc = new jsPDF();
-            doc.text("Relatório de Agendamentos - 2024-11", 10, 10);
+            console.log("Gerando novo relatório...");
+            doc.text("pinto cu lixo", 10, 10);
+
 
             const colunas = ["ID do Imóvel", "Nome do Imóvel", "Quantidade de Agendamentos"];
             const linhas = dados.map((item) => [
-                item.idImovel,
-                item.nomeImovel,
-                item.quantidadeAgendamentos,
+                { content: item.idImovel.toString(), styles: { halign: "right" } },
+                { content: item.nomeImovel, styles: { halign: "left" } },
+                { content: item.quantidadeAgendamentos.toString(), styles: { halign: "right" } },
             ]);
 
-            doc.autoTable({ startY: 20, head: [colunas], body: linhas });
-            doc.save("relatorio-agendamentos-2024-11.pdf");
+            // Capturando as informações da tabela
+            const table = doc.autoTable({
+                startY: 20,
+                head: [colunas],
+                body: linhas,
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            });
+
+            // Adicionando resumo após a tabela
+            const totalAgendamentos = dados.reduce((acc, item) => acc + item.quantidadeAgendamentos, 0);
+            const finalY = (table as any).finalY; // Captura da posição final da tabela
+            doc.text(`Total de Agendamentos no mês 2024-12: ${totalAgendamentos}`, 10, finalY + 10);
+
+            doc.save("relatorio-agendamentos-2024-12.pdf");
         } catch (error) {
             console.error("Erro ao gerar o relatório:", error);
         }
