@@ -52,7 +52,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
         try {
             if (user) {
                 const payload = {
-                    tipo: user.tipo || "visitante", // Adicione o tipo ao payload
+                    tipo: user.tipo_usuario || "visitante", // Adicione o tipo ao payload
                     nome: user.nome,
                     telefone: user.telefone,
                     login: user.login,
@@ -71,16 +71,10 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
         }
     };
 
-
-
-
-
     return (
         <div className="perfil-popup">
             <div className="perfil-popup-content">
-                <button className="close-button" onClick={onClose}>
-                    X
-                </button>
+                <button onClick={onClose} className="close-button">Fechar</button>
                 {loading ? (
                     <p>Carregando...</p>
                 ) : user ? (
@@ -122,7 +116,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                                 onChange={(e) => handleInputChange(e, "senha")} // Atualiza o estado ao digitar
                             />
                         </label>
-                        <button onClick={handleSave}>Salvar Alterações</button>
+                        <button className='botao-submit' onClick={handleSave}>Salvar Alterações</button>
                     </>
                 ) : (
                     <p>Erro ao carregar dados do usuário.</p>

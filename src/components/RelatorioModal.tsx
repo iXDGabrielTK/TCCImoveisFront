@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+    Button,
+    Stack,
+    MenuItem,
+    Select,
+    Typography,
+    TextField,
+    FormControl,
+    InputLabel,
+} from "@mui/material";
 import "../styles/RelatorioModal.css";
-import { Button, Stack, MenuItem, Select, Typography, TextField } from "@mui/material";
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -8,17 +17,78 @@ import "jspdf-autotable";
 interface RelatorioModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onGenerate: (tipoRelatorio: string) => void;
 }
 
+interface Imovel {
+    idImovel: number;
+    descricaoImovel: string;
+}
 
 const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
     const [selectedMonth, setSelectedMonth] = useState<string>("2024-01");
-    const [selectedImovel, setSelectedImovel] = useState<string>("1");
+    const [imoveis, setImoveis] = useState<Imovel[]>([]);
+    const [selectedImovel, setSelectedImovel] = useState<number | null>(null);
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (isOpen) {
+            fetchImoveis();
+        }
+    }, [isOpen]);
 
-    // Função para gerar relatório de agendamentos
+    const fetchImoveis = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/imoveis");
+            setImoveis(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar imóveis:", error);
+        }
+    };
+
+    const gerarRelatorioVistorias = async () => {
+        if (!selectedImovel) {
+            alert("Selecione um imóvel.");
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/relatorios/vistorias`,
+                {
+                    params: { idImovel: selectedImovel },
+                }
+            );
+            const dados = response.data;
+
+            if (dados.length === 0) {
+                alert("Nenhum dado encontrado para o imóvel selecionado.");
+                return;
+            }
+
+            const doc = new jsPDF();
+            doc.text(`Relatório de Vistorias - Imóvel ${selectedImovel}`, 10, 10);
+
+            const colunas = [
+                "ID da Vistoria",
+                "ID do Imóvel",
+                "Nome do Imóvel",
+                "Data da Vistoria",
+                "Detalhes",
+            ];
+            const linhas = dados.map((item: any) => [
+                item.idVistoria,
+                item.idImovel,
+                item.descricaoImovel,
+                item.dataVistoria,
+                item.laudoVistoria,
+            ]);
+
+            doc.autoTable({ startY: 20, head: [colunas], body: linhas });
+            doc.save(`relatorio-vistorias-imovel-${selectedImovel}.pdf`);
+        } catch (error) {
+            console.error("Erro ao gerar o relatório de vistorias:", error);
+        }
+    };
+
     const gerarRelatorioAgendamentos = async () => {
         try {
             const response = await axios.get(
@@ -60,39 +130,6 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
-    // Função para gerar relatório de vistorias
-    const gerarRelatorioVistorias = async () => {
-        try {
-            const response = await axios.get(
-                `http://localhost:8080/relatorios/vistorias?idImovel=${selectedImovel}`
-            );
-            const dados = response.data;
-
-            if (dados.length === 0) {
-                alert("Nenhum dado encontrado para o imóvel solicitado.");
-                return;
-            }
-
-            const doc = new jsPDF();
-            doc.text(`Relatório de Vistorias - Imóvel ID ${selectedImovel}`, 10, 10);
-
-            const colunas = ["ID da Vistoria", "ID do Imóvel", "Nome do Imóvel", "Data da Vistoria", "Detalhes"];
-            const linhas = dados.map((item: any) => [
-                item.idVistoria,
-                item.idImovel,
-                item.descricaoImovel,
-                item.dataVistoria,
-                item.laudoVistoria,
-            ]);
-
-            doc.autoTable({ startY: 20, head: [colunas], body: linhas });
-            doc.save(`relatorio-vistorias-imovel-${selectedImovel}.pdf`);
-        } catch (error) {
-            console.error("Erro ao gerar o relatório de vistorias:", error);
-        }
-    };
-
-    // Função para gerar relatório de usuários
     const gerarRelatorioUsuarios = async () => {
         try {
             const response = await axios.get(
@@ -134,6 +171,8 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
+    if (!isOpen) return null;
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="relatorio-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -163,15 +202,21 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                     {/* Relatório de Vistorias */}
                     <div>
                         <Typography variant="h6">Relatório de Vistorias</Typography>
-                        <Typography variant="body2">Selecione o ID do Imóvel:</Typography>
-                        <Select
-                            value={selectedImovel}
-                            onChange={(e) => setSelectedImovel(e.target.value)}
-                            fullWidth
-                        >
-                            <MenuItem value="1">Imóvel 1</MenuItem>
-                            <MenuItem value="2">Imóvel 2</MenuItem>
-                        </Select>
+                        <Typography variant="body2">Selecione um imóvel:</Typography>
+                        <FormControl fullWidth>
+                            <InputLabel id="imovel-select-label">Imóvel</InputLabel>
+                            <Select
+                                labelId="imovel-select-label"
+                                value={selectedImovel || ""}
+                                onChange={(e) => setSelectedImovel(Number(e.target.value))}
+                            >
+                                {imoveis.map((imovel) => (
+                                    <MenuItem key={imovel.idImovel} value={imovel.idImovel}>
+                                        {imovel.descricaoImovel}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button
                             variant="contained"
                             color="primary"
@@ -205,7 +250,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
 
                 <Button
                     variant="outlined"
-                    color="secondary"
+                    color="success"
                     onClick={onClose}
                     style={{ marginTop: "20px" }}
                 >

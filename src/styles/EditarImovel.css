@@ -18,37 +18,39 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 500px;
+    width: 80%; /* Reduz a largura geral */
+    max-width: 700px; /* Limita a largura máxima */
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
+    overflow-y: auto; /* Permite rolagem se necessário */
+    max-height: 90vh; /* Evita que ultrapasse a altura da tela */
 }
 
-/* Títulos do modal */
+
+/* Ajusta os títulos */
 .modal h2 {
-    margin: 0;
+    margin: 0 0 7px;
     font-size: 1.5rem;
     color: #333;
     text-align: center;
 }
 
-/* Labels */
+/* Reduz o espaçamento geral dos inputs */
 label {
     display: block;
-    margin-top: 15px;
-    font-size: 1rem;
+    margin-top: 10px; /* Menor espaço entre os campos */
+    font-size: 0.9rem; /* Fonte ligeiramente menor */
     color: #555;
 }
 
-/* Inputs */
 input,
 select {
     width: 100%;
-    padding: 10px;
+    padding: 8px; /* Reduz o preenchimento interno */
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Fonte menor */
 }
 
 /* Botões do modal */
@@ -92,6 +94,66 @@ select {
 
 .modal-actions button:last-child:hover {
     background: #565e64;
+}
+
+/* Espaçamento reduzido entre colunas */
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* Menor espaçamento entre as colunas */
+    margin-top: 10px;
+}
+
+/* Estilo das seções do formulário */
+.dados-imovel, .endereco-imovel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botões de ação */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.salvar {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Espaçamento reduzido entre colunas */
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* Menor espaçamento entre as colunas */
+    margin-top: 10px;
+}
+
+/* Ajustes para dispositivos menores */
+@media (max-width: 768px) {
+    .modal {
+        width: 95%; /* Ajusta para telas menores */
+        max-width: 95%; /* Evita bordas grandes */
+    }
+
+    .form-container {
+        grid-template-columns: 1fr; /* Torna as colunas empilhadas */
+        gap: 20px;
+    }
+}
+.cancelar {
+    background-color: #ccc;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 /* Animação de entrada */

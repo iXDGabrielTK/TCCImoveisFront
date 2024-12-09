@@ -45,38 +45,18 @@
     border-color: #0078d4; /* Cor do foco no input */
 }
 
-.perfil-popup-content button {
+.botao-submit{
+    width: 100%;
     padding: 10px;
-    background: #0078d4; /* Cor principal do site */
+    font-size: 1rem;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s;
-}
-
-.perfil-popup-content button:hover {
-    background: #005bb5; /* Tom mais escuro no hover */
-}
-
-/* Botão de fechar */
-.close-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #ff4d4d;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 10%;
-    font-size: 18px;
     font-weight: bold;
-    cursor: pointer;
-    z-index: 10;
-    transition: transform 0.2s, background-color 0.3s;
 }
 
-.close-button:hover {
-    background: #d62828; /* Tom mais escuro no hover */
+.botao-submit:hover {
+    background-color: #218838;
 }
