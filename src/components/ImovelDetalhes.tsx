@@ -28,15 +28,12 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         )
         : [];
 
-
-
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [periodo, setPeriodo] = useState<string>("Manhã");
     const [nomeVisitante, setNomeVisitante] = useState<string>("");
     const holidays = getHolidays(new Date().getFullYear());
 
     const handleAgendarVisita = async () => {
-
         console.log("localStorage contents:", localStorage);
 
         const token = localStorage.getItem("token");
@@ -48,8 +45,14 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
 
         console.log("Retrieved token:", token);
 
-        const usuarioIdRaw = localStorage.getItem("usuario_Id");
-        const usuario_Id = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
+        // Corrigir aqui para usar apenas "usuarioId"
+        const usuarioIdRaw = localStorage.getItem("usuarioId");
+        const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
+
+        if (!usuarioId) {
+            alert("ID do usuário não encontrado. Por favor, faça login novamente.");
+            return;
+        }
 
         if (!startDate || !nomeVisitante.trim()) {
             alert("Por favor, selecione uma data e insira seu nome.");
@@ -62,10 +65,11 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
             imovelId: imovel.idImovel,
             dataAgendamento: formattedDate,
             horarioMarcado: periodo === "Tarde",
-            usuario_Id,
+            usuarioId,
         };
 
         try {
+            console.log("Data to send:", data);
             const response = await fetch("http://localhost:8080/agendamentos/agendar", {
                 method: "POST",
                 headers: {
@@ -86,6 +90,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
             alert("Erro de conexão. Verifique sua rede e tente novamente.");
         }
     };
+
 
     return (
         <Box

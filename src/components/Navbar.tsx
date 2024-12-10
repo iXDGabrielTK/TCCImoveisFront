@@ -30,8 +30,8 @@ const Navbar: React.FC = () => {
 
     const fetchUserAgendamentos = async () => {
         try {
-            const usuarioId = 1; // Substitua pelo ID real do usuário logado
-            const data = await fetchAgendamentos(usuarioId);
+            const usuarioId = localStorage.getItem('usuarioId');
+            const data = await fetchAgendamentos(usuarioId ? Number(usuarioId) : 0);
             setAgendamentos(data);
         } catch (error) {
             console.error("Erro ao buscar agendamentos:", error);
