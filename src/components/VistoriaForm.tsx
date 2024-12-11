@@ -7,8 +7,8 @@ interface VistoriaFormProps {
 
 const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
     const [laudo, setLaudo] = useState('');
+    const [tipo, setTipo] = useState('');
     const [dataVistoria, setDataVistoria] = useState('');
-    const [imagem, setImagem] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -26,10 +26,13 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
             return;
         }
 
+        const usuarioId = localStorage.getItem('usuarioId'); // Recupera o ID do usuário
+
         const data = {
             laudoVistoria: laudo,
+            tipoVistoria: tipo,
             dataVistoria,
-            fotosVistoria: [imagem],
+            usuarioId,
             rua,
             numero,
             bairro,
@@ -63,8 +66,9 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 Laudo:
                 <input type="text" value={laudo} onChange={(e) => setLaudo(e.target.value)}/>
             </label>
-            <label>URL da Imagem:
-                <input type="text" value={imagem} onChange={(e) => setImagem(e.target.value)}/>
+            <label>
+                Tipo:
+                <input type="text" value={tipo} onChange={(e) => setTipo(e.target.value)}/>
             </label>
             <label>
                 Data:

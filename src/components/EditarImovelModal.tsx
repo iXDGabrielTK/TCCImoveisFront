@@ -94,8 +94,11 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             setPrecoImovel(imovel.precoImovel || 0);
             setHistoricoManutencao(imovel.historicoManutencao || "");
             setImagem(
-                Array.isArray(imovel.fotosImovel)
-                    ? imovel.fotosImovel.map((foto: any) => foto.urlFotoImovel || "") // Extrai apenas as URLs
+                Array.isArray(imovel.fotosImovel) // Certifica-se de que é um array
+                    ? imovel.fotosImovel.map((foto: string | { urlFotoImovel: string }) => {
+                        if (typeof foto === 'string') return foto; // Caso seja string direta
+                        return foto.urlFotoImovel || ""; // Caso seja objeto, extraia a URL
+                    })
                     : []
             );
             setEndereco({
@@ -121,7 +124,11 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
     };
 
     const handleImageInputChange = (value: string) => {
-        setImagem(value.split(",").map((url) => url.trim())); // Divide a string e remove espaços extras
+        const filteredImages = value
+            .split(",") // Divide o input por vírgulas
+            .map((url) => url.trim()) // Remove espaços ao redor
+            .filter((url) => url !== "" && url.startsWith("http")); // Filtra entradas inválidas
+        setImagem(filteredImages);
     };
 
 
@@ -131,10 +138,13 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             return;
         }
 
-        // Transforma fotos em um array de strings (URLs)
-        const fotosImovelArray = Array.isArray(imagem)
-            ? imagem.map((foto: any) => foto.urlFotoImovel)
-            : [imagem];
+        // Remove URLs inválidas
+        const fotosImovelArray = imagem.filter((url) => url && url.trim() !== "" && url.startsWith("http"));
+
+        if (fotosImovelArray.length === 0) {
+            setErrorMessage("Adicione pelo menos uma URL válida de imagem.");
+            return;
+        }
 
         const data = {
             tipoImovel,
@@ -142,12 +152,12 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             statusImovel,
             tamanhoImovel,
             precoImovel,
-            fotosImovel: fotosImovelArray, // Garantir que é um array de strings
-            enderecoImovel: endereco, // Certifique-se de que este objeto está completo
+            fotosImovel: fotosImovelArray,
+            enderecoImovel: endereco,
             historicoManutencao,
         };
 
-        console.log("Payload enviado ao backend:", data);
+        console.log("Payload enviado:", data);
 
         try {
             setIsLoading(true);
@@ -165,6 +175,8 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             setIsLoading(false);
         }
     };
+
+
 
     const handleCancel = async () => {
         if (!selectedImovelId) {
