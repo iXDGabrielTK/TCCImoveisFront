@@ -1,13 +1,13 @@
 .slider-container {
     width: 100%;
-    height: 100%; /* Garante que o slider ocupe toda a altura do espaço disponível */
-    aspect-ratio: 4 / 2.5; /* Mantém a proporção, mas pode ser ajustada conforme necessário */
+    height: 100%;
+    aspect-ratio: 4 / 2.5;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
-    display: flex; /* Garante alinhamento dos elementos internos */
-    align-items: center; /* Centraliza verticalmente */
-    justify-content: center; /* Centraliza horizontalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .img-slider {
@@ -22,7 +22,7 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    aspect-ratio: 4 / 2.5; /* Mantém a proporção */
+    aspect-ratio: 4 / 2.5;
     background-color: #f8f8f8;
     border: 1px dashed #ccc;
     color: #555;
@@ -32,25 +32,25 @@
 
 .swiper-button-prev,
 .swiper-button-next {
-    top: 50%; /* Centraliza verticalmente */
+    top: 50%;
     transform: translateY(-50%);
-    color: #fff; /* Melhora contraste */
-    z-index: 10; /* Mantém os botões acima do slider */
+    color: #fff;
+    z-index: 10;
     opacity: 0.8;
 }
 
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-    opacity: 1; /* Aumenta a visibilidade ao passar o mouse */
+    opacity: 1;
 }
 
 .swiper-pagination-bullet {
-    background-color: #6a0dad; /* Cor personalizada para as bolinhas */
+    background-color: #6a0dad;
     opacity: 0.7;
 }
 
 .swiper-pagination-bullet-active {
-    background-color: #1bb400; /* Cor quando ativa */
+    background-color: #1bb400;
     opacity: 1;
 }
 

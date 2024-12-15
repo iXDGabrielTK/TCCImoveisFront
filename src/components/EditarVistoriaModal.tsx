@@ -61,7 +61,6 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
             const response = await api.get(`/vistorias/${vistoriaId}`);
             const vistoria = response.data;
 
-            // Atualiza os estados com os detalhes da vistoria
             setTipoVistoria(vistoria.tipoVistoria);
             setLaudoVistoria(vistoria.laudoVistoria);
             setDataVistoria(vistoria.dataVistoria);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Importar useLocation
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AgendamentosPopUp from "./AgendamentoPopUp";
-import PerfilPopup from "./PerfilPopup.tsx"; // Importação do componente PerfilPopup
+import PerfilPopup from "./PerfilPopup.tsx";
 import { logout, getToken } from "../services/auth";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
 import "../styles/Navbar.css";
@@ -14,13 +14,12 @@ const Navbar: React.FC = () => {
     const [showPerfilPopup, setShowPerfilPopup] = useState(false);
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const navigate = useNavigate();
-    const location = useLocation(); // Obter a localização atual
+    const location = useLocation();
 
     const checkLoginStatus = () => {
         const token = getToken();
         setIsLoggedIn(!!token);
 
-        // Verifica o tipo do usuário
         const tipoUsuario = localStorage.getItem("tipoUsuario");
         setIsFuncionario(tipoUsuario === "funcionario");
     };
@@ -47,7 +46,7 @@ const Navbar: React.FC = () => {
 
     const handleCancel = async (id: number) => {
         try {
-            await cancelarAgendamento(id); // Cancela no back-end
+            await cancelarAgendamento(id);
             setAgendamentos((prev) =>
                 prev.map((agendamento) =>
                     agendamento.id === id ? { ...agendamento, cancelado: true } : agendamento
@@ -59,16 +58,16 @@ const Navbar: React.FC = () => {
     };
 
     const openAgendamentoPopup = () => {
-        fetchUserAgendamentos(); // Busca os agendamentos ao abrir o pop-up
+        fetchUserAgendamentos();
         setShowAgendamentoPopup(true);
     };
 
     const openPerfilPopup = () => {
-        setShowPerfilPopup(true); // Abre o pop-up de perfil
+        setShowPerfilPopup(true);
     };
 
     const redirectToHome = () => {
-        navigate("/home"); // Redireciona para a página inicial
+        navigate("/home");
     };
 
 
@@ -93,7 +92,7 @@ const Navbar: React.FC = () => {
                             <>
                                 <button onClick={openAgendamentoPopup}>Agendamentos</button>
                                 <button onClick={openPerfilPopup}>Meu Perfil</button>
-                                {location.pathname === "/home" && isFuncionario && ( // Exibir apenas na página /home e para funcionários
+                                {location.pathname === "/home" && isFuncionario && (
                                     <Link to="/imoveis">Imóveis</Link>
                                 )}
                                 <button onClick={handleLogout}>Logout</button>

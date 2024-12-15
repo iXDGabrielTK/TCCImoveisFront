@@ -13,10 +13,8 @@ function LoginForm() {
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
         try {
-            // Faz o login e obtém os dados retornados
             const { token, usuario_Id, tipo } = await loginService(login, senha);
 
-            // Salva os dados no localStorage
             console.log('Salvando usuarioId no localStorage:', usuario_Id);
             localStorage.setItem('token', token);
             console.log('Salvando token no localStorage!');
@@ -24,7 +22,6 @@ function LoginForm() {
             console.log('Salvando tipoUsuario no localStorage:', tipo);
             localStorage.setItem('tipoUsuario', tipo);
 
-            // Redireciona para a página inicial
             navigate('/home');
         } catch (error) {
             console.error('Erro ao fazer login:', error);

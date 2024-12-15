@@ -1,4 +1,3 @@
-// src/hooks/useRegisterUser.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { AxiosResponse } from 'axios';

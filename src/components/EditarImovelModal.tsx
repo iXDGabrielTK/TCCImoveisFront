@@ -94,10 +94,10 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             setPrecoImovel(imovel.precoImovel || 0);
             setHistoricoManutencao(imovel.historicoManutencao || "");
             setImagem(
-                Array.isArray(imovel.fotosImovel) // Certifica-se de que é um array
+                Array.isArray(imovel.fotosImovel)
                     ? imovel.fotosImovel.map((foto: string | { urlFotoImovel: string }) => {
-                        if (typeof foto === 'string') return foto; // Caso seja string direta
-                        return foto.urlFotoImovel || ""; // Caso seja objeto, extraia a URL
+                        if (typeof foto === 'string') return foto;
+                        return foto.urlFotoImovel || "";
                     })
                     : []
             );
@@ -118,16 +118,16 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
 
     const handleEnderecoChange = (field: keyof typeof endereco, value: string) => {
         setEndereco((prevEndereco) => ({
-            ...prevEndereco, // Mantém os outros campos do endereço
-            [field]: value, // Atualiza apenas o campo alterado
+            ...prevEndereco,
+            [field]: value,
         }));
     };
 
     const handleImageInputChange = (value: string) => {
         const filteredImages = value
-            .split(",") // Divide o input por vírgulas
-            .map((url) => url.trim()) // Remove espaços ao redor
-            .filter((url) => url !== "" && url.startsWith("http")); // Filtra entradas inválidas
+            .split(",")
+            .map((url) => url.trim())
+            .filter((url) => url !== "" && url.startsWith("http"));
         setImagem(filteredImages);
     };
 
@@ -287,8 +287,8 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                                 <label htmlFor="fotos">Fotos:</label>
                                 <input
                                     type="text"
-                                    value={imagem.join(", ")} // Converte o array de strings para uma única string separada por vírgulas
-                                    onChange={(e) => handleImageInputChange(e.target.value)} // Atualiza o estado
+                                    value={imagem.join(", ")}
+                                    onChange={(e) => handleImageInputChange(e.target.value)}
                                     style={{width: "100%"}}
                                 />
                             </div>

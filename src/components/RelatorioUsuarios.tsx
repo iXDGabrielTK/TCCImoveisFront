@@ -3,7 +3,6 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-// Define o tipo dos dados retornados pela API
 interface RelatorioUsuario {
     idUsuario: number;
     nomeUsuario: string;
@@ -20,20 +19,16 @@ const RelatorioUsuarios: React.FC = () => {
             );
             const dados = response.data;
 
-            // Verifica se há dados para o período solicitado
             if (dados.length === 0) {
                 alert("Nenhum dado encontrado para o período solicitado.");
                 return;
             }
 
-            // Cria o PDF
             const doc = new jsPDF();
 
-            // Adiciona o título
             doc.setFontSize(16);
             doc.text("Relatório de Acessos de Usuários - 2024-11", 10, 10);
 
-            // Configura a tabela
             const colunas = ["ID do Usuário", "Nome", "Quantidade de Acessos"];
             const linhas = dados.map((item) => [
                 item.idUsuario,
@@ -47,7 +42,6 @@ const RelatorioUsuarios: React.FC = () => {
                 body: linhas,
             });
 
-            // Adiciona o total de acessos
             const totalAcessos = dados.reduce(
                 (total, item) => total + item.quantidadeAcessos,
                 0

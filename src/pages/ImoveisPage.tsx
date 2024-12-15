@@ -5,7 +5,7 @@ import ImoveisGrid from '../components/ImoveisGrid';
 import ImovelDetalhes from '../components/ImovelDetalhes';
 import RelatorioModal from '../components/RelatorioModal';
 import EditarVistoriaModal from '../components/EditarVistoriaModal';
-import EditarImovelModal from '../components/EditarImovelModal'; // Novo componente importado
+import EditarImovelModal from '../components/EditarImovelModal';
 import '../styles/ImoveisPage.css';
 import { Imovel } from '../types/Imovel';
 import useModal from '../hooks/useModal';
@@ -27,7 +27,6 @@ const ImoveisPage: React.FC = () => {
 
     const handleGenerateReport = (tipoRelatorio: string) => {
         console.log(`Gerando relatório: ${tipoRelatorio}`);
-        // Lógica para geração de relatórios
     };
 
     return (
@@ -108,8 +107,8 @@ const ImoveisPage: React.FC = () => {
             )}
             {editarImovelModal.isOpen && (
                 <EditarImovelModal
-                    isOpen={editarImovelModal.isOpen} // Adicionado o controle de visibilidade
-                    onClose={editarImovelModal.closeModal} // Garantindo consistência
+                    isOpen={editarImovelModal.isOpen}
+                    onClose={editarImovelModal.closeModal}
                 />
             )}
             {relatorioModal.isOpen && (

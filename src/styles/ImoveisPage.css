@@ -21,7 +21,7 @@
 .casa{
     display: flex;
     flex-direction: column;
-    height: 91.4vh; /* VOLTE AQUI DEPOIS */
+    height: 91.4vh;
     justify-content: space-between;
     align-items: center;
     background-color: #f4f7f6;
@@ -95,9 +95,9 @@
 
 .button-group {
     display: flex;
-    justify-content: center; /* Centraliza os botões horizontalmente */
-    align-items: center; /* Mantém os botões alinhados no eixo vertical */
-    margin-top: 20px; /* Adiciona um espaço abaixo da barra de navegação */
-    gap: 10px; /* Espaçamento entre os botões */
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
     padding: 0;
 }

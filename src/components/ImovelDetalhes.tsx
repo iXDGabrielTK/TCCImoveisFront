@@ -45,7 +45,6 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
 
         console.log("Retrieved token:", token);
 
-        // Corrigir aqui para usar apenas "usuarioId"
         const usuarioIdRaw = localStorage.getItem("usuarioId");
         const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
 
@@ -108,7 +107,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                 <Grid
                     component="div"
                     sx={{
-                        flex: "2", // Aumenta a proporção do slider
+                        flex: "2",
                         padding: 2,
                         "@media (max-width: 768px)": {
                             flexDirection: "column",
@@ -121,8 +120,8 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                             position: "relative",
                             backgroundColor: "#d9d9d9",
                             borderRadius: "20px",
-                            height: "100%", //Altera o comprimento vertical do slider 744px
-                            maxHeight: "auto", // Limita a altura máxima do slider
+                            height: "100%",
+                            maxHeight: "auto",
                         }}
                     >
                         <Slider images={imageUrls} />
@@ -131,12 +130,12 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                 <Grid
                     component="div"
                     sx={{
-                        flex: "1", // Reduz a proporção da seção de informações
+                        flex: "1",
                         padding: 2,
                         maxWidth: "40%",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center", // Centraliza verticalmente o conteúdo
+                        justifyContent: "center",
                         "@media (max-width: 768px)": {
                             maxWidth: "100%",
                             padding: 1,

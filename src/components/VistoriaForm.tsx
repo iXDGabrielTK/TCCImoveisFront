@@ -26,7 +26,7 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
             return;
         }
 
-        const usuarioId = localStorage.getItem('usuarioId'); // Recupera o ID do usuário
+        const usuarioId = localStorage.getItem('usuarioId');
 
         const data = {
             laudoVistoria: laudo,

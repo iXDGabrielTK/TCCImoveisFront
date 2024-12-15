@@ -1,4 +1,3 @@
-// src/hooks/useLoginUser.ts
 import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { AxiosResponse, AxiosError } from 'axios';

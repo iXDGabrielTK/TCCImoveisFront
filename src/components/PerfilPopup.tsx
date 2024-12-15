@@ -73,9 +73,8 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                 if (user) {
                     await api.delete(`/usuarios/${user.id}`);
                     alert("Conta excluída com sucesso.");
-                    localStorage.removeItem("usuarioId"); // Remove o ID do usuário do localStorage
-                    onClose(); // Fecha o popup
-                    // Opcional: Redirecionar o usuário para a página de login
+                    localStorage.removeItem("usuarioId");
+                    onClose();
                 }
             } catch (error) {
                 console.error("Erro ao excluir conta:", error);

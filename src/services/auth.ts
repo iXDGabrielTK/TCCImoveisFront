@@ -2,8 +2,8 @@ import api from './api';
 
 interface LoginResponse {
     token: string;
-    usuario_Id: string; // ID do usuário retornado pelo back-end
-    tipo: string; // Tipo do usuário (funcionario ou visitante)
+    usuario_Id: string;
+    tipo: string;
 }
 
 export const login = async (login: string, senha: string): Promise<LoginResponse> => {
@@ -15,7 +15,6 @@ export const login = async (login: string, senha: string): Promise<LoginResponse
         console.log("Salvando usuarioId no localStorage:", usuario_Id);
         console.log("Salvando tipoUsuario no localStorage:", tipo);
 
-        // Salva as informações no localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('usuarioId', usuario_Id);
         localStorage.setItem('tipoUsuario', tipo);
@@ -43,9 +42,9 @@ export const getToken = () => {
 };
 
 export const getUsuarioId = () => {
-    return localStorage.getItem('usuarioId'); // Recupera o ID do usuário do localStorage
+    return localStorage.getItem('usuarioId');
 };
 
 export const getTipoUsuario = () => {
-    return localStorage.getItem('tipoUsuario'); // Recupera o tipo do usuário do localStorage
+    return localStorage.getItem('tipoUsuario');
 };

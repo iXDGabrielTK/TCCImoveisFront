@@ -3,32 +3,32 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #f4f4f4; /* Cor de fundo clara */
-    border-radius: 10px; /* Arredondar cantos */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+    background: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     padding: 20px 30px;
     z-index: 1000;
     max-width: 400px;
-    width: 90%; /* Ajusta para telas menores */
-    font-family: 'Arial', sans-serif; /* Tipografia legível */
+    width: 90%;
+    font-family: 'Arial', sans-serif;
 }
 
 .perfil-popup-content {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Espaço entre os elementos */
+    gap: 15px;
 }
 
 .perfil-popup-content h2 {
     text-align: center;
-    color: #333; /* Texto com boa visibilidade */
+    color: #333;
     margin-bottom: 10px;
     font-size: 1.5rem;
 }
 
 .perfil-popup-content label {
     font-size: 1rem;
-    color: #555; /* Texto dos rótulos */
+    color: #555;
     font-weight: bold;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .perfil-popup-content input:focus {
-    border-color: #0078d4; /* Cor do foco no input */
+    border-color: #0078d4;
 }
 
 .botao-submit{

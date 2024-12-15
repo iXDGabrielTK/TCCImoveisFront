@@ -34,7 +34,6 @@ const RelatorioAgendamentos: React.FC = () => {
                 { content: item.quantidadeAgendamentos.toString(), styles: { halign: "right" } },
             ]);
 
-            // Capturando as informações da tabela
             const table = doc.autoTable({
                 startY: 20,
                 head: [colunas],
@@ -43,9 +42,8 @@ const RelatorioAgendamentos: React.FC = () => {
                 headStyles: { fillColor: [41, 128, 185], textColor: 255 },
             });
 
-            // Adicionando resumo após a tabela
             const totalAgendamentos = dados.reduce((acc, item) => acc + item.quantidadeAgendamentos, 0);
-            const finalY = (table as any).finalY; // Captura da posição final da tabela
+            const finalY = (table as any).finalY;
             doc.text(`Total de Agendamentos no mês 2024-12: ${totalAgendamentos}`, 10, finalY + 10);
 
             doc.save("relatorio-agendamentos-2024-12.pdf");

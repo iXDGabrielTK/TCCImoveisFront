@@ -4,31 +4,31 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Fundo mais opaco */
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Certifique-se de que o modal está acima de outros elementos */
+    z-index: 1000;
 }
 
 .relatorio-modal-content {
-    background-color: #ffffff; /* Fundo branco para contraste */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     width: 400px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adiciona sombra para destacar o modal */
-    color: #000; /* Garante que o texto seja preto */
-    z-index: 1100; /* Modal sempre acima */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    color: #000;
+    z-index: 1100;
 }
 
 h2 {
     font-size: 1.5rem;
-    color: #333; /* Contraste do título */
+    color: #333;
 }
 
 .button-meu-group {
-    background-color: #007bff; /* Azul padrão para botões */
+    background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -53,7 +53,7 @@ h2 {
 
 .select-month:focus{
     outline: none;
-    border-color: #ff0000; /* Destaque azul ao focar */
+    border-color: #ff0000;
 }
 
 .typography-body {

@@ -2,7 +2,7 @@ export interface Agendamento {
     id: number;
     descricao: string;
     ativo: boolean;
-    dataAgendamento: string; // ou Date
+    dataAgendamento: string;
     nomeVisitante: string;
     horarioMarcado: string;
 }

@@ -36,11 +36,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        // Converter URLs de imagens para array
         const fotosArray = imagem
             .split(',')
-            .map((url) => url.trim()) // Remover espaços em branco
-            .filter((url) => url.startsWith('http')); // Filtrar URLs válidas
+            .map((url) => url.trim())
+            .filter((url) => url.startsWith('http'));
 
         const data = {
             tipoImovel: tipo,

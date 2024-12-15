@@ -29,8 +29,8 @@ function Slider({ images }: SliderProps) {
                 autoplay={{ delay: 2000 }}
                 loop={true}
                 style={{
-                    width: "100%", // Ocupa 100% do contêiner
-                    height: "100%", // Adapta a altura ao contêiner
+                    width: "100%",
+                    height: "100%",
                 }}
             >
                 {images.map((image, index) => (

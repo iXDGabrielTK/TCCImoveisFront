@@ -1,4 +1,3 @@
-/* Estilização para o fundo do modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -12,22 +11,19 @@
     z-index: 1000;
 }
 
-/* Container principal do modal */
 .modal {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 80%; /* Reduz a largura geral */
-    max-width: 700px; /* Limita a largura máxima */
+    width: 80%;
+    max-width: 700px;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
-    overflow-y: auto; /* Permite rolagem se necessário */
-    max-height: 90vh; /* Evita que ultrapasse a altura da tela */
+    overflow-y: auto;
+    max-height: 90vh;
 }
 
-
-/* Ajusta os títulos */
 .modal h2 {
     margin: 0 0 7px;
     font-size: 1.5rem;
@@ -35,25 +31,23 @@
     text-align: center;
 }
 
-/* Reduz o espaçamento geral dos inputs */
 label {
     display: block;
-    margin-top: 10px; /* Menor espaço entre os campos */
-    font-size: 0.9rem; /* Fonte ligeiramente menor */
+    margin-top: 10px;
+    font-size: 0.9rem;
     color: #555;
 }
 
 input,
 select {
     width: 100%;
-    padding: 8px; /* Reduz o preenchimento interno */
+    padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 0.9rem; /* Fonte menor */
+    font-size: 0.9rem;
 }
 
-/* Botões do modal */
 .modal-actions {
     display: flex;
     justify-content: space-between;
@@ -96,22 +90,19 @@ select {
     background: #565e64;
 }
 
-/* Espaçamento reduzido entre colunas */
 .form-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px; /* Menor espaçamento entre as colunas */
+    gap: 10px;
     margin-top: 10px;
 }
 
-/* Estilo das seções do formulário */
 .dados-imovel, .endereco-imovel {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-/* Botões de ação */
 .form-actions {
     display: flex;
     justify-content: space-between;
@@ -127,26 +118,25 @@ select {
     cursor: pointer;
 }
 
-/* Espaçamento reduzido entre colunas */
 .form-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px; /* Menor espaçamento entre as colunas */
+    gap: 10px;
     margin-top: 10px;
 }
 
-/* Ajustes para dispositivos menores */
 @media (max-width: 768px) {
     .modal {
-        width: 95%; /* Ajusta para telas menores */
-        max-width: 95%; /* Evita bordas grandes */
+        width: 95%;
+        max-width: 95%;
     }
 
     .form-container {
-        grid-template-columns: 1fr; /* Torna as colunas empilhadas */
+        grid-template-columns: 1fr;
         gap: 20px;
     }
 }
+
 .cancelar {
     background-color: #ccc;
     color: black;
@@ -156,7 +146,6 @@ select {
     cursor: pointer;
 }
 
-/* Animação de entrada */
 @keyframes fadeIn {
     from {
         opacity: 0;

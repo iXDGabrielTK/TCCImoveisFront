@@ -1,4 +1,3 @@
-/* Modal principal */
 .imovel-detalhes-modal {
     display: flex;
     align-items: center;
@@ -12,7 +11,6 @@
     z-index: 1000;
 }
 
-/* Botão de fechar */
 .close-button {
     position: absolute;
     top: 15px;
@@ -34,17 +32,15 @@
     transform: scale(1.1);
 }
 
-
-/* Responsividade */
 @media (max-width: 768px) {
     .imovel-detalhes-content {
-        flex-direction: column; /* Empilha as seções verticalmente */
+        flex-direction: column;
     }
 
     .imovel-detalhes-left,
     .imovel-detalhes-right {
         flex: none;
-        max-width: 100%; /* Define largura total */
+        max-width: 100%;
         padding: 10px;
     }
 }
@@ -62,11 +58,11 @@
 
 @media (max-width: 768px) {
     .slider-container {
-        height: auto; /* Ajusta automaticamente para telas pequenas */
+        height: auto;
     }
 
     .slider-container img {
-        object-fit: contain; /* Ajusta a imagem para caber no espaço disponível sem cortar */
+        object-fit: contain;
     }
 }
 
@@ -88,16 +84,16 @@
 }
 
 .react-datepicker-wrapper {
-    width: 100%; /* Faz o DatePicker ocupar a largura total do contêiner */
+    width: 100%;
 }
 
 .react-datepicker__input-container input {
-    font-size: 14px; /* Ajusta o tamanho da fonte */
-    padding: 8px 10px; /* Reduz o preenchimento interno */
+    font-size: 14px;
+    padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 100%; /* Mantém responsivo */
-    max-width: 300px; /* Define um limite máximo */
+    width: 100%;
+    max-width: 300px;
 }
 
 .agendar-visita {

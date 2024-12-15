@@ -1,4 +1,3 @@
-/* Estilização para o fundo do modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -12,7 +11,6 @@
     z-index: 1000;
 }
 
-/* Container principal do modal */
 .modal {
     background: #fff;
     padding: 20px;
@@ -24,7 +22,6 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Títulos do modal */
 .modal h2 {
     margin: 0;
     font-size: 1.5rem;
@@ -32,9 +29,6 @@
     text-align: center;
 }
 
-
-
-/* Labels */
 label {
     display: block;
     margin-top: 15px;
@@ -42,7 +36,6 @@ label {
     color: #555;
 }
 
-/* Inputs */
 input,
 select {
     width: 100%;
@@ -59,7 +52,6 @@ select:disabled {
     cursor: not-allowed;
 }
 
-/* Mensagens de erro */
 .error {
     color: #d9534f;
     font-size: 0.9rem;
@@ -67,7 +59,6 @@ select:disabled {
     text-align: center;
 }
 
-/* Mensagens de sucesso */
 .success {
     color: #5cb85c;
     font-size: 0.9rem;
@@ -75,7 +66,6 @@ select:disabled {
     text-align: center;
 }
 
-/* Ações do modal (botões) */
 .modal-actions {
     display: flex;
     justify-content: space-between;
@@ -114,7 +104,6 @@ select:disabled {
     background: #c9302c;
 }
 
-/* Animação de entrada */
 @keyframes fadeIn {
     from {
         opacity: 0;

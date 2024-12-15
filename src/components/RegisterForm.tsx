@@ -47,7 +47,7 @@ const RegisterForm: React.FC = () => {
                 return;
             }
             data.cpf = cpf;
-            setCpfError(''); // Limpa o erro se o CPF for válido
+            setCpfError('');
         }
 
         try {
@@ -135,7 +135,6 @@ const RegisterForm: React.FC = () => {
             </div>
             <button type="submit" disabled={isPending}>Registrar</button>
 
-            {/* Mensagem de erro do CPF movida para cá */}
             {cpfError && <p className="error-message">{cpfError}</p>}
 
             {isError && <p className="error-message">Erro ao registrar usuário. Tente novamente.</p>}
