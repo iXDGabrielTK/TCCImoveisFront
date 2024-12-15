@@ -5,6 +5,7 @@ import PerfilPopup from "./PerfilPopup.tsx"; // Importação do componente Perfi
 import { logout, getToken } from "../services/auth";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
 import "../styles/Navbar.css";
+import logo from "../assets/logo.jpg"
 
 const Navbar: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -76,7 +77,9 @@ const Navbar: React.FC = () => {
             <span className="company-name" onClick={redirectToHome} style={{ cursor: "pointer" }}>
                 Bemco
             </span>
-            <div className="logo-image"></div>
+            <div className="logo-container">
+                <img src={logo} alt={"logo"} className={"logo-image "} />
+            </div>
             <div className="menu-button">
                 <div className="dropdown">
                     <button className="dropbtn">☰</button>
