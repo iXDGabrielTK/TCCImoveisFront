@@ -1,11 +1,11 @@
 import "../styles/CancelamentoPopup.css";
 import React, { useState } from "react";
-import { format, parseISO } from "date-fns"; // Importa funções de formatação
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface Agendamento {
     id: number;
-    dataAgendamento: string; // ISO format
+    dataAgendamento: string;
     horarioMarcado: boolean;
     cancelado: boolean;
 }
@@ -30,12 +30,11 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
         }
     };
 
-    // Função para formatar data no padrão brasileiro
     const formatarData = (dataISO: string) => {
         try {
             return format(parseISO(dataISO), "dd/MM/yyyy", { locale: ptBR });
         } catch {
-            return dataISO; // Caso a data não seja válida
+            return dataISO;
         }
     };
 
@@ -63,7 +62,6 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
                                             agendamento.cancelado ? "inactive" : "active"
                                         }`}
                                     ></span>
-                                    {/* Exibe a data formatada */}
                                     <span className="date-text">
                                         {formatarData(agendamento.dataAgendamento)}
                                     </span>
