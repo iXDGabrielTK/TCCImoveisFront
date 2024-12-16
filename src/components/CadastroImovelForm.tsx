@@ -1,4 +1,5 @@
 import React, { FormEvent, useState } from 'react';
+import axios from 'axios'; // Para fazer a requisição à API
 import api from '../services/api';
 import '../styles/CadastroImovel.css';
 
@@ -31,6 +32,33 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             ...prevEndereco,
             [name]: value,
         }));
+    };
+
+    // Função para buscar o endereço na API ViaCEP
+    const buscarCep = async () => {
+        const cep = endereco.cep.replace(/\D/g, ''); // Remove caracteres não numéricos
+        if (cep.length === 8) { // Verifica se o CEP tem 8 dígitos
+            try {
+                const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+                if (!response.data.erro) {
+                    // Atualiza o estado do endereço com os dados retornados
+                    setEndereco((prevEndereco) => ({
+                        ...prevEndereco,
+                        rua: response.data.logradouro,
+                        bairro: response.data.bairro,
+                        cidade: response.data.localidade,
+                        estado: response.data.uf,
+                    }));
+                } else {
+                    alert('CEP não encontrado. Verifique e tente novamente.');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar o CEP:', error);
+                alert('Erro ao buscar o CEP. Tente novamente mais tarde.');
+            }
+        } else {
+            alert('Digite um CEP válido com 8 dígitos.');
+        }
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -136,8 +164,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         type="button"
                         className="btn-next-step"
                         onClick={nextStep}
-                        name="nextStepButton"
-                        id="nextStepButton"
                     >
                         Próximo ➔
                     </button>
@@ -147,11 +173,52 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             {step === 2 && (
                 <div className="form-step">
                     <label>
+                        CEP:
+                        <input
+                            type="text"
+                            name="cep"
+                            value={endereco.cep}
+                            onChange={handleEnderecoChange}
+                            onBlur={buscarCep}
+                            required
+                        />
+                    </label>
+                    <label>
+                        Estado:
+                        <input
+                            type="text"
+                            name="estado"
+                            value={endereco.estado}
+                            onChange={handleEnderecoChange}
+                            required
+                        />
+                    </label>
+                    <label>
+                        Cidade:
+                        <input
+                            type="text"
+                            name="cidade"
+                            value={endereco.cidade}
+                            onChange={handleEnderecoChange}
+                            required
+                        />
+                    </label>
+                    <label>
                         Rua:
                         <input
                             type="text"
                             name="rua"
                             value={endereco.rua}
+                            onChange={handleEnderecoChange}
+                            required
+                        />
+                    </label>
+                    <label>
+                        Bairro:
+                        <input
+                            type="text"
+                            name="bairro"
+                            value={endereco.bairro}
                             onChange={handleEnderecoChange}
                             required
                         />
@@ -175,61 +242,20 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                             onChange={handleEnderecoChange}
                         />
                     </label>
-                    <label>
-                        Bairro:
-                        <input
-                            type="text"
-                            name="bairro"
-                            value={endereco.bairro}
-                            onChange={handleEnderecoChange}
-                            required
-                        />
-                    </label>
-                    <label>
-                        Cidade:
-                        <input
-                            type="text"
-                            name="cidade"
-                            value={endereco.cidade}
-                            onChange={handleEnderecoChange}
-                            required
-                        />
-                    </label>
-                    <label>
-                        Estado:
-                        <input
-                            type="text"
-                            name="estado"
-                            value={endereco.estado}
-                            onChange={handleEnderecoChange}
-                            required
-                        />
-                    </label>
-                    <label>
-                        CEP:
-                        <input
-                            type="text"
-                            name="cep"
-                            value={endereco.cep}
-                            onChange={handleEnderecoChange}
-                            required
-                        />
-                    </label>
+                    <small style={{color: 'gray'}}>
+                        Dados preenchidos automaticamente. Você pode ajustá-los, se necessário.
+                    </small>
                     <div className="navigation-buttons">
                         <button
                             type="button"
                             className="btn-prev-step"
                             onClick={prevStep}
-                            name="prevStepButton"
-                            id="prevStepButton"
                         >
                             ⬅ Voltar
                         </button>
                         <button
                             type="submit"
                             className="btn-submit-form"
-                            name="submitButton"
-                            id="submitButton"
                         >
                             Cadastrar Imóvel
                         </button>
