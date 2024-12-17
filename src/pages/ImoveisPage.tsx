@@ -31,8 +31,8 @@ const ImoveisPage: React.FC = () => {
 
     return (
         <div className="imoveis-page">
-            <div className="button-group">
-                <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+            <div className="button-group-container">
+                <Stack direction="row" spacing={2} sx={{ marginTop: 2 }} className="button-group">
                     <Button
                         variant="contained"
                         color="success"

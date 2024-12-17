@@ -93,11 +93,41 @@
     background-color: #0056b3;
 }
 
+.button-group-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+}
+
 .button-group {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
-    align-items: center;
-    margin-top: 20px;
     gap: 10px;
-    padding: 0;
+}
+
+.button-group button {
+    flex-shrink: 0;
+    min-width: 180px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        justify-content: flex-start;
+    }
+}
+
+
+
+.button-group::-webkit-scrollbar {
+    height: 8px;
+}
+
+.button-group::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.button-group::-webkit-scrollbar-track {
+    background-color: #f4f4f4;
 }

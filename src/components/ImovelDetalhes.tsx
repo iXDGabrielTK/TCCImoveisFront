@@ -6,7 +6,7 @@ import {
     TextField,
     Button,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2";
 import React from "react";
 import Slider from "./Slider";
 import { Imovel } from "../types/Imovel";
@@ -95,15 +95,16 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         <Box
             sx={{
                 width: "100%",
-                maxWidth: "1700px",
+                maxWidth: "180vh",
                 height: "200%",
+                maxHeight: "100vh",
                 position: "relative",
                 backgroundColor: "#ededed",
                 borderRadius: "30px",
                 margin: "0 auto",
             }}
         >
-            <Grid container spacing={2} sx={{ height: "100%" }}>
+            <Grid container spacing={2} sx={{ height: "100%", width: "100%" }}>
                 <Grid
                     component="div"
                     sx={{
@@ -133,6 +134,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                         flex: "1",
                         padding: 2,
                         maxWidth: "40%",
+                        maxHeight: "100%",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
