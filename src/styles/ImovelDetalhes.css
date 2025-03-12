@@ -11,6 +11,57 @@
     z-index: 1000;
 }
 
+.imovel-detalhes-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%; /* Mantém o conteúdo com altura total */
+}
+
+.imovel-detalhes-left,
+.imovel-detalhes-right {
+    flex: 1;
+    padding: 20px;
+    height: 100%;
+}
+
+/* Media queries consolidados para telas com largura máxima de 768px */
+@media (max-width: 768px) {
+    .imovel-detalhes-content {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .imovel-detalhes-left,
+    .imovel-detalhes-right {
+        flex: none;
+        max-width: 100%;
+        padding: 10px;
+        height: auto;
+    }
+
+    .agendamento-container {
+        padding: 15px;
+    }
+
+    .agendamento-container button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .slider-container {
+        height: auto;
+    }
+
+    .slider-container img {
+        object-fit: contain;
+    }
+}
+
 .close-button {
     position: absolute;
     top: 15px;
@@ -32,41 +83,6 @@
     transform: scale(1.1);
 }
 
-@media (max-width: 768px) {
-    .imovel-detalhes-content {
-        flex-direction: column;
-    }
-
-    .imovel-detalhes-left,
-    .imovel-detalhes-right {
-        flex: none;
-        max-width: 100%;
-        padding: 10px;
-    }
-}
-
-@media (max-width: 768px) {
-    .agendamento-container {
-        padding: 15px;
-    }
-
-    .agendamento-container button {
-        font-size: 14px;
-        padding: 8px 15px;
-    }
-}
-
-@media (max-width: 768px) {
-    .slider-container {
-        height: auto;
-    }
-
-    .slider-container img {
-        object-fit: contain;
-    }
-}
-
-/* Área de agendamento */
 .agendamento-container {
     margin-top: 20px;
     background-color: #f7f7f7;
@@ -114,7 +130,6 @@
     background-color: #47a100;
 }
 
-/* Transições suaves */
 .react-datepicker {
     font-size: 0.85rem;
     border-radius: 8px;

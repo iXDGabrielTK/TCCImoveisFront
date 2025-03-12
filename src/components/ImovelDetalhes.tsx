@@ -5,7 +5,10 @@ import {
     Typography,
     TextField,
     Button,
+    Stack,
+    IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Grid from "@mui/material/Grid2";
 import React from "react";
 import Slider from "./Slider";
@@ -69,7 +72,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
 
         try {
             console.log("Data to send:", data);
-            const response = await fetch("http://localhost:8080/agendamentos/agendar", {
+            const response = await fetch("api/agendamentos/agendar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -90,7 +93,6 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         }
     };
 
-
     return (
         <Box
             sx={{
@@ -106,9 +108,8 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
         >
             <Grid container spacing={2} sx={{ height: "100%", width: "100%" }}>
                 <Grid
-                    component="div"
+                    size={{ xs: 12, md: 8 }}
                     sx={{
-                        flex: "2",
                         padding: 2,
                         "@media (max-width: 768px)": {
                             flexDirection: "column",
@@ -129,17 +130,15 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                     </Box>
                 </Grid>
                 <Grid
-                    component="div"
+                    size={{ xs: 12, md: 4 }}
                     sx={{
-                        flex: "1",
                         padding: 2,
-                        maxWidth: "40%",
+                        maxWidth: { xs: "100%", md: "40%" },
                         maxHeight: "100%",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "center",
                         "@media (max-width: 768px)": {
-                            maxWidth: "100%",
                             padding: 1,
                         },
                     }}
@@ -151,9 +150,24 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                             borderRadius: "20px",
                         }}
                     >
-                        <button onClick={onClose} className="close-button">
-                            Fechar
-                        </button>
+                        <IconButton
+                            onClick={onClose}
+                            className="close-button"
+                            aria-label="Fechar"
+                            sx={{
+                                position: "absolute",
+                                top: 15,
+                                right: 15,
+                                background: "#ff4d4d",
+                                color: "white",
+                                "&:hover": {
+                                    background: "#e60000",
+                                    transform: "scale(1.1)",
+                                },
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
                         <Typography variant="h3" component="h1" sx={{ fontWeight: "bold" }}>
                             {imovel.tipoImovel ? "Residencial" : "Comercial"}
                         </Typography>
@@ -168,23 +182,20 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                                 backgroundColor: "#000",
                             }}
                         />
-                        <Typography
-                            variant="h5"
-                            component="p"
-                            sx={{ color: "#003201", textAlign: "center" }}
-                        >
-                            Valor: R$ {imovel.precoImovel}
-                            <br />
-                            Tamanho: {imovel.tamanhoImovel} m²
-                            <br />
-                            Status: {imovel.statusImovel ? "Disponível" : "Indisponível"}
-                            <br />
-                            Rua: {imovel.enderecoImovel?.rua || "Não informado"}
-                            <br />
-                            Número: {imovel.enderecoImovel?.numero || "Não informado"}
-                            <br />
-                            Cidade: {imovel.enderecoImovel?.cidade || "Não informado"}
-                        </Typography>
+                        <Stack spacing={1} alignItems="center">
+                            {[
+                                `Valor: R$ ${imovel.precoImovel}`,
+                                `Tamanho: ${imovel.tamanhoImovel} m²`,
+                                `Status: ${imovel.statusImovel ? "Disponível" : "Indisponível"}`,
+                                `Rua: ${imovel.enderecoImovel?.rua || "Não informado"}`,
+                                `Número: ${imovel.enderecoImovel?.numero || "Não informado"}`,
+                                `Cidade: ${imovel.enderecoImovel?.cidade || "Não informado"}`,
+                            ].map((info, index) => (
+                                <Typography key={index} variant="h5" component="p" sx={{ color: "#003201" }}>
+                                    {info}
+                                </Typography>
+                            ))}
+                        </Stack>
                         <Box
                             sx={{
                                 display: "flex",

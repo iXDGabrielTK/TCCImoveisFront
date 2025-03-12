@@ -31,8 +31,22 @@ const App: React.FC = () => {
                             </PrivateRoute>
                         }
                     />
-                    <Route path="relatorio-agendamentos" element={<RelatorioAgendamentos />} />
-                    <Route path="relatorio-vistorias" element={<RelatorioVistorias />} />
+                    <Route
+                        path="relatorio-agendamentos"
+                        element={
+                            <PrivateRoute>
+                                <RelatorioAgendamentos />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="relatorio-vistorias"
+                        element={
+                            <PrivateRoute>
+                                <RelatorioVistorias />
+                            </PrivateRoute>
+                        }
+                    />
                     <Route
                         path="/home"
                         element={
