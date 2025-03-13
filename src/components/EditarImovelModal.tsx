@@ -231,27 +231,30 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                         <div className="form-container">
                             <div className="dados-imovel">
                                 <h2>Dados do Imóvel</h2>
-                                <label htmlFor="tipo">Tipo do Imóvel:</label>
+                                <label htmlFor="tipo" className={"label-imovel"}>Tipo do Imóvel:</label>
                                 <input
                                     id="tipo"
                                     type="text"
+                                    className="input"
                                     value={tipoImovel}
                                     onChange={(e) => setTipoImovel(e.target.value)}
                                     disabled={isLoading}
                                 />
 
-                                <label htmlFor="descricao">Descrição:</label>
+                                <label htmlFor="descricao" className={"label-imovel"}>Descrição:</label>
                                 <input
                                     id="descricao"
                                     type="text"
+                                    className="input"
                                     value={descricaoImovel}
                                     onChange={(e) => setDescricaoImovel(e.target.value)}
                                     disabled={isLoading}
                                 />
 
-                                <label htmlFor="status">Status:</label>
+                                <label htmlFor="status" className={"label-imovel"}>Status:</label>
                                 <select
                                     id="status"
+                                    className="select"
                                     value={statusImovel ? "Ativo" : "Inativo"}
                                     onChange={(e) => setStatusImovel(e.target.value === "Ativo")}
                                     disabled={isLoading}
@@ -260,33 +263,37 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                                     <option value="Inativo">Inativo</option>
                                 </select>
 
-                                <label htmlFor="tamanho">Tamanho:</label>
+                                <label htmlFor="tamanho" className={"label-imovel"}>Tamanho:</label>
                                 <input
                                     id="tamanho"
                                     type="number"
+                                    className="input"
                                     value={tamanhoImovel}
                                     onChange={(e) => setTamanhoImovel(parseInt(e.target.value))}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="preco">Preço:</label>
+                                <label htmlFor="preco" className={"label-imovel"}>Preço:</label>
                                 <input
                                     id="preco"
                                     type="number"
+                                    className="input"
                                     value={precoImovel}
                                     onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="historico">Histórico Manutenção:</label>
+                                <label htmlFor="historico" className={"label-imovel"}>Histórico Manutenção:</label>
                                 <input
                                     id="historico"
                                     type="text"
+                                    className="input"
                                     value={historicoManutencao}
                                     onChange={(e) => setHistoricoManutencao(e.target.value)}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="fotos">Fotos:</label>
+                                <label htmlFor="fotos" className={"label-imovel"}>Fotos:</label>
                                 <input
                                     type="text"
+                                    className="input"
                                     value={imagem.join(", ")}
                                     onChange={(e) => handleImageInputChange(e.target.value)}
                                     style={{width: "100%"}}
@@ -294,54 +301,61 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                             </div>
                             <div className="endereco-imovel">
                                 <h2>Endereço do Imóvel</h2>
-                                <label htmlFor="rua">Rua:</label>
+                                <label htmlFor="rua" className={"label-imovel"}>Rua:</label>
                                 <input
                                     id="rua"
                                     type="text"
+                                    className="input"
                                     value={endereco.rua}
                                     onChange={(e) => handleEnderecoChange('rua', e.target.value)}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="numero">Número:</label>
+                                <label htmlFor="numero" className={"label-imovel"}>Número:</label>
                                 <input
                                     id="numero"
                                     type="text"
+                                    className="input"
                                     value={endereco.numero}
                                     onChange={(e) => handleEnderecoChange('numero', e.target.value)}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="complemento">Complemento:</label>
+                                <label htmlFor="complemento" className={"label-imovel"}>Complemento:</label>
                                 <input
                                     id="complemento"
                                     type="text"
+                                    className="input"
                                     value={endereco.complemento}
                                     onChange={(e) => handleEnderecoChange('complemento', e.target.value)}
                                 />
-                                <label htmlFor="bairro">Bairro:</label>
+                                <label htmlFor="bairro" className={"label-imovel"}>Bairro:</label>
                                 <input
                                     id="bairro"
                                     type="text"
+                                    className="input"
                                     value={endereco.bairro}
                                     onChange={(e) => handleEnderecoChange('bairro', e.target.value)}
                                 />
-                                <label htmlFor="cidade">Cidade:</label>
+                                <label htmlFor="cidade" className={"label-imovel"}>Cidade:</label>
                                 <input
                                     id="cidade"
                                     type="text"
+                                    className="input"
                                     value={endereco.cidade}
                                     onChange={(e) => handleEnderecoChange('cidade', e.target.value)}
                                 />
-                                <label htmlFor="estado">Estado:</label>
+                                <label htmlFor="estado" className={"label-imovel"}>Estado:</label>
                                 <input
                                     id="estado"
                                     type="text"
+                                    className="input"
                                     value={endereco.estado}
                                     onChange={(e) => handleEnderecoChange('estado', e.target.value)}
                                 />
-                                <label htmlFor="cep">CEP:</label>
+                                <label htmlFor="cep" className={"label-imovel"}>CEP:</label>
                                 <input
                                     id="cep"
                                     type="text"
+                                    className="input"
                                     value={endereco.cep}
                                     onChange={(e) => setEndereco({...endereco, cep: e.target.value})}
                                 />

@@ -132,9 +132,10 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                 {errorMessage && <p className="error">{errorMessage}</p>}
                 {successMessage && <p className="success">{successMessage}</p>}
 
-                <label htmlFor="vistoria-select">Selecione a vistoria:</label>
+                <label htmlFor="vistoria-select" className={"label-vistoria"}>Selecione a vistoria:</label>
                 <select
                     id="vistoria-select"
+                    className="vistoria-select"
                     value={selectedVistoria || ""}
                     onChange={handleSelectChange}
                     disabled={isLoading}
@@ -150,28 +151,31 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
 
                 {selectedVistoria && (
                     <>
-                        <label htmlFor="tipo">Tipo da Vistoria:</label>
+                        <label htmlFor="tipo" className={"label-vistoria"}>Tipo da Vistoria:</label>
                         <input
                             id="tipo"
                             type="text"
+                            className="input-vistoria"
                             value={tipoVistoria}
                             onChange={(e) => setTipoVistoria(e.target.value)}
                             disabled={isLoading}
                         />
 
-                        <label htmlFor="laudo">Laudo da Vistoria:</label>
+                        <label htmlFor="laudo" className={"label-vistoria"}>Laudo da Vistoria:</label>
                         <input
                             id="laudo"
                             type="text"
+                            className="input-vistoria"
                             value={laudoVistoria}
                             onChange={(e) => setLaudoVistoria(e.target.value)}
                             disabled={isLoading}
                         />
 
-                        <label htmlFor="data">Data da Vistoria:</label>
+                        <label htmlFor="data" className={"label-vistoria"}>Data da Vistoria:</label>
                         <input
                             id="data"
                             type="date"
+                            className="input-vistoria"
                             value={dataVistoria}
                             onChange={(e) => setDataVistoria(e.target.value)}
                             disabled={isLoading}

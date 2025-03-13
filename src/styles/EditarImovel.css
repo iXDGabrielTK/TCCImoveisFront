@@ -31,15 +31,14 @@
     text-align: center;
 }
 
-label {
+.label-imovel {
     display: block;
     margin-top: 10px;
     font-size: 0.9rem;
     color: #555;
 }
 
-input,
-select {
+.input, .select {
     width: 100%;
     padding: 8px;
     margin-top: 5px;

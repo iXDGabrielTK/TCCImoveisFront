@@ -6,6 +6,7 @@ import { logout, getToken } from "../services/auth";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
 import "../styles/Navbar.css";
 import logo from "../assets/logo.jpg"
+import SearchBar from './SearchBar';
 
 const Navbar: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -70,7 +71,6 @@ const Navbar: React.FC = () => {
         navigate("/home");
     };
 
-
     return (
         <nav className="navbar">
             <span className="company-name" onClick={redirectToHome} style={{ cursor: "pointer" }}>
@@ -79,6 +79,7 @@ const Navbar: React.FC = () => {
             <div className="logo-container">
                 <img src={logo} alt={"logo"} className={"logo-image "} />
             </div>
+            <SearchBar />
             <div className="menu-button">
                 <div className="dropdown">
                     <button className="dropbtn">☰</button>

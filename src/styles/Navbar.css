@@ -8,6 +8,7 @@
     max-height: 80px;
     width: 100vw;
     box-sizing: border-box;
+    position: relative;
 }
 
 .company-name {
@@ -22,6 +23,7 @@
     justify-content: center;
     align-items: center;
     flex: 1;
+    position: relative;
 }
 
 .logo-image {

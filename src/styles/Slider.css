@@ -160,17 +160,17 @@
 @media (max-width: 768px) {
     .slider-container {
         min-height: 200px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .keen-slider {
         height: 200px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .img-slider {
         height: 200px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .navigation-button {
@@ -181,17 +181,17 @@
 @media (max-width: 480px) {
     .slider-container {
         min-height: 150px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .keen-slider {
         height: 150px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .img-slider {
         height: 150px;
-        border-radius: 0px;
+        border-radius: 0;
     }
 
     .navigation-button {
