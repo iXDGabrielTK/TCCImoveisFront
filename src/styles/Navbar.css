@@ -1,5 +1,86 @@
 .navbar {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background-color: #14453e;
+    height: 80px;
+    width: 100vw;
+    box-sizing: border-box;
+}
+
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logo-container {
+    flex: 0; /* Mantém o tamanho fixo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-image {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px; /* Dá espaço entre a barra de pesquisa e o menu */
+}
+
+.search-bar {
+    flex: 0;
+}
+
+.menu-button {
+    flex: 0;
+    position: relative;
+}
+
+.company-name {
+    font-family: verdana, serif;
+    font-size: 2rem;
+    color: #e8e8e8;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logo-container {
+    flex: 0 1 auto; /* Evita que a logo seja comprimida */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-image {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.search-bar {
+    margin-right: 10px;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+}
+
+.navbar {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
@@ -43,8 +124,6 @@
 .dropbtn {
     background-color: #4CAF50;
     color: white;
-    font-size: 16px;
-    font-weight: bold;
     border: none;
     padding: 12px 20px;
     border-radius: 5px;
@@ -60,6 +139,7 @@
     display: block;
     overflow: hidden;
     position: absolute;
+    font-size: 16px;
     top: 100%;
     right: 0;
     background-color: #f1f1f1;
@@ -67,8 +147,7 @@
     max-height: 0;
     opacity: 0;
     transition: max-height 0s ease-in, opacity 1ms ease-out;
-    /*noinspection CssRedundantUnit*/
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     z-index: 10;
     border-radius: 8px;
 }
@@ -83,6 +162,8 @@
     color: #2b2b2b;
     padding: 12px 16px;
     text-decoration: none;
+    font-weight: inherit;
+    font-size: 14px;
     display: block;
     width: 100%;
     text-align: left;
