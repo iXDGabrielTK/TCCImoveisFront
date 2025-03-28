@@ -4,8 +4,8 @@
     gap: 20px;
     padding: 20px 40px 40px 40px;
     width: 100%;
-    max-width: 1200px;
     margin: 0 auto;
+    max-width: 100%;
 }
 
 .imovel-card {
@@ -50,6 +50,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
+    max-width: 100%;
 }
 
 

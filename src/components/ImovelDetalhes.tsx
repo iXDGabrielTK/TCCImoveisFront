@@ -72,7 +72,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
 
         try {
             console.log("Data to send:", data);
-            const response = await fetch("api/agendamentos/agendar", {
+            const response = await fetch("http://localhost:8080/agendamentos/agendar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -217,6 +217,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, onClose }) => {
                                 Agendar Visita
                             </Typography>
                             <TextField
+                                className={"Nome-Visitante"}
                                 error={!nomeVisitante.trim()}
                                 helperText={!nomeVisitante.trim() ? "O nome é obrigatório." : ""}
                                 fullWidth

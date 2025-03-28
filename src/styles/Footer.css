@@ -1,16 +1,20 @@
 * {
     margin: 0;
     padding: 0;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
-html, body {
+html, body, #root, main {
     height: 100%;
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
-
 .content-wrapper {
     display: flex;
     flex-direction: column;
@@ -35,7 +39,6 @@ html, body {
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
-    box-sizing: border-box;
     width: 100%;
     margin-top: auto;
 }
@@ -49,12 +52,10 @@ html, body {
 .footer-section h4 {
     font-size: 1.2rem;
     color: #a0e8af;
-    margin: 0;
     font-weight: bold;
 }
 
-.footer-section p,
-.footer-section a {
+.footer-section p, .footer-section a {
     font-size: 0.9rem;
     color: #e8e8e8;
     margin: 5px 0;
