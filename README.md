@@ -1,50 +1,84 @@
-# React + TypeScript + Vite
+# 🏠 TCC Imóveis - Front-end
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositório contém o front-end do sistema **Sistema de Administração de Imóveis**, desenvolvido como parte do Trabalho de Conclusão de Curso em Análise e Desenvolvimento de Sistemas (UMFG).
 
-Currently, two official plugins are available:
+🔗 **Repositório GitHub:** [TCCImoveisFront](https://github.com/iXDGabrielTK/TCCImoveisFront)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧩 Tecnologias Utilizadas
 
-## Expanding the ESLint configuration
+- [React](https://reactjs.org/) com [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/) para bundling e dev server
+- [Axios](https://axios-http.com/) para comunicação HTTP
+- [React Router DOM](https://reactrouter.com/) para gerenciamento de rotas
+- [TailwindCSS](https://tailwindcss.com/) (se utilizado)
+- [Docker](https://www.docker.com/) para build e deploy
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🚀 Funcionalidades Principais
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+🔒 **Autenticação de Usuários**  
+👤 Cadastro e login de visitantes e funcionários  
+🏘️ Visualização de imóveis disponíveis  
+📅 Agendamento de visitas com controle de disponibilidade  
+🧾 Geração de relatórios de uso, vistoria e agendamentos  
+📸 Upload e visualização de fotos dos imóveis  
+📈 Controle de acesso baseado em tipo de usuário  
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+> ⚙️ Toda a comunicação é feita com o back-end Java (Spring Boot), que expõe a API REST consumida por este front-end.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 📦 Instalação Local
+
+```bash
+# Clone o repositório
+git clone https://github.com/iXDGabrielTK/TCCImoveisFront.git
+
+# Acesse o diretório
+cd TCCImoveisFront
+
+# Instale as dependências
+npm install
+
+# Rode o projeto em ambiente de desenvolvimento
+npm run dev
+
+🐳 Build com Docker
+Para criar a imagem Docker do front-end:
+
+# Build da imagem
+docker build -t tccimoveis-front .
+
+# Rodar container
+docker run -p 5173:5173 tccimoveis-front
+Certifique-se de que a API esteja acessível no ambiente Docker ou configure corretamente a variável de ambiente VITE_API_URL.
+
+🛠️ Scripts Disponíveis
+Comando	Descrição
+npm run dev	Inicia o servidor de desenvolvimento
+npm run build	Gera a versão de produção
+npm run preview	Pré-visualização da build
+
+🌐 Estrutura de Pastas
+📁 src
+ ┣ 📁 assets       # Imagens e ícones
+ ┣ 📁 components   # Componentes reutilizáveis
+ ┣ 📁 pages        # Telas principais
+ ┣ 📁 services     # Conexão com API (axios)
+ ┣ 📁 routes       # Definição de rotas
+ ┗ 📄 App.tsx      # Componente principal
+
+ 📌 Sobre o Projeto
+Esse sistema foi desenvolvido para automatizar a administração de imóveis da empresa Bemco, permitindo que usuários realizem consultas, agendamentos e interações com imóveis disponíveis para locação.
+
+Acadêmicos responsáveis:
+Gabriel Ferrari Tanaka – gabrielferraritanaka@gmail.com
+
+Caio Fabricio Dantas Ribeiro – caaiofabricio07@gmail.com
+
+📃 Licença
+Este projeto é apenas para fins acadêmicos e não possui licença comercial associada.
+
+💬 Contribuindo
+Pull requests são bem-vindos! Se quiser sugerir melhorias ou reportar bugs, fique à vontade para abrir uma issue.
