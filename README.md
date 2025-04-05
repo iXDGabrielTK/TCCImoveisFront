@@ -10,7 +10,6 @@ Este repositório contém o front-end do sistema **Sistema de Administração de
 - [Vite](https://vitejs.dev/) para bundling e dev server
 - [Axios](https://axios-http.com/) para comunicação HTTP
 - [React Router DOM](https://reactrouter.com/) para gerenciamento de rotas
-- [TailwindCSS](https://tailwindcss.com/) (se utilizado)
 - [Docker](https://www.docker.com/) para build e deploy
 
 ---
