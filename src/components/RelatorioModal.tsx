@@ -10,6 +10,7 @@ import {
     InputLabel,
 } from "@mui/material";
 import "../styles/RelatorioModal.css";
+import '../styles/shared.css';
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -23,6 +24,26 @@ interface RelatorioModalProps {
 interface Imovel {
     idImovel: number;
     descricaoImovel: string;
+}
+
+interface VistoriaRelatorio {
+    idVistoria: number;
+    idImovel: number;
+    descricaoImovel: string;
+    dataVistoria: string;
+    laudoVistoria: string;
+}
+
+interface AgendamentoRelatorio {
+    idImovel: number;
+    descricaoImovel: string;
+    quantidadeAgendamentos: number;
+}
+
+interface UsuarioRelatorio {
+    idUsuario: number;
+    nomeUsuario: string;
+    quantidadeAcessos: number;
 }
 
 const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
@@ -75,7 +96,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                 { content: "Data da Vistoria", styles: { halign: "left" } },
                 { content: "Detalhes", styles: { halign: "left" } },
             ];
-            const linhas = dados.map((item: any) => [
+            const linhas = dados.map((item: VistoriaRelatorio) => [
                 { content: item.idVistoria ?? "N/A", styles: { halign: "right" } },
                 { content: item.idImovel ?? "N/A", styles: { halign: "right" } },
                 { content: item.descricaoImovel ?? "N/A", styles: { halign: "left" } },
@@ -103,7 +124,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             }
 
             const totalAgendamentos = dados.reduce(
-                (total: number, item: any) => total + item.quantidadeAgendamentos,
+                (total: number, item: AgendamentoRelatorio) => total + item.quantidadeAgendamentos,
                 0
             );
 
@@ -115,7 +136,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                 { content: "Nome do Imóvel", styles: { halign: "left" } },
                 { content: "Quantidade de Agendamentos", styles: { halign: "right" } },
             ];
-            const linhas = dados.map((item: any) => [
+            const linhas = dados.map((item: AgendamentoRelatorio) => [
                 { content: item.idImovel ?? "N/A", styles: { halign: "right" } },
                 { content: item.descricaoImovel ?? "N/A", styles: { halign: "left" } },
                 { content: item.quantidadeAgendamentos ?? 0, styles: { halign: "right" } },
@@ -148,7 +169,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             }
 
             const totalAcessos = dados.reduce(
-                (total: number, item: any) => total + item.quantidadeAcessos,
+                (total: number, item: UsuarioRelatorio) => total + item.quantidadeAcessos,
                 0
             );
 
@@ -160,7 +181,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
                 { content: "Nome do Usuário", styles: { halign: "left" } },
                 { content: "Quantidade de Acessos", styles: { halign: "right" } },
             ];
-            const linhas = dados.map((item: any) => [
+            const linhas = dados.map((item: UsuarioRelatorio) => [
                 { content: item.idUsuario ?? "N/A", styles: { halign: "right" } },
                 { content: item.nomeUsuario ?? "N/A", styles: { halign: "left" } },
                 { content: item.quantidadeAcessos ?? 0, styles: { halign: "right" } },

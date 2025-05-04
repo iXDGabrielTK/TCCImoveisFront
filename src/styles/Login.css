@@ -52,8 +52,8 @@
   padding: 0.75rem;
   border: none;
   border-radius: 30px;
-  max-width: 100%; !important;
-  background: linear-gradient(90deg, #007bff, #0056b3);
+  max-width: 100%;
+  background: linear-gradient(90deg, #14453e, #2e7d64);
   color: white;
   font-size: 1rem;
   font-weight: bold;
@@ -62,7 +62,7 @@
 }
 
 .login-form button:hover {
-  background: linear-gradient(90deg, #0056b3, #004494);
+  background: linear-gradient(90deg, #2e7d64, #4CAF50);
 }
 
 .register-link {

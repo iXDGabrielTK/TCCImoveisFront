@@ -23,9 +23,15 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                                                                onChange,
                                                            }) => {
 
+    // Convert holiday strings to Date objects for excludeDates
+    const holidayDates = holidays.map(dateStr => {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    });
+
     const dayClassName = (date: Date) => {
         const formattedDate = date.toISOString().split('T')[0];
-        return holidays.includes(formattedDate) ? 'holiday' : '';
+        return holidays.includes(formattedDate) ? 'react-datepicker__day--holiday' : '';
     };
 
     return (
@@ -46,6 +52,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 locale="pt-BR"
                 dateFormat="dd/MM/yyyy"
                 minDate={new Date()}
+                excludeDates={holidayDates}
                 placeholderText="Selecione uma data"
             />
 

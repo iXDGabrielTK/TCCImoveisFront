@@ -1,33 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AgendamentosPopUp from "./AgendamentoPopUp";
 import PerfilPopup from "./PerfilPopup.tsx";
-import { logout, getToken } from "../services/auth";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
 import "../styles/Navbar.css";
 import logo from "../assets/logo.jpg";
 import SearchBar from "./SearchBar";
+import { useAuth } from "../hooks/useAuth";
 
 const Navbar: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [isFuncionario, setIsFuncionario] = useState<boolean>(false);
     const [showAgendamentoPopup, setShowAgendamentoPopup] = useState(false);
     const [showPerfilPopup, setShowPerfilPopup] = useState(false);
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const navigate = useNavigate();
     const location = useLocation();
-
-    useEffect(() => {
-        const token = getToken();
-        setIsLoggedIn(!!token);
-        setIsFuncionario(localStorage.getItem("tipoUsuario") === "funcionario");
-    }, []);
+    const { isAuthenticated, user, logout, hasRole } = useAuth();
 
     const fetchUserAgendamentos = async () => {
         try {
-            const usuarioId = localStorage.getItem("usuarioId");
-            const data = await fetchAgendamentos(usuarioId ? Number(usuarioId) : 0);
-            setAgendamentos(data);
+            if (user?.id) {
+                const data = await fetchAgendamentos(Number(user.id));
+                setAgendamentos(data);
+            }
         } catch (error) {
             console.error("Erro ao buscar agendamentos:", error);
         }
@@ -35,8 +29,6 @@ const Navbar: React.FC = () => {
 
     const handleLogout = () => {
         logout();
-        setIsLoggedIn(false);
-        navigate("/login");
     };
 
     return (
@@ -57,16 +49,19 @@ const Navbar: React.FC = () => {
                     <div className="dropdown">
                         <button className="dropbtn">☰</button>
                         <div className="dropdown-content">
-                            {!isLoggedIn ? (
+                            {!isAuthenticated ? (
                                 <>
                                     <Link to="/login">Login</Link>
                                     <Link to="/register">Cadastro</Link>
                                 </>
                             ) : (
                                 <>
-                                    <button onClick={fetchUserAgendamentos}>Agendamentos</button>
+                                    <button onClick={async () => {
+                                        await fetchUserAgendamentos();
+                                        setShowAgendamentoPopup(true);
+                                    }}>Agendamentos</button>
                                     <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
-                                    {location.pathname === "/home" && isFuncionario && <Link to="/imoveis">Imóveis</Link>}
+                                    {location.pathname === "/home" && hasRole('funcionario') && <Link to="/imoveis">Imóveis</Link>}
                                     <button onClick={handleLogout}>Logout</button>
                                 </>
                             )}

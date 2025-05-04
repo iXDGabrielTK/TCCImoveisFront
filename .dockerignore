@@ -1,0 +1,31 @@
+# Node.js/Vite padrão
+node_modules
+dist
+.vite
+.vscode
+.env
+.env.local
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Build/CI
+coverage
+*.log
+*.tsbuildinfo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Git e IDEs
+.git
+.gitignore
+.idea
+*.swp
+
+# Arquivos pessoais
+*.pdf
+*.doc
+*.docx
+*.zip

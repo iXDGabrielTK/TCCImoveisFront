@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { } from 'react';
 import CadastroImovelForm from '../components/CadastroImovelForm';
 import VistoriaForm from '../components/VistoriaForm';
 import ImoveisGrid from '../components/ImoveisGrid';
-import ImovelDetalhes from '../components/ImovelDetalhes';
 import RelatorioModal from '../components/RelatorioModal';
 import EditarVistoriaModal from '../components/EditarVistoriaModal';
 import EditarImovelModal from '../components/EditarImovelModal';
@@ -14,6 +13,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ReportIcon from '@mui/icons-material/Assessment';
 import EditIcon from '@mui/icons-material/Edit';
+import {useNavigate} from "react-router-dom";
+
 
 const ImoveisPage: React.FC = () => {
     const cadastroModal = useModal();
@@ -21,9 +22,11 @@ const ImoveisPage: React.FC = () => {
     const editarVistoriaModal = useModal();
     const editarImovelModal = useModal();
     const relatorioModal = useModal();
+    const navigate = useNavigate();
 
-    const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null);
-
+    const handleImovelClick = (imovel: Imovel) => {
+        navigate(`/imovel/${imovel.idImovel}`);
+    };
 
     const handleGenerateReport = (tipoRelatorio: string) => {
         console.log(`Gerando relatório: ${tipoRelatorio}`);
@@ -119,15 +122,8 @@ const ImoveisPage: React.FC = () => {
                 />
             )}
 
-            <ImoveisGrid onImovelClick={setSelectedImovel} />
+            <ImoveisGrid onImovelClick={handleImovelClick} />
 
-            {selectedImovel && (
-                <div className="modal-overlay" onClick={() => setSelectedImovel(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <ImovelDetalhes imovel={selectedImovel} onClose={() => setSelectedImovel(null)} />
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

@@ -1,31 +1,6 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 80%;
-    max-width: 700px;
-    position: relative;
-    animation: fadeIn 0.3s ease-in-out;
-    overflow-y: auto;
-    max-height: 90vh;
-}
 
 .modal h2 {
-    margin: 0 0 7px;
+    margin: 0;
     font-size: 1.5rem;
     color: #333;
     text-align: center;
@@ -33,18 +8,39 @@
 
 .label-imovel {
     display: block;
-    margin-top: 10px;
-    font-size: 0.9rem;
+    margin-top: 15px;
+    font-size: 1rem;
     color: #555;
 }
 
-.input, .select {
+.input-imovel,
+.imovel-select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1rem;
+}
+
+.input-imovel:disabled,
+.imovel-select:disabled {
+    background: #f2f2f2;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #d9534f;
     font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.success {
+    color: #5cb85c;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .modal-actions {
@@ -62,87 +58,48 @@
     transition: background 0.2s;
 }
 
+.modal-actions button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
 .modal-actions button:first-child {
     background: #007bff;
     color: white;
 }
 
-.modal-actions button:first-child:hover {
+.modal-actions button:first-child:hover:not(:disabled) {
     background: #0056b3;
 }
 
-.modal-actions button:nth-child(2) {
+.modal-actions button:last-child {
     background: #d9534f;
     color: white;
 }
 
-.modal-actions button:nth-child(2):hover {
+.modal-actions button:last-child:hover:not(:disabled) {
     background: #c9302c;
 }
 
-.modal-actions button:last-child {
-    background: #6c757d;
-    color: white;
-}
-
-.modal-actions button:last-child:hover {
-    background: #565e64;
-}
-
-.form-container {
+/* Responsive form grid */
+.form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-.dados-imovel, .endereco-imovel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.salvar {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.form-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-@media (max-width: 768px) {
-    .modal {
-        width: 95%;
-        max-width: 95%;
+/* On screens that are large enough, display fields in two columns */
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
     }
 
-    .form-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
+    /* Adjust label margin for grid items */
+    .form-grid .label-imovel {
+        margin-top: 0;
     }
-}
-
-.cancelar {
-    background-color: #ccc;
-    color: black;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 @keyframes fadeIn {

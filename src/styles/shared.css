@@ -1,0 +1,277 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 700px;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.modal-content, .relatorio-modal-content, .imoveis-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    box-sizing: border-box;
+    color: #000;
+}
+
+/* Botões comuns */
+.btn-submit-form, .button-meu-group, .botao-submit {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-submit-form:hover, .button-meu-group:hover, .botao-submit:hover {
+    background-color: #218838;
+    color: white;
+}
+
+/* Botão de exclusão padrão */
+.botao-excluir {
+    background-color: #8c8c8c;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.botao-excluir:hover {
+    background-color: #000000;
+}
+
+/* Grupos de input */
+.input-group {
+    display: flex;
+    align-items: center;
+    background-color: #e0e7ff;
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.input-group .icon {
+    color: #333;
+    margin-right: 0.5rem;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 0.5rem 0;
+    outline: none;
+    color: #333;
+    font-size: 1rem;
+}
+
+/* Mensagens */
+.error-container {
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-title {
+    color: #d32f2f;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.error-message {
+    color: #c62828;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.success-container {
+    background-color: #e8f5e9;
+    border: 1px solid #4caf50;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-message {
+    color: #2e7d32;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Botão de fechar genérico */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 1050;
+}
+
+.close-button:hover {
+    background-color: #e00000;
+}
+
+/* Form validation styles */
+.input-required::after {
+    content: "*";
+    color: red;
+    margin-left: 4px;
+}
+
+.input-error {
+    border: 1px solid red !important;
+    background-color: #fff0f0 !important;
+}
+
+.field-error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Confirmation dialog */
+.confirm-dialog {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 90%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1100;
+}
+
+.confirm-dialog p {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dialog-buttons button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.dialog-buttons button:first-child {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.danger-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.danger-button:hover {
+    background-color: #c82333;
+}
+
+/* Toast notification */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    padding: 12px 20px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+    max-width: 350px;
+}
+
+.toast-success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+    color: #155724;
+}
+
+.toast-error {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+}
+
+.toast-info {
+    background-color: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

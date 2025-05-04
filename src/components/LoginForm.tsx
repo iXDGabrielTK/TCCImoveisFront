@@ -1,35 +1,18 @@
 import { FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa';
-import { login as loginService } from "../services/auth";
+import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
 
 function LoginForm() {
-    const [login, setLogin] = useState('');
-    const [senha, setSenha] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const { login, error, loading } = useAuth();
 
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
-        try {
-            const { token, usuario_Id, tipo } = await loginService(login, senha);
-
-            console.log('Salvando usuarioId no localStorage:', usuario_Id);
-            localStorage.setItem('token', token);
-            console.log('Salvando token no localStorage!');
-            localStorage.setItem('usuarioId', usuario_Id);
-            console.log('Salvando tipoUsuario no localStorage:', tipo);
-            localStorage.setItem('tipoUsuario', tipo);
-
-            navigate('/home');
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            setError('Credenciais inválidas');
-        }
+        await login(username, password);
     }
-
-
 
     return (
         <div className="login-page">
@@ -40,9 +23,10 @@ function LoginForm() {
                     <input
                         type="text"
                         placeholder="Login"
-                        value={login}
-                        onChange={(e) => setLogin(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
+                        disabled={loading}
                     />
                 </div>
                 <div className="input-group">
@@ -50,12 +34,15 @@ function LoginForm() {
                     <input
                         type="password"
                         placeholder="Senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={loading}
                     />
                 </div>
-                <button type="submit">LOGIN</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'CARREGANDO...' : 'LOGIN'}
+                </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <div className="register-link">
                     Não tem uma conta? <Link to="/register">Cadastre-se</Link>

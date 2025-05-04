@@ -1,39 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Imovel } from '../types/Imovel';
 import api from '../services/api';
 import '../styles/ImoveisGrid.css';
+import '../styles/shared.css';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+    message?: string;
+}
 
 interface ImoveisGridProps {
-    onImovelClick: (imovel: Imovel) => void;
+    onImovelClick?: (imovel: Imovel) => void;
 }
 
 const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
+    const navigate = useNavigate();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
     const [tipoResidencia, setTipoResidencia] = useState<string>('');
     const [valor, setValor] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    useEffect(() => {
-        const fetchImoveis = async () => {
-            try {
-                const response = await api.get('/imoveis');
-                setImoveis(response.data);
-                setFilteredImoveis(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar imóveis:", error);
-            }
-        };
-        fetchImoveis();
+    const resetMessages = useCallback(() => {
+        setErrorMessage("");
     }, []);
 
-    useEffect(() => {
-        filterImoveis();
-    }, [tipoResidencia, valor]);
+    const fetchImoveis = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            resetMessages();
+            const response = await api.get('/imoveis');
+            setImoveis(response.data);
+            setFilteredImoveis(response.data);
+        } catch (error: unknown) {
+            console.error("Erro ao buscar imóveis:", error);
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao buscar imóveis. Tente novamente mais tarde.");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [resetMessages]);
 
-    const filterImoveis = () => {
-        let filtered = imoveis;
+    useEffect(() => {
+        const loadImoveis = async () => {
+            await fetchImoveis();
+        };
+        void loadImoveis();
+    }, [fetchImoveis]);
+
+    const filterImoveis = useCallback(() => {
+        let filtered = [...imoveis];
 
         if (tipoResidencia) {
             filtered = filtered.filter(imovel => imovel.tipoImovel === tipoResidencia);
@@ -51,10 +74,21 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
         }
 
         setFilteredImoveis(filtered);
-    };
+    }, [imoveis, tipoResidencia, valor]);
+
+    useEffect(() => {
+        filterImoveis();
+    }, [filterImoveis]);
 
     return (
         <div>
+            {errorMessage && (
+                <div className="error-container">
+                    <p className="error-title">Erro:</p>
+                    <p className="error-message">{errorMessage}</p>
+                </div>
+            )}
+
             <div className="filters">
                 <FormControl variant="standard" sx={{ border: 'none', boxShadow: 'none', minWidth: 120, marginRight: '16px' }}>
                     <InputLabel>Tipo</InputLabel>
@@ -62,7 +96,9 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
                         value={tipoResidencia}
                         onChange={(e) => setTipoResidencia(e.target.value as string)}
                         label="Tipo de Residência"
+                        disabled={isLoading}
                     >
+                        <MenuItem value="">Todos</MenuItem>
                         <MenuItem value="Apartamento">Apartamento</MenuItem>
                         <MenuItem value="Casa">Casa</MenuItem>
                     </Select>
@@ -74,32 +110,46 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
                         value={valor}
                         onChange={(e) => setValor(e.target.value as string)}
                         label="Valor"
+                        disabled={isLoading}
                     >
+                        <MenuItem value="">Sem ordenação</MenuItem>
                         <MenuItem value="Menor Valor">Menor Valor</MenuItem>
                         <MenuItem value="Maior Valor">Maior Valor</MenuItem>
                     </Select>
                 </FormControl>
             </div>
-            <div className="imoveis-grid">
-                {filteredImoveis.map((imovel) => (
-                    <div
-                        key={imovel.idImovel || Math.random()}
-                        className="imovel-card"
-                        onClick={() => onImovelClick(imovel)}
-                    >
-                        <img
-                            src={
-                                imovel.fotosImovel && imovel.fotosImovel.length > 0
-                                    ? imovel.fotosImovel[0]
-                                    : "https://via.placeholder.com/300x200?text=Sem+Imagens"
-                            }
-                            alt={`Foto do imóvel ${imovel.tipoImovel}`}
-                        />
-                        <h3>{imovel.tipoImovel}</h3>
-                        <p>Valor: R$ {imovel.precoImovel}</p>
-                    </div>
-                ))}
-            </div>
+
+            {isLoading ? (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                    <p>Carregando imóveis...</p>
+                </div>
+            ) : (
+                <div className="imoveis-grid">
+                    {filteredImoveis.map((imovel) => {
+                        const primeiraImagem =
+                        typeof imovel.fotosImovel?.[0] === "string" && (imovel.fotosImovel[0] as string).trim() !== ""
+                            ? imovel.fotosImovel[0]
+                            : "https://placehold.co/300x200";
+
+                        return (
+                            <div
+                                key={imovel.idImovel || Math.random()}
+                                className="imovel-card"
+                                onClick={() =>
+                                    onImovelClick ? onImovelClick(imovel) : navigate(`/imovel/${imovel.idImovel}`)
+                                }
+                            >
+                                <img
+                                    src={primeiraImagem}
+                                    alt={`Foto do imóvel ${imovel.tipoImovel}`}
+                                />
+                                <h3>{imovel.tipoImovel}</h3>
+                                <p>Valor: R$ {imovel.precoImovel}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 };

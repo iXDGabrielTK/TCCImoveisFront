@@ -3,6 +3,15 @@ import api from '../services/api';
 import { FaUser, FaPhone, FaLock } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 
+interface RegistrationData {
+    nome: string;
+    telefone: string;
+    login: string;
+    senha: string;
+    tipo: string;
+    cpf?: string;
+}
+
 const RegisterForm: React.FC = () => {
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
@@ -33,7 +42,7 @@ const RegisterForm: React.FC = () => {
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const data: any = {
+        const data: RegistrationData = {
             nome,
             telefone,
             login,

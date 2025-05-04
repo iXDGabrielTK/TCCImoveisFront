@@ -1,5 +1,5 @@
 import "../styles/CancelamentoPopup.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -19,10 +19,26 @@ interface Props {
 const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel }) => {
     const [showConfirmation, setShowConfirmation] = useState<number | null>(null);
     const [cancelReason, setCancelReason] = useState<string>("");
+    const [localAgendamentos, setLocalAgendamentos] = useState<Agendamento[]>(agendamentos);
+
+    // Update local state when props change
+    useEffect(() => {
+        setLocalAgendamentos(agendamentos);
+    }, [agendamentos]);
 
     const handleCancel = (id: number) => {
         if (cancelReason) {
             onCancel(id, cancelReason);
+
+            // Update local state to reflect cancellation
+            setLocalAgendamentos(prevAgendamentos => 
+                prevAgendamentos.map(agendamento => 
+                    agendamento.id === id 
+                        ? { ...agendamento, cancelado: true } 
+                        : agendamento
+                )
+            );
+
             setShowConfirmation(null);
             setCancelReason("");
         } else {
@@ -45,11 +61,11 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
                     X
                 </button>
                 <h2>Seus Agendamentos</h2>
-                {agendamentos.length === 0 ? (
+                {localAgendamentos.length === 0 ? (
                     <p>Nenhum agendamento disponível.</p>
                 ) : (
                     <ul className="agendamento-list">
-                        {agendamentos.map((agendamento) => (
+                        {localAgendamentos.map((agendamento) => (
                             <li
                                 key={agendamento.id}
                                 className={`agendamento-item ${

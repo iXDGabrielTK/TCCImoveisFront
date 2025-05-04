@@ -6,22 +6,23 @@
 }
 
 html, body, #root, main {
-    height: 100%;
+    height: auto;
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
     margin: 0;
     padding: 0;
     width: 100%;
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
+
 .content-wrapper {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-.main-content {
+.footer-main-content {
     flex-grow: 1;
     display: flex;
     justify-content: center;
@@ -29,8 +30,9 @@ html, body, #root, main {
     width: 100%;
 }
 
+
 .footer {
-    position: fixed;
+    position: static;
     bottom: 0;
     left: 0;
     background-color: #14453e;
@@ -73,6 +75,17 @@ html, body, #root, main {
 .social-icons a:hover {
     color: #a0e8af;
 }
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
 
 @media (max-width: 768px) {
     .footer {

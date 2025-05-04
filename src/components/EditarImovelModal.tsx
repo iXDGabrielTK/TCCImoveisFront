@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useCallback } from "react";
 import "../styles/EditarImovel.css";
+import '../styles/shared.css';
 import api from "../services/api.ts";
+import { ApiError, getErrorMessage } from "../utils/errorHandling";
+import { useToast } from "../context/ToastContext";
 
 interface Imovel {
     idImovel: number;
@@ -29,6 +31,7 @@ interface EditarImovelModalProps {
 }
 
 const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }) => {
+    const { showToast } = useToast();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [selectedImovelId, setSelectedImovelId] = useState<string | null>(null);
 
@@ -52,24 +55,37 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-    useEffect(() => {
-        if (isOpen) {
-            fetchImoveis();
-        }
-    }, [isOpen]);
+    const resetMessages = useCallback(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    }, [setErrorMessage, setSuccessMessage]);
 
-    const fetchImoveis = async () => {
+    const fetchImoveis = useCallback(async () => {
+        setIsLoading(true);
+        resetMessages();
         try {
             const response = await api.get('/imoveis');
             setImoveis(response.data);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao buscar imóveis:", error);
-            setErrorMessage("Erro ao buscar imóveis.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao buscar imóveis.");
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [setIsLoading, setImoveis, setErrorMessage, resetMessages]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const loadImoveis = async () => {
+            await fetchImoveis();
+        };
+
+        void loadImoveis();
+    }, [isOpen, fetchImoveis]);
 
     const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const imovelId = event.target.value;
@@ -80,8 +96,8 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
         }
 
         setSelectedImovelId(imovelId);
-        setErrorMessage("");
-        setSuccessMessage("");
+        resetMessages();
+        setIsLoading(true);
 
         try {
             const response = await api.get(`/imoveis/${imovelId}`);
@@ -110,9 +126,12 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                 estado: imovel.enderecoImovel?.estado || '',
                 cep: imovel.enderecoImovel?.cep || '',
             });
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao buscar detalhes do imóvel:", error);
-            setErrorMessage("Erro ao carregar os detalhes do imóvel.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao carregar os detalhes do imóvel.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -138,7 +157,6 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             return;
         }
 
-        // Remove URLs inválidas
         const fotosImovelArray = imagem.filter((url) => url && url.trim() !== "" && url.startsWith("http"));
 
         if (fotosImovelArray.length === 0) {
@@ -161,16 +179,16 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
 
         try {
             setIsLoading(true);
-            setErrorMessage("");
-            setSuccessMessage("");
+            resetMessages();
 
             await api.put(`/imoveis/${selectedImovelId}`, data);
 
             setSuccessMessage("Imóvel atualizado com sucesso!");
-            fetchImoveis();
-        } catch (error) {
+            await fetchImoveis();
+        } catch (error: unknown) {
             console.error("Erro ao editar imóvel:", error);
-            setErrorMessage("Erro ao editar imóvel.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao editar imóvel.");
         } finally {
             setIsLoading(false);
         }
@@ -178,27 +196,32 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
 
 
 
-    const handleCancel = async () => {
+    const handleCancel = () => {
         if (!selectedImovelId) {
-            setErrorMessage("Selecione um imóvel para cancelar.");
+            showToast("Selecione um imóvel para cancelar.", "error");
             return;
         }
 
-        if (!window.confirm("Tem certeza que deseja cancelar este imóvel?")) return;
+        setShowConfirmDialog(true);
+    };
 
+    const proceedWithCancellation = async () => {
         try {
             setIsLoading(true);
-            setErrorMessage("");
-            setSuccessMessage("");
+            resetMessages();
 
-            await axios.put(`/imoveis/${selectedImovelId}/cancelar`);
+            await api.put(`/imoveis/${selectedImovelId}/cancelar`);
+            showToast("Imóvel cancelado com sucesso!", "success");
             setSuccessMessage("Imóvel cancelado com sucesso!");
             await fetchImoveis();
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao cancelar imóvel:", error);
-            setErrorMessage("Erro ao cancelar imóvel.");
+            const apiError = error as ApiError;
+            showToast(getErrorMessage(apiError), "error");
+            setErrorMessage(getErrorMessage(apiError));
         } finally {
             setIsLoading(false);
+            setShowConfirmDialog(false);
         }
     };
 
@@ -208,12 +231,22 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
         <div className="modal-overlay">
             <div className="modal">
                 <h2>Editar Imóvel</h2>
-                {errorMessage && <p className="error">{errorMessage}</p>}
-                {successMessage && <p className="success">{successMessage}</p>}
+                {errorMessage && (
+                    <div className="error-container">
+                        <p className="error-title">Erro:</p>
+                        <p className="error-message">{errorMessage}</p>
+                    </div>
+                )}
+                {successMessage && (
+                    <div className="success-container">
+                        <p className="success-message">{successMessage}</p>
+                    </div>
+                )}
 
-                <label htmlFor="imovel-select">Selecione o imóvel:</label>
+                <label htmlFor="imovel-select" className="label-imovel">Selecione o imóvel:</label>
                 <select
                     id="imovel-select"
+                    className="imovel-select"
                     value={selectedImovelId || ""}
                     onChange={handleSelectChange}
                     disabled={isLoading}
@@ -228,145 +261,169 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
 
                 {selectedImovelId && (
                     <>
-                        <div className="form-container">
-                            <div className="dados-imovel">
-                                <h2>Dados do Imóvel</h2>
-                                <label htmlFor="tipo" className={"label-imovel"}>Tipo do Imóvel:</label>
-                                <input
-                                    id="tipo"
-                                    type="text"
-                                    className="input"
-                                    value={tipoImovel}
-                                    onChange={(e) => setTipoImovel(e.target.value)}
-                                    disabled={isLoading}
-                                />
+                        <label htmlFor="tipo" className="label-imovel">Tipo do Imóvel:</label>
+                        <input
+                            id="tipo"
+                            type="text"
+                            className="input-imovel"
+                            value={tipoImovel}
+                            onChange={(e) => setTipoImovel(e.target.value)}
+                            disabled={isLoading}
+                        />
 
-                                <label htmlFor="descricao" className={"label-imovel"}>Descrição:</label>
-                                <input
-                                    id="descricao"
-                                    type="text"
-                                    className="input"
-                                    value={descricaoImovel}
-                                    onChange={(e) => setDescricaoImovel(e.target.value)}
-                                    disabled={isLoading}
-                                />
+                        <label htmlFor="descricao" className="label-imovel">Descrição:</label>
+                        <input
+                            id="descricao"
+                            type="text"
+                            className="input-imovel"
+                            value={descricaoImovel}
+                            onChange={(e) => setDescricaoImovel(e.target.value)}
+                            disabled={isLoading}
+                        />
 
-                                <label htmlFor="status" className={"label-imovel"}>Status:</label>
-                                <select
-                                    id="status"
-                                    className="select"
-                                    value={statusImovel ? "Ativo" : "Inativo"}
-                                    onChange={(e) => setStatusImovel(e.target.value === "Ativo")}
-                                    disabled={isLoading}
-                                >
-                                    <option value="Ativo">Ativo</option>
-                                    <option value="Inativo">Inativo</option>
-                                </select>
+                        <label htmlFor="status" className="label-imovel">Status:</label>
+                        <select
+                            id="status"
+                            className="imovel-select"
+                            value={statusImovel ? "Ativo" : "Inativo"}
+                            onChange={(e) => setStatusImovel(e.target.value === "Ativo")}
+                            disabled={isLoading}
+                        >
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                        </select>
 
-                                <label htmlFor="tamanho" className={"label-imovel"}>Tamanho:</label>
-                                <input
-                                    id="tamanho"
-                                    type="number"
-                                    className="input"
-                                    value={tamanhoImovel}
-                                    onChange={(e) => setTamanhoImovel(parseInt(e.target.value))}
-                                    disabled={isLoading}
-                                />
-                                <label htmlFor="preco" className={"label-imovel"}>Preço:</label>
-                                <input
-                                    id="preco"
-                                    type="number"
-                                    className="input"
-                                    value={precoImovel}
-                                    onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
-                                    disabled={isLoading}
-                                />
-                                <label htmlFor="historico" className={"label-imovel"}>Histórico Manutenção:</label>
-                                <input
-                                    id="historico"
-                                    type="text"
-                                    className="input"
-                                    value={historicoManutencao}
-                                    onChange={(e) => setHistoricoManutencao(e.target.value)}
-                                    disabled={isLoading}
-                                />
-                                <label htmlFor="fotos" className={"label-imovel"}>Fotos:</label>
-                                <input
-                                    type="text"
-                                    className="input"
-                                    value={imagem.join(", ")}
-                                    onChange={(e) => handleImageInputChange(e.target.value)}
-                                    style={{width: "100%"}}
-                                />
-                            </div>
-                            <div className="endereco-imovel">
-                                <h2>Endereço do Imóvel</h2>
-                                <label htmlFor="rua" className={"label-imovel"}>Rua:</label>
+                        <label htmlFor="tamanho" className="label-imovel">Tamanho:</label>
+                        <input
+                            id="tamanho"
+                            type="number"
+                            className="input-imovel"
+                            value={tamanhoImovel}
+                            onChange={(e) => setTamanhoImovel(parseInt(e.target.value))}
+                            disabled={isLoading}
+                        />
+
+                        <label htmlFor="preco" className="label-imovel">Preço:</label>
+                        <input
+                            id="preco"
+                            type="number"
+                            className="input-imovel"
+                            value={precoImovel}
+                            onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
+                            disabled={isLoading}
+                        />
+
+                        <label htmlFor="historico" className="label-imovel">Histórico Manutenção:</label>
+                        <input
+                            id="historico"
+                            type="text"
+                            className="input-imovel"
+                            value={historicoManutencao}
+                            onChange={(e) => setHistoricoManutencao(e.target.value)}
+                            disabled={isLoading}
+                        />
+
+                        <label htmlFor="fotos" className="label-imovel">Fotos:</label>
+                        <input
+                            id="fotos"
+                            type="text"
+                            className="input-imovel"
+                            value={imagem.join(", ")}
+                            onChange={(e) => handleImageInputChange(e.target.value)}
+                        />
+
+                        <div className="form-grid">
+                            <div>
+                                <label htmlFor="rua" className="label-imovel">Rua:</label>
                                 <input
                                     id="rua"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.rua}
                                     onChange={(e) => handleEnderecoChange('rua', e.target.value)}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="numero" className={"label-imovel"}>Número:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="numero" className="label-imovel">Número:</label>
                                 <input
                                     id="numero"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.numero}
                                     onChange={(e) => handleEnderecoChange('numero', e.target.value)}
                                     disabled={isLoading}
                                 />
-                                <label htmlFor="complemento" className={"label-imovel"}>Complemento:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="complemento" className="label-imovel">Complemento:</label>
                                 <input
                                     id="complemento"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.complemento}
                                     onChange={(e) => handleEnderecoChange('complemento', e.target.value)}
+                                    disabled={isLoading}
                                 />
-                                <label htmlFor="bairro" className={"label-imovel"}>Bairro:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="bairro" className="label-imovel">Bairro:</label>
                                 <input
                                     id="bairro"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.bairro}
                                     onChange={(e) => handleEnderecoChange('bairro', e.target.value)}
+                                    disabled={isLoading}
                                 />
-                                <label htmlFor="cidade" className={"label-imovel"}>Cidade:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="cidade" className="label-imovel">Cidade:</label>
                                 <input
                                     id="cidade"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.cidade}
                                     onChange={(e) => handleEnderecoChange('cidade', e.target.value)}
+                                    disabled={isLoading}
                                 />
-                                <label htmlFor="estado" className={"label-imovel"}>Estado:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="estado" className="label-imovel">Estado:</label>
                                 <input
                                     id="estado"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.estado}
                                     onChange={(e) => handleEnderecoChange('estado', e.target.value)}
+                                    disabled={isLoading}
                                 />
-                                <label htmlFor="cep" className={"label-imovel"}>CEP:</label>
+                            </div>
+
+                            <div>
+                                <label htmlFor="cep" className="label-imovel">CEP:</label>
                                 <input
                                     id="cep"
                                     type="text"
-                                    className="input"
+                                    className="input-imovel"
                                     value={endereco.cep}
                                     onChange={(e) => setEndereco({...endereco, cep: e.target.value})}
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>
+
                         <div className="modal-actions">
                             <button onClick={handleEdit} disabled={isLoading}>
                                 {isLoading ? "Salvando..." : "Salvar"}
                             </button>
                             <button onClick={handleCancel} disabled={isLoading}>
-                                {isLoading ? "Cancelando..." : "Cancelar"}
+                                {isLoading ? "Apagando..." : "Apagar Imóvel"}
                             </button>
                         </div>
                     </>
@@ -376,6 +433,22 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
                     Fechar
                 </button>
             </div>
+
+            {showConfirmDialog && (
+                <div className="confirm-dialog">
+                    <p>Tem certeza que deseja <strong>apagar</strong> este imóvel? Esta ação não pode ser desfeita.</p>
+                    <div className="dialog-buttons">
+                        <button onClick={() => setShowConfirmDialog(false)}>Não</button>
+                        <button 
+                            onClick={proceedWithCancellation}
+                            className="danger-button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processando..." : "Sim, apagar"}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

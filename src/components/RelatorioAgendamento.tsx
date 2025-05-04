@@ -43,7 +43,7 @@ const RelatorioAgendamentos: React.FC = () => {
             });
 
             const totalAgendamentos = dados.reduce((acc, item) => acc + item.quantidadeAgendamentos, 0);
-            const finalY = (table as any).finalY;
+            const finalY = table.finalY;
             doc.text(`Total de Agendamentos no mês 2024-12: ${totalAgendamentos}`, 10, finalY + 10);
 
             doc.save("relatorio-agendamentos-2024-12.pdf");

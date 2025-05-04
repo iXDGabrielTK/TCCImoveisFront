@@ -10,7 +10,7 @@
   background-color: #ffffff;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 400px;
   max-width: 90%;
   text-align: center;
@@ -77,7 +77,7 @@
   padding: 12px;
   border: none;
   border-radius: 25px;
-  background-color: #007bff;
+  background: linear-gradient(90deg, #14453e, #2e7d64);
   color: white;
   font-size: 16px;
   font-weight: bold;
@@ -87,7 +87,7 @@
 }
 
 .register-form button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(90deg, #2e7d64, #4CAF50);
 }
 
 .register-form .error-message {

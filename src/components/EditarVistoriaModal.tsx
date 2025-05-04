@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../services/api";
 import "../styles/EditarVistoria.css";
+import "../styles/shared.css";
+import { ApiError, getErrorMessage } from "../utils/errorHandling";
+import { useToast } from "../context/ToastContext";
 
 interface Vistoria {
     idVistoria: number;
@@ -15,6 +18,7 @@ interface EditarVistoriaModalProps {
 }
 
 const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClose }) => {
+    const { showToast } = useToast();
     const [vistorias, setVistorias] = useState<Vistoria[]>([]);
     const [selectedVistoria, setSelectedVistoria] = useState<number | null>(null);
     const [tipoVistoria, setTipoVistoria] = useState<string>("");
@@ -23,103 +27,116 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-    useEffect(() => {
-        if (isOpen) {
-            fetchVistorias();
-        }
-    }, [isOpen]);
+    const resetMessages = useCallback(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    }, [setErrorMessage, setSuccessMessage]);
 
-    const fetchVistorias = async () => {
+    const fetchVistorias = useCallback(async () => {
         try {
             setIsLoading(true);
-            setErrorMessage("");
+            resetMessages();
             const response = await api.get("/vistorias");
             setVistorias(response.data);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao buscar vistorias:", error);
-            setErrorMessage("Erro ao buscar vistorias.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao buscar vistorias.");
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [setIsLoading, setVistorias, setErrorMessage, resetMessages]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const loadVistorias = async () => {
+            await fetchVistorias();
+        };
+
+        void loadVistorias(); 
+    }, [isOpen, fetchVistorias]);
+
+
 
     const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const vistoriaId = parseInt(event.target.value, 10);
 
         if (isNaN(vistoriaId)) {
-            setErrorMessage("Erro: ID da vistoria inválido.");
+            setErrorMessage("ID da vistoria inválido.");
             return;
         }
 
         setSelectedVistoria(vistoriaId);
-        setErrorMessage("");
-        setSuccessMessage("");
+        resetMessages();
 
         try {
-            console.log(`Buscando detalhes para vistoria ID: ${vistoriaId}`);
             const response = await api.get(`/vistorias/${vistoriaId}`);
             const vistoria = response.data;
 
             setTipoVistoria(vistoria.tipoVistoria);
             setLaudoVistoria(vistoria.laudoVistoria);
             setDataVistoria(vistoria.dataVistoria);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Erro ao buscar detalhes da vistoria:", error);
-            setErrorMessage("Erro ao carregar os detalhes da vistoria.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao carregar os detalhes da vistoria.");
         }
     };
 
-
-    const handleEdit = async () => {
+    const handleSaveEdicao = async () => {
         if (!selectedVistoria || !tipoVistoria || !laudoVistoria || !dataVistoria) {
             setErrorMessage("Todos os campos devem ser preenchidos.");
             return;
         }
 
-        const formattedDate = new Date(dataVistoria).toISOString().split('T')[0];
-
         try {
             setIsLoading(true);
-            setErrorMessage("");
-            setSuccessMessage("");
+            resetMessages();
             await api.put(`/vistorias/${selectedVistoria}`, {
                 tipoVistoria,
                 laudoVistoria,
-                dataVistoria: formattedDate,
+                dataVistoria, // já está no formato "yyyy-mm-dd"
             });
             setSuccessMessage("Vistoria editada com sucesso!");
-            fetchVistorias();
-        } catch (error) {
+            await fetchVistorias();
+        } catch (error: unknown) {
             console.error("Erro ao editar vistoria:", error);
-            setErrorMessage("Erro ao editar vistoria.");
+            const apiError = error as ApiError;
+            setErrorMessage(apiError?.response?.data?.message || "Erro ao editar vistoria.");
         } finally {
             setIsLoading(false);
         }
     };
 
-
-
-    const handleCancel = async () => {
+    const handleCancelarVistoria = () => {
         if (!selectedVistoria) {
+            showToast("Selecione uma vistoria para cancelar.", "error");
             setErrorMessage("Selecione uma vistoria para cancelar.");
             return;
         }
 
-        if (!window.confirm("Tem certeza que deseja cancelar esta vistoria?")) return;
+        setShowConfirmDialog(true);
+    };
 
+    const proceedWithCancellation = async () => {
         try {
             setIsLoading(true);
-            setErrorMessage("");
-            setSuccessMessage("");
+            resetMessages();
             await api.put(`/vistorias/${selectedVistoria}/cancelar`);
+            showToast("Vistoria cancelada com sucesso!", "success");
             setSuccessMessage("Vistoria cancelada com sucesso!");
-            fetchVistorias();
-        } catch (error) {
+            await fetchVistorias();
+        } catch (error: unknown) {
             console.error("Erro ao cancelar vistoria:", error);
-            setErrorMessage("Erro ao cancelar vistoria.");
+            const apiError = error as ApiError;
+            showToast(getErrorMessage(apiError), "error");
+            setErrorMessage(getErrorMessage(apiError));
         } finally {
             setIsLoading(false);
+            setShowConfirmDialog(false);
         }
     };
 
@@ -129,10 +146,19 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
         <div className="modal-overlay">
             <div className="modal">
                 <h2>Editar Vistoria</h2>
-                {errorMessage && <p className="error">{errorMessage}</p>}
-                {successMessage && <p className="success">{successMessage}</p>}
+                {errorMessage && (
+                    <div className="error-container">
+                        <p className="error-title">Erro:</p>
+                        <p className="error-message">{errorMessage}</p>
+                    </div>
+                )}
+                {successMessage && (
+                    <div className="success-container">
+                        <p className="success-message">{successMessage}</p>
+                    </div>
+                )}
 
-                <label htmlFor="vistoria-select" className={"label-vistoria"}>Selecione a vistoria:</label>
+                <label htmlFor="vistoria-select" className="label-vistoria">Selecione a vistoria:</label>
                 <select
                     id="vistoria-select"
                     className="vistoria-select"
@@ -148,10 +174,9 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                     ))}
                 </select>
 
-
                 {selectedVistoria && (
                     <>
-                        <label htmlFor="tipo" className={"label-vistoria"}>Tipo da Vistoria:</label>
+                        <label htmlFor="tipo" className="label-vistoria">Tipo da Vistoria:</label>
                         <input
                             id="tipo"
                             type="text"
@@ -161,7 +186,7 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                             disabled={isLoading}
                         />
 
-                        <label htmlFor="laudo" className={"label-vistoria"}>Laudo da Vistoria:</label>
+                        <label htmlFor="laudo" className="label-vistoria">Laudo da Vistoria:</label>
                         <input
                             id="laudo"
                             type="text"
@@ -171,7 +196,7 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                             disabled={isLoading}
                         />
 
-                        <label htmlFor="data" className={"label-vistoria"}>Data da Vistoria:</label>
+                        <label htmlFor="data" className="label-vistoria">Data da Vistoria:</label>
                         <input
                             id="data"
                             type="date"
@@ -182,11 +207,11 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                         />
 
                         <div className="modal-actions">
-                            <button onClick={handleEdit} disabled={isLoading}>
+                            <button onClick={handleSaveEdicao} disabled={isLoading}>
                                 {isLoading ? "Salvando..." : "Salvar"}
                             </button>
-                            <button onClick={handleCancel} disabled={isLoading}>
-                                {isLoading ? "Cancelando..." : "Cancelar"}
+                            <button onClick={handleCancelarVistoria} disabled={isLoading}>
+                                {isLoading ? "Cancelando..." : "Cancelar Vistoria"}
                             </button>
                         </div>
                     </>
@@ -196,6 +221,22 @@ const EditarVistoriaModal: React.FC<EditarVistoriaModalProps> = ({ isOpen, onClo
                     Fechar
                 </button>
             </div>
+
+            {showConfirmDialog && (
+                <div className="confirm-dialog">
+                    <p>Tem certeza que deseja <strong>cancelar</strong> esta vistoria? Esta ação não pode ser desfeita.</p>
+                    <div className="dialog-buttons">
+                        <button onClick={() => setShowConfirmDialog(false)}>Não</button>
+                        <button 
+                            onClick={proceedWithCancellation}
+                            className="danger-button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processando..." : "Sim, cancelar"}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

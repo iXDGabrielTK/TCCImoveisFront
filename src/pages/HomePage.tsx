@@ -1,32 +1,19 @@
-import React, { useState } from 'react';
-import '../styles/HomePage.css';
-import Footer from '../components/Footer';
-import ImoveisGrid from '../components/ImoveisGrid';
-import ImovelDetalhes from '../components/ImovelDetalhes';
-import { Imovel } from '../types/Imovel';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import ImoveisGrid from "../components/ImoveisGrid";
+import { Imovel } from "../types/Imovel";
+import "../styles/HomePage.css";
 
 const HomePage: React.FC = () => {
-    const [selectedImovel, setSelectedImovel] = useState<Imovel | null>(null);
+    const navigate = useNavigate();
 
-    const handleOpenDetalhesModal = (imovel: Imovel) => {
-        setSelectedImovel(imovel);
-    };
-
-    const handleCloseDetalhesModal = () => {
-        setSelectedImovel(null);
+    const handleOpenDetalhes = (imovel: Imovel) => {
+        navigate(`/imovel/${imovel.idImovel}`);
     };
 
     return (
         <div className="home-page">
-            <ImoveisGrid onImovelClick={handleOpenDetalhesModal} />
-            {selectedImovel && (
-                <div className="modal-overlay" onClick={handleCloseDetalhesModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <ImovelDetalhes imovel={selectedImovel} onClose={handleCloseDetalhesModal} />
-                    </div>
-                </div>
-            )}
-            <Footer />
+            <ImoveisGrid onImovelClick={handleOpenDetalhes} />
         </div>
     );
 };
