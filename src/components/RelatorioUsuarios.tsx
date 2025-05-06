@@ -31,9 +31,9 @@ const RelatorioUsuarios: React.FC = () => {
 
             const colunas = ["ID do Usuário", "Nome", "Quantidade de Acessos"];
             const linhas = dados.map((item) => [
-                item.idUsuario,
+                item.idUsuario.toString(),
                 item.nomeUsuario,
-                item.quantidadeAcessos,
+                item.quantidadeAcessos.toString(),
             ]);
 
             doc.autoTable({

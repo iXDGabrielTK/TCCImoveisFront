@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo  } from "react";
 import {
     Box,
     Typography,
@@ -20,15 +20,20 @@ interface ImovelDetalhesProps {
 }
 
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
-    const imageUrls = Array.isArray(imovel.fotosImovel)
-        ? imovel.fotosImovel
-            .map(f => f.urlFotoImovel)
-            .filter(url => typeof url === "string" && url.includes("http"))
-            .flatMap(url => url.split(','))
-        : [];
+    const imageUrls = useMemo(() => {
+        return Array.isArray(imovel.fotosImovel)
+            ? imovel.fotosImovel
+                .map(f => typeof f === "string" ? f : f.urlFotoImovel)
+                .filter(url => typeof url === "string" && url.includes("http"))
+                .flatMap(url => url.split(','))
+            : [];
+    }, [imovel.fotosImovel]);
 
-    console.log("imageUrls:", imageUrls);
 
+    useEffect(() => {
+        console.log("imageUrls:", imageUrls);
+        console.log("imovel completo:", imovel);
+    }, [imageUrls, imovel]);
 
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [periodo, setPeriodo] = useState<string>("Manhã");
@@ -36,14 +41,17 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
     const holidays = getHolidays(new Date().getFullYear());
 
     const handleAgendarVisita = async () => {
-        const token = localStorage.getItem("token");
-        const usuarioIdRaw = localStorage.getItem("usuarioId");
+        const token = localStorage.getItem("access_token"); // corrigido
+        const usuarioIdRaw = localStorage.getItem("usuario_Id"); // corrigido
         const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
+
+        console.log({ token, usuarioId, startDate, nomeVisitante });
 
         if (!token || !usuarioId || !startDate || !nomeVisitante.trim()) {
             alert("Preencha todos os campos corretamente e faça login.");
             return;
         }
+
 
         const formattedDate = startDate.toISOString().split("T")[0];
         const data = {
@@ -65,11 +73,29 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                alert(`Erro: ${errorData.error || "Erro desconhecido."}`);
-            } else {
-                alert("Agendamento realizado com sucesso!");
+                let errorMessage = "Erro desconhecido.";
+
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch (parseError) {
+                    console.error("Erro ao interpretar resposta JSON:", parseError);
+
+                    if (response.status === 400) {
+                        errorMessage = "Já existe um agendamento para esse imóvel nessa data.";
+                    } else if (response.status === 401) {
+                        errorMessage = "Você precisa estar logado para agendar.";
+                    } else if (response.status === 403) {
+                        errorMessage = "Você não tem permissão para agendar este imóvel.";
+                    } else if (response.status === 500) {
+                        errorMessage = "Erro interno no servidor.";
+                    }
+                }
+
+                alert(`Erro: ${errorMessage}`);
+                return;
             }
+
         } catch (error) {
             console.error("Erro:", error);
             alert("Erro de conexão com o servidor.");

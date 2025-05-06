@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React, { useEffect } from 'react';
 import CadastroImovelForm from '../components/CadastroImovelForm';
 import VistoriaForm from '../components/VistoriaForm';
 import ImoveisGrid from '../components/ImoveisGrid';
@@ -13,8 +13,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ReportIcon from '@mui/icons-material/Assessment';
 import EditIcon from '@mui/icons-material/Edit';
-import {useNavigate} from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 const ImoveisPage: React.FC = () => {
     const cadastroModal = useModal();
@@ -23,6 +22,7 @@ const ImoveisPage: React.FC = () => {
     const editarImovelModal = useModal();
     const relatorioModal = useModal();
     const navigate = useNavigate();
+    const isAuthenticated = true; // Exemplo de verificação de autenticação
 
     const handleImovelClick = (imovel: Imovel) => {
         navigate(`/imovel/${imovel.idImovel}`);
@@ -31,6 +31,16 @@ const ImoveisPage: React.FC = () => {
     const handleGenerateReport = (tipoRelatorio: string) => {
         console.log(`Gerando relatório: ${tipoRelatorio}`);
     };
+
+    const fetchImoveis = () => {
+        console.log('Fetching imóveis...');
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) { // Certifique-se de que esta verificação está presente
+            fetchImoveis(); // Evite chamadas automáticas antes de o login estar resolvido
+        }
+    }, [isAuthenticated]);
 
     return (
         <div className="imoveis-page">

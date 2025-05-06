@@ -5,13 +5,13 @@ import ImoveisPage from './pages/ImoveisPage';
 import LoginForm from './components/LoginForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
-import PrivateRoute from "./components/PrivateRoute.tsx";
-import RelatorioUsuarios from "./components/RelatorioUsuarios";
-import RelatorioAgendamentos from "./components/RelatorioAgendamento.tsx";
-import RelatorioVistorias from "./components/RelatorioVistoria.tsx";
-import ImovelDetalhesPage from "./pages/ImovelDetalhesPage";
-import { ToastProvider } from './context/ToastContext';
-import { AuthProvider } from './context/AuthContext.tsx';
+import PrivateRoute from './components/PrivateRoute';
+import RelatorioUsuarios from './components/RelatorioUsuarios';
+import RelatorioAgendamentos from './components/RelatorioAgendamento';
+import RelatorioVistorias from './components/RelatorioVistoria';
+import ImovelDetalhesPage from './pages/ImovelDetalhesPage';
+import { ToastProvider } from './context/ToastProvider';
+import { AuthProvider } from './context/AuthContext';
 
 const App: React.FC = () => {
     return (
@@ -28,7 +28,14 @@ const App: React.FC = () => {
                                     </PrivateRoute>
                                 }
                             />
-                            <Route path="/imovel/:id" element={<ImovelDetalhesPage />} />
+                            <Route
+                                path="imovel/:id"
+                                element={
+                                    <PrivateRoute>
+                                        <ImovelDetalhesPage />
+                                    </PrivateRoute>
+                                }
+                            />
                             <Route
                                 path="relatorio-usuarios"
                                 element={
@@ -54,7 +61,7 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/home"
+                                path="home"
                                 element={
                                     <PrivateRoute>
                                         <HomePage />
@@ -62,8 +69,8 @@ const App: React.FC = () => {
                                 }
                             />
                         </Route>
-                        <Route path="login" element={<LoginForm />} />
-                        <Route path="register" element={<Register />} />
+                        <Route path="/login" element={<LoginForm />} />
+                        <Route path="/register" element={<Register />} />
                     </Routes>
                 </AuthProvider>
             </Router>

@@ -20,7 +20,7 @@ import { Close as CloseIcon, Person as PersonIcon, Save as SaveIcon, Delete as D
 interface UserProfile {
     id: number;
     nome: string;
-    login: string;
+    email: string;
     senha: string;
     telefone: string;
     tipo_usuario: string;
@@ -41,7 +41,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
             setLoading(true);
             setError(null);
             try {
-                const userId = localStorage.getItem("usuarioId");
+                const userId = localStorage.getItem("usuario_Id");
                 if (!userId) {
                     console.error("ID do usuário não encontrado no localStorage.");
                     setError("ID do usuário não encontrado. Por favor, faça login novamente.");
@@ -77,7 +77,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                     tipo: user.tipo_usuario || "visitante",
                     nome: user.nome,
                     telefone: user.telefone,
-                    login: user.login,
+                    email: user.email,
                     senha: user.senha,
                 };
 
@@ -111,7 +111,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
             setLoading(true);
             if (user) {
                 await api.delete(`/usuarios/${user.id}`);
-                localStorage.removeItem("usuarioId");
+                localStorage.removeItem("usuario_Id");
                 setOpenDeleteDialog(false);
                 onClose();
             }
@@ -207,10 +207,10 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                             <Grid size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
-                                    label="Login"
+                                    label="Email"
                                     variant="outlined"
-                                    value={user.login}
-                                    onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, "login")}
+                                    value={user.email}
+                                    onChange={(e) => handleInputChange(e as React.ChangeEvent<HTMLInputElement>, "email")}
                                     sx={{ mb: 2 }}
                                 />
                             </Grid>

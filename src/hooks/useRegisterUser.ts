@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 interface RegisterData {
   nome: string;
   telefone: string;
-  login: string;
+  email: string;
   senha: string;
   tipo: boolean;
 }

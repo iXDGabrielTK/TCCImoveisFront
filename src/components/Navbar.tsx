@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AgendamentosPopUp from "./AgendamentoPopUp";
 import PerfilPopup from "./PerfilPopup.tsx";
 import { fetchAgendamentos, cancelarAgendamento, Agendamento } from "../services/agendamentoService.ts";
@@ -31,6 +31,8 @@ const Navbar: React.FC = () => {
         logout();
     };
 
+    const isOnImoveisPage = location.pathname === "/imoveis";
+
     return (
         <nav className="navbar">
             <div className="left">
@@ -60,8 +62,13 @@ const Navbar: React.FC = () => {
                                         await fetchUserAgendamentos();
                                         setShowAgendamentoPopup(true);
                                     }}>Agendamentos</button>
+
                                     <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
-                                    {location.pathname === "/home" && hasRole('funcionario') && <Link to="/imoveis">Imóveis</Link>}
+
+                                    {hasRole("funcionario") && !isOnImoveisPage && (
+                                        <Link to="/imoveis">Imóveis</Link>
+                                    )}
+
                                     <button onClick={handleLogout}>Logout</button>
                                 </>
                             )}

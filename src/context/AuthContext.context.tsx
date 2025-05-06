@@ -46,7 +46,7 @@ export interface AuthContextType {
     user: User | null;                                   // Dados do usuário autenticado
     loading: boolean;                                    // Indica se está carregando dados de autenticação
     error: string | null;                                // Mensagem de erro, se houver
-    login: (login: string, senha: string) => Promise<void>; // Função para fazer login
+    login: (email: string, senha: string) => Promise<void>; // Função para fazer login
     logout: () => void;                                  // Função para fazer logout
     hasRole: (role: string) => boolean;                  // Função para verificar se o usuário tem determinado papel
     refreshToken: () => Promise<boolean>;                // Função para atualizar o token de acesso

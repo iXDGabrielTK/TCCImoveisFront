@@ -28,7 +28,7 @@ const RelatorioVistorias: React.FC = () => {
 
             const colunas = ["ID do Imóvel", "Nome do Imóvel", "Data da Vistoria", "Detalhes"];
             const linhas = dados.map((item) => [
-                item.idImovel,
+                item.idImovel.toString(),
                 item.nomeImovel,
                 item.dataVistoria,
                 item.detalhes,

@@ -10,37 +10,41 @@ const ImovelDetalhesPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchImovel = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/imoveis/${id}`);
-            console.log("Status da resposta:", response.status);
+        if (!id) return;
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Resposta de erro:", errorText);
-                throw new Error("Imóvel não encontrado");
+        const fetchImovelData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/imoveis/${id}`);
+                if (!response.ok) {
+                    console.error("Erro ao buscar imóvel");
+                    alert("Imóvel não encontrado.");
+                    navigate("/home");
+                    return;
+                }
+
+                const data: Imovel = await response.json();
+                setImovel(data);
+            } catch (error) {
+                console.error("Erro ao buscar imóvel:", error);
+                alert("Imóvel não encontrado.");
+                navigate("/home");
+            } finally {
+                setLoading(false);
             }
+        };
 
-            const data = await response.json();
-            console.log("Dados do imóvel:", data);
-            setImovel(data);
-        } catch (err) {
-            console.error("Erro no fetch:", err);
-            alert("Imóvel não encontrado");
-            navigate("/home");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-        fetchImovel();
+        // Evita aviso de Promise ignorada
+        fetchImovelData().catch(console.error);
     }, [id, navigate]);
 
     if (loading) return <p>Carregando...</p>;
     if (!imovel) return <p>Imóvel não encontrado.</p>;
 
-    return <ImovelDetalhes imovel={imovel} />;
+    return (
+        <div>
+            <ImovelDetalhes imovel={imovel} />
+        </div>
+    );
 };
 
 export default ImovelDetalhesPage;

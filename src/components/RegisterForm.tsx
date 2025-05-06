@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 interface RegistrationData {
     nome: string;
     telefone: string;
-    login: string;
+    email: string;
     senha: string;
     tipo: string;
     cpf?: string;
@@ -15,7 +15,7 @@ interface RegistrationData {
 const RegisterForm: React.FC = () => {
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
-    const [login, setLogin] = useState('');
+    const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [tipo, setTipo] = useState(true);
     const [cpf, setCpf] = useState('');
@@ -26,7 +26,6 @@ const RegisterForm: React.FC = () => {
     const navigate = useNavigate();
 
     function isValidCPF(value: string) {
-        if (typeof value !== 'string') return false;
         value = value.replace(/[^\d]+/g, '');
         if (value.length !== 11 || !!value.match(/(\d)\1{10}/)) return false;
 
@@ -45,7 +44,7 @@ const RegisterForm: React.FC = () => {
         const data: RegistrationData = {
             nome,
             telefone,
-            login,
+            email,
             senha,
             tipo: tipo ? "visitante" : "funcionario",
         };
@@ -126,9 +125,9 @@ const RegisterForm: React.FC = () => {
                 <FaUser className="icon" />
                 <input
                     type="text"
-                    placeholder="Login"
-                    value={login}
-                    onChange={(e) => setLogin(e.target.value)}
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                 />
             </div>

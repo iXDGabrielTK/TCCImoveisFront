@@ -3,7 +3,7 @@ import api from '../services/api';
 import { AxiosResponse, AxiosError } from 'axios';
 
 interface LoginData {
-  login: string;
+  email: string;
   senha: string;
 }
 

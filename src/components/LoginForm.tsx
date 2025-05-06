@@ -5,13 +5,13 @@ import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
 
 function LoginForm() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login, error, loading } = useAuth();
 
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
-        await login(username, password);
+        await login(email, password);
     }
 
     return (
@@ -22,9 +22,9 @@ function LoginForm() {
                     <FaUser className="icon" />
                     <input
                         type="text"
-                        placeholder="Login"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={loading}
                     />
@@ -34,6 +34,7 @@ function LoginForm() {
                     <input
                         type="password"
                         placeholder="Senha"
+                        autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
