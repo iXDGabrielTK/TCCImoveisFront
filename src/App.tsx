@@ -10,7 +10,9 @@ import RelatorioUsuarios from './components/RelatorioUsuarios';
 import RelatorioAgendamentos from './components/RelatorioAgendamento';
 import RelatorioVistorias from './components/RelatorioVistoria';
 import ImovelDetalhesPage from './pages/ImovelDetalhesPage';
-import { ToastProvider } from './context/ToastProvider';
+import CalculadoraFinanciamento from "./components/CalculadoraFinanciamento.tsx";
+import ImoveisFiltradosPage from './pages/ImoveisFiltradosValorPage';
+import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
 
 const App: React.FC = () => {
@@ -20,6 +22,22 @@ const App: React.FC = () => {
                 <AuthProvider>
                     <Routes>
                         <Route path="/" element={<MainLayout />}>
+                            <Route
+                                path="/imoveis-filtrados"
+                                element={
+                                    <PrivateRoute>
+                                        <ImoveisFiltradosPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="financiamento"
+                                element={
+                                    <PrivateRoute>
+                                        <CalculadoraFinanciamento />
+                                    </PrivateRoute>
+                                }
+                            />
                             <Route
                                 path="imoveis"
                                 element={

@@ -1,29 +1,28 @@
+// ImovelDetalhesPage.tsx
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ImovelDetalhes from "../components/ImovelDetalhes";
 import { Imovel } from "../types/Imovel";
+import api from "../services/api";
 
 const ImovelDetalhesPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [imovel, setImovel] = useState<Imovel | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // 👇 Recebendo a origem da navegação anterior (ou default "padrao")
+    const origem = location.state?.origem ?? "padrao";
 
     useEffect(() => {
         if (!id) return;
 
         const fetchImovelData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/imoveis/${id}`);
-                if (!response.ok) {
-                    console.error("Erro ao buscar imóvel");
-                    alert("Imóvel não encontrado.");
-                    navigate("/home");
-                    return;
-                }
-
-                const data: Imovel = await response.json();
-                setImovel(data);
+                const response = await api.get<Imovel>(`/imoveis/${id}`);
+                setImovel(response.data);
             } catch (error) {
                 console.error("Erro ao buscar imóvel:", error);
                 alert("Imóvel não encontrado.");
@@ -33,7 +32,6 @@ const ImovelDetalhesPage: React.FC = () => {
             }
         };
 
-        // Evita aviso de Promise ignorada
         fetchImovelData().catch(console.error);
     }, [id, navigate]);
 
@@ -42,7 +40,8 @@ const ImovelDetalhesPage: React.FC = () => {
 
     return (
         <div>
-            <ImovelDetalhes imovel={imovel} />
+            {/* 👇 Passamos a origem para ImovelDetalhes */}
+            <ImovelDetalhes imovel={imovel} origem={origem} />
         </div>
     );
 };

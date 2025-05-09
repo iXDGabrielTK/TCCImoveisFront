@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo  } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     Box,
     Typography,
@@ -14,12 +14,16 @@ import Slider from "./Slider";
 import { Imovel } from "../types/Imovel";
 import { getHolidays } from "../types/holidays";
 import CustomDatePicker from "./CustomDatePicker";
+import api from "../services/api";
+import axios from "axios";
+import CriarProposta from "./CriarProposta"; // adicionado
 
 interface ImovelDetalhesProps {
     imovel: Imovel;
+    origem?: "simulacao" | "padrao"; // adicionado
 }
 
-const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
+const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padrao" }) => {
     const imageUrls = useMemo(() => {
         return Array.isArray(imovel.fotosImovel)
             ? imovel.fotosImovel
@@ -28,7 +32,6 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
                 .flatMap(url => url.split(','))
             : [];
     }, [imovel.fotosImovel]);
-
 
     useEffect(() => {
         console.log("imageUrls:", imageUrls);
@@ -41,8 +44,8 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
     const holidays = getHolidays(new Date().getFullYear());
 
     const handleAgendarVisita = async () => {
-        const token = localStorage.getItem("access_token"); // corrigido
-        const usuarioIdRaw = localStorage.getItem("usuario_Id"); // corrigido
+        const token = localStorage.getItem("access_token");
+        const usuarioIdRaw = localStorage.getItem("usuario_Id");
         const usuarioId = usuarioIdRaw ? parseInt(usuarioIdRaw, 10) : null;
 
         console.log({ token, usuarioId, startDate, nomeVisitante });
@@ -51,7 +54,6 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
             alert("Preencha todos os campos corretamente e faça login.");
             return;
         }
-
 
         const formattedDate = startDate.toISOString().split("T")[0];
         const data = {
@@ -63,42 +65,31 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
         };
 
         try {
-            const response = await fetch("http://localhost:8080/agendamentos/agendar", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(data),
-            });
+            await api.post("/agendamentos/agendar", data);
+            alert("Agendamento realizado com sucesso!");
+        } catch (error: unknown) {
+            let errorMessage = "Erro desconhecido.";
 
-            if (!response.ok) {
-                let errorMessage = "Erro desconhecido.";
+            if (axios.isAxiosError(error) && error.response) {
+                const status = error.response.status;
+                const errorData = error.response.data;
 
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch (parseError) {
-                    console.error("Erro ao interpretar resposta JSON:", parseError);
-
-                    if (response.status === 400) {
-                        errorMessage = "Já existe um agendamento para esse imóvel nessa data.";
-                    } else if (response.status === 401) {
-                        errorMessage = "Você precisa estar logado para agendar.";
-                    } else if (response.status === 403) {
-                        errorMessage = "Você não tem permissão para agendar este imóvel.";
-                    } else if (response.status === 500) {
-                        errorMessage = "Erro interno no servidor.";
-                    }
+                if (status === 400) {
+                    errorMessage = "Já existe um agendamento para esse imóvel nessa data.";
+                } else if (status === 401) {
+                    errorMessage = "Você precisa estar logado para agendar.";
+                } else if (status === 403) {
+                    errorMessage = "Você não tem permissão para agendar este imóvel.";
+                } else if (status === 500) {
+                    errorMessage = "Erro interno no servidor.";
+                } else if (errorData?.message) {
+                    errorMessage = errorData.message;
                 }
-
-                alert(`Erro: ${errorMessage}`);
-                return;
+            } else {
+                console.error("Erro não tratado:", error);
             }
 
-        } catch (error) {
-            console.error("Erro:", error);
-            alert("Erro de conexão com o servidor.");
+            alert(`Erro: ${errorMessage}`);
         }
     };
 
@@ -138,83 +129,90 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel }) => {
                     </Grid>
 
                     <Grid size={{ xs: 4, md: 4 }}>
-                        <Card elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-                            <Typography variant="h6" fontWeight="bold" mb={2} textAlign="center">
-                                Agendar Visita
-                            </Typography>
+                        {origem === "simulacao" ? (
+                            <CriarProposta
+                                imovelId={imovel.idImovel}
+                                precoImovel={imovel.precoImovel}
+                            />
+                        ) : (
+                            <Card elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+                                <Typography variant="h6" fontWeight="bold" mb={2} textAlign="center">
+                                    Agendar Visita
+                                </Typography>
 
-                            <TextField
-                                fullWidth
-                                label="Nome do Visitante"
-                                value={nomeVisitante}
-                                onChange={(e) => setNomeVisitante(e.target.value)}
-                                error={!nomeVisitante.trim()}
-                                helperText={!nomeVisitante.trim() ? "Campo obrigatório." : ""}
-                                variant="outlined"
-                                sx={{
-                                    mb: 2,
-                                    '& .MuiOutlinedInput-root': {
-                                        transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                        '& fieldset': {
-                                            borderColor: '#1976d2',
-                                            borderWidth: '2px',
-                                            boxShadow: '0 0 0 1px rgba(25, 118, 210, 0.2)',
-                                            borderRadius: '4px',
+                                <TextField
+                                    fullWidth
+                                    label="Nome do Visitante"
+                                    value={nomeVisitante}
+                                    onChange={(e) => setNomeVisitante(e.target.value)}
+                                    error={!nomeVisitante.trim()}
+                                    helperText={!nomeVisitante.trim() ? "Campo obrigatório." : ""}
+                                    variant="outlined"
+                                    sx={{
+                                        mb: 2,
+                                        '& .MuiOutlinedInput-root': {
+                                            transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+                                            '& fieldset': {
+                                                borderColor: '#1976d2',
+                                                borderWidth: '2px',
+                                                boxShadow: '0 0 0 1px rgba(25, 118, 210, 0.2)',
+                                                borderRadius: '4px',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: '#1565c0',
+                                                borderWidth: '2px',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: '#0d47a1',
+                                                borderWidth: '2px',
+                                                boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.3)',
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderRadius: '4px',
+                                            },
                                         },
-                                        '&:hover fieldset': {
-                                            borderColor: '#1565c0',
-                                            borderWidth: '2px',
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: '#0d47a1',
-                                            borderWidth: '2px',
-                                            boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.3)',
-                                        },
-                                        '& .MuiOutlinedInput-notchedOutline': {
-                                            borderRadius: '4px',
-                                        },
-                                    },
-                                    '& .MuiInputLabel-outlined': {
-                                        '&.Mui-focused': {
-                                            backgroundColor: 'white',
-                                            padding: '0 8px',
+                                        '& .MuiInputLabel-outlined': {
+                                            '&.Mui-focused': {
+                                                backgroundColor: 'white',
+                                                padding: '0 8px',
+                                            }
                                         }
-                                    }
-                                }}
-                            />
+                                    }}
+                                />
 
-                            <CustomDatePicker
-                                selected={startDate || undefined}
-                                onChange={(date) => setStartDate(date)}
-                                holidays={holidays}
-                                errorMessage={!startDate ? "Selecione uma data válida." : undefined}
-                            />
+                                <CustomDatePicker
+                                    selected={startDate || undefined}
+                                    onChange={(date) => setStartDate(date)}
+                                    holidays={holidays}
+                                    errorMessage={!startDate ? "Selecione uma data válida." : undefined}
+                                />
 
-                            <Stack direction="row" spacing={1} justifyContent="center" mt={2}>
+                                <Stack direction="row" spacing={1} justifyContent="center" mt={2}>
+                                    <Button
+                                        variant={periodo === "Manhã" ? "contained" : "outlined"}
+                                        onClick={() => setPeriodo("Manhã")}
+                                    >
+                                        Manhã
+                                    </Button>
+                                    <Button
+                                        variant={periodo === "Tarde" ? "contained" : "outlined"}
+                                        onClick={() => setPeriodo("Tarde")}
+                                    >
+                                        Tarde
+                                    </Button>
+                                </Stack>
+
                                 <Button
-                                    variant={periodo === "Manhã" ? "contained" : "outlined"}
-                                    onClick={() => setPeriodo("Manhã")}
+                                    fullWidth
+                                    variant="contained"
+                                    color="success"
+                                    onClick={handleAgendarVisita}
+                                    sx={{ mt: 3 }}
                                 >
-                                    Manhã
+                                    Agendar
                                 </Button>
-                                <Button
-                                    variant={periodo === "Tarde" ? "contained" : "outlined"}
-                                    onClick={() => setPeriodo("Tarde")}
-                                >
-                                    Tarde
-                                </Button>
-                            </Stack>
-
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                color="success"
-                                onClick={handleAgendarVisita}
-                                sx={{ mt: 3 }}
-                            >
-                                Agendar
-                            </Button>
-                        </Card>
+                            </Card>
+                        )}
                     </Grid>
                 </Grid>
             </Box>

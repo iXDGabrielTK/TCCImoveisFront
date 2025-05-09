@@ -16,10 +16,14 @@ interface ApiError {
 }
 
 interface ImoveisGridProps {
+    modo: 'todos' | 'filtrados';
+    valorMaximo?: number;
+    origem?: "simulacao" | "padrao";
     onImovelClick?: (imovel: Imovel) => void;
 }
 
-const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
+
+const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick }) => {
     const navigate = useNavigate();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
@@ -36,7 +40,16 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
         try {
             setIsLoading(true);
             resetMessages();
-            const response = await api.get('/imoveis');
+            let response;
+
+            if (modo === 'filtrados' && valorMaximo) {
+                response = await api.get('/imoveis/disponiveis', {
+                    params: { valorMax: valorMaximo },
+                });
+            } else {
+                response = await api.get('/imoveis');
+            }
+
             setImoveis(response.data);
             setFilteredImoveis(response.data);
         } catch (error: unknown) {
@@ -46,7 +59,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [resetMessages]);
+    }, [resetMessages, modo, valorMaximo]);
 
     useEffect(() => {
         const loadImoveis = async () => {
@@ -127,16 +140,20 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ onImovelClick }) => {
                 <div className="imoveis-grid">
                     {filteredImoveis.map((imovel) => {
                         const primeiraImagem =
-                        typeof imovel.fotosImovel?.[0] === "string" && (imovel.fotosImovel[0] as string).trim() !== ""
-                            ? imovel.fotosImovel[0]
-                            : "https://placehold.co/300x200";
+                            typeof imovel.fotosImovel?.[0] === "string" && (imovel.fotosImovel[0] as string).trim() !== ""
+                                ? imovel.fotosImovel[0]
+                                : "https://placehold.co/300x200";
 
                         return (
                             <div
                                 key={imovel.idImovel || Math.random()}
                                 className="imovel-card"
                                 onClick={() =>
-                                    onImovelClick ? onImovelClick(imovel) : navigate(`/imovel/${imovel.idImovel}`)
+                                    onImovelClick
+                                        ? onImovelClick(imovel)
+                                        : navigate(`/imovel/${imovel.idImovel}`, {
+                                            state: { origem }, // ⬅️ passando origem para a próxima tela
+                                        })
                                 }
                             >
                                 <img

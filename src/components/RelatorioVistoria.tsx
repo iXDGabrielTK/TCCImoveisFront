@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import api from "../services/api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -13,8 +13,8 @@ interface RelatorioVistoria {
 const RelatorioVistorias: React.FC = () => {
     const gerarRelatorio = async () => {
         try {
-            const response = await axios.get<RelatorioVistoria[]>(
-                "http://localhost:8080/relatorios/vistorias?idImovel=1"
+            const response = await api.get<RelatorioVistoria[]>(
+                "/relatorios/vistorias?idImovel=1"
             );
             const dados = response.data;
 

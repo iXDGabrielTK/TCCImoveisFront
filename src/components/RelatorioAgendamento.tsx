@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import api from "../services/api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -12,8 +12,8 @@ interface RelatorioAgendamento {
 const RelatorioAgendamentos: React.FC = () => {
     const gerarRelatorio = async () => {
         try {
-            const response = await axios.get<RelatorioAgendamento[]>(
-                "http://localhost:8080/relatorios/agendamentos?mesAno=2024-11"
+            const response = await api.get<RelatorioAgendamento[]>(
+                "/relatorios/agendamentos?mesAno=2025-05"
             );
             const dados = response.data;
 

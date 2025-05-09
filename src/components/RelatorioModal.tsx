@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import "../styles/RelatorioModal.css";
 import '../styles/shared.css';
-import axios from "axios";
+import api from "../services/api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -59,7 +59,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
 
     const fetchImoveis = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/imoveis");
+            const response = await api.get("/imoveis");
             setImoveis(response.data);
         } catch (error) {
             console.error("Erro ao buscar imóveis:", error);
@@ -73,8 +73,8 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
         }
 
         try {
-            const response = await axios.get(
-                `http://localhost:8080/relatorios/vistorias`,
+            const response = await api.get(
+                `/relatorios/vistorias`,
                 {
                     params: { idImovel: selectedImovel },
                 }
@@ -113,8 +113,8 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
 
     const gerarRelatorioAgendamentos = async () => {
         try {
-            const response = await axios.get(
-                `http://localhost:8080/relatorios/agendamentos?mesAno=${selectedMonth}`
+            const response = await api.get(
+                `/relatorios/agendamentos?mesAno=${selectedMonth}`
             );
             const dados = response.data;
 
@@ -158,8 +158,8 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
 
     const gerarRelatorioUsuarios = async () => {
         try {
-            const response = await axios.get(
-                `http://localhost:8080/relatorios/usuarios?mesAno=${selectedMonth}`
+            const response = await api.get(
+                `/relatorios/usuarios?mesAno=${selectedMonth}`
             );
             const dados = response.data;
 

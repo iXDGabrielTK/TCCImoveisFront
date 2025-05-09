@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import api from "../services/api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -14,8 +14,8 @@ const RelatorioUsuarios: React.FC = () => {
     const gerarRelatorio = async () => {
         try {
             // Faz a requisição para a API
-            const response = await axios.get<RelatorioUsuario[]>(
-                "http://localhost:8080/relatorios/usuarios?mesAno=2024-11"
+            const response = await api.get<RelatorioUsuario[]>(
+                "/relatorios/usuarios?mesAno=2024-11"
             );
             const dados = response.data;
 
