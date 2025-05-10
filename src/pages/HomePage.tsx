@@ -13,7 +13,7 @@ const HomePage: React.FC = () => {
 
     return (
         <div className="home-page">
-            <ImoveisGrid onImovelClick={handleOpenDetalhes} />
+            <ImoveisGrid onImovelClick={handleOpenDetalhes} modo={"todos"} />
         </div>
     );
 };

@@ -132,7 +132,7 @@ const ImoveisPage: React.FC = () => {
                 />
             )}
 
-            <ImoveisGrid onImovelClick={handleImovelClick} />
+            <ImoveisGrid onImovelClick={handleImovelClick} modo={'todos'} />
 
         </div>
     );
