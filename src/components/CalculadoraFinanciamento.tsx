@@ -7,6 +7,7 @@ import {
     Stack,
     Divider,
     TextField,
+    MenuItem,
 } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 import api from "../services/api";
@@ -22,18 +23,22 @@ interface ResultadoFinanciamento {
 const CalculadoraFinanciamento: React.FC = () => {
     const [rendaMensal, setRendaMensal] = useState("");
     const [entrada, setEntrada] = useState("");
+    const [prazo, setPrazo] = useState(360); // novo estado para o prazo
     const [resultado, setResultado] = useState<ResultadoFinanciamento | null>(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const prazosDisponiveis = [120, 180, 240, 300, 360]; // prazos válidos
 
     const handleCalcular = async () => {
         const renda = parseFloat(rendaMensal.replace(",", "."));
         const valorEntrada = parseFloat(entrada.replace(",", "."));
 
-        if (!renda || !valorEntrada || isNaN(renda) || isNaN(valorEntrada) || renda <= 0 || valorEntrada <= 0) {
-            alert("Preencha corretamente os campos com valores maiores que zero.");
+        if (!renda || isNaN(renda) || renda <= 0 || isNaN(valorEntrada) || valorEntrada < 0) {
+            alert("Renda mensal deve ser maior que zero e entrada não pode ser negativa.");
             return;
         }
+
 
         setLoading(true);
         try {
@@ -42,6 +47,7 @@ const CalculadoraFinanciamento: React.FC = () => {
                 {
                     rendaMensal: renda,
                     valorEntrada: valorEntrada,
+                    prazo: prazo // enviando o novo campo
                 }
             );
             setResultado(response.data);
@@ -89,6 +95,26 @@ const CalculadoraFinanciamento: React.FC = () => {
                         fullWidth
                         autoComplete="off"
                     />
+
+                    <TextField
+                        select
+                        label="Prazo de Financiamento (meses)"
+                        value={prazo}
+                        onChange={(e) => setPrazo(Number(e.target.value))}
+                        fullWidth
+                        autoComplete="off"
+                        variant="outlined"
+                        slotProps={{
+                            inputLabel: { shrink: true }
+                        }}
+                    >
+                        {prazosDisponiveis.map((opcao) => (
+                            <MenuItem key={opcao} value={opcao}>
+                                {opcao} meses
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
 
                     <Button
                         variant="contained"

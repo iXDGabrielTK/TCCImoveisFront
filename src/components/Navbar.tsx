@@ -70,7 +70,8 @@ const Navbar: React.FC = () => {
                                         >
                                             Agendamentos
                                         </button>
-                                        <Link to="/financiamento">Simulador</Link>
+                                        <Link to="/imobiliarias">Imobiliária</Link>
+                                        <Link to="/financiamento">Financiamento</Link>
                                         <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
                                         <button onClick={handleLogout}>Logout</button>
                                     </>
@@ -123,6 +124,7 @@ const Navbar: React.FC = () => {
                                             >
                                                 Agendamentos
                                             </button>
+                                            <Link to="/imobiliarias">Imobiliária</Link>
                                             <Link to="/financiamento">Financiamento</Link>
                                             <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
                                             <button onClick={handleLogout}>Logout</button>
