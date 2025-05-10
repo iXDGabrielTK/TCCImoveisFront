@@ -87,6 +87,7 @@ const SearchBar = () => {
                 inputProps={{ 'aria-label': 'pesquisar' }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                disabled={true}
             />
             {open && searchTerm && (
                 <IconButton onClick={handleClear} style={{ position: 'absolute', right: '210px' }}>

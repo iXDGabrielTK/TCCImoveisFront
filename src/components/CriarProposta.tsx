@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -69,8 +69,12 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                     <TextField
                         label="Valor do Imóvel"
                         value={`R$ ${precoImovel.toLocaleString()}`}
-                        InputProps={{ readOnly: true }}
                         fullWidth
+                        slotProps={{
+                            input: {
+                                readOnly: true,
+                            },
+                        }}
                     />
 
                     <NumericFormat

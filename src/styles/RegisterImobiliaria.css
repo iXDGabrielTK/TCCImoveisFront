@@ -1,0 +1,100 @@
+.register-imobiliaria-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.register-imobiliaria-form {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+}
+
+.register-imobiliaria-form h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.icon {
+    position: absolute;
+    left: 15px;
+    color: #666;
+    font-size: 18px;
+    transition: opacity 0.3s ease;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    color: #333;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+}
+
+.input-group input[type="text"],
+.input-group input[type="number"],
+.input-group input[type="date"],
+.input-group input[type="password"],
+.input-group select {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #dee5fe;
+    border-radius: 25px;
+    background-color: transparent;
+    font-size: 16px;
+    color: #333;
+    transition: border-color 0.3s;
+    appearance: none;
+    outline: none;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.register-imobiliaria-form button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #14453e, #2e7d64);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.register-imobiliaria-form button:hover {
+    background: linear-gradient(90deg, #2e7d64, #4CAF50);
+}
+
+.register-imobiliaria-form .error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.register-imobiliaria-form .success-message {
+    color: green;
+    margin-top: 10px;
+}

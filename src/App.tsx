@@ -11,6 +11,7 @@ import RelatorioAgendamentos from './components/RelatorioAgendamento';
 import RelatorioVistorias from './components/RelatorioVistoria';
 import ImovelDetalhesPage from './pages/ImovelDetalhesPage';
 import CalculadoraFinanciamento from "./components/CalculadoraFinanciamento.tsx";
+import ImobiliariaPage from "./pages/ImobiliariaPage.tsx";
 import ImoveisFiltradosPage from './pages/ImoveisFiltradosValorPage';
 import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
@@ -43,6 +44,14 @@ const App: React.FC = () => {
                                 element={
                                     <PrivateRoute requiredRole="funcionario">
                                         <ImoveisPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="imobiliarias"
+                                element={
+                                    <PrivateRoute>
+                                        <ImobiliariaPage />
                                     </PrivateRoute>
                                 }
                             />
