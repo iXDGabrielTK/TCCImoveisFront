@@ -1,12 +1,14 @@
 import { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUser, FaLock } from 'react-icons/fa';
+import {FaUser, FaLock, FaEye, FaEyeSlash} from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
+import LoadingText from "./LoadingText.tsx";
 
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [mostrarSenha, setMostrarSenha] = useState(false);
     const { login, error, loading } = useAuth();
 
     async function handleLogin(e: FormEvent) {
@@ -17,7 +19,10 @@ function LoginForm() {
     return (
         <div className="login-page">
             <form className="login-form" onSubmit={handleLogin}>
-                <h2>USER LOGIN</h2>
+                <h2>Login</h2>
+                <h2></h2>
+                <h2></h2>
+                <h2></h2>
                 <div className="input-group">
                     <FaUser className="icon" />
                     <input
@@ -29,10 +34,11 @@ function LoginForm() {
                         disabled={loading}
                     />
                 </div>
-                <div className="input-group">
+
+                <div className="input-group senha-group">
                     <FaLock className="icon" />
                     <input
-                        type="password"
+                        type={mostrarSenha ? 'text' : 'password'}
                         placeholder="Senha"
                         autoComplete="current-password"
                         value={password}
@@ -40,11 +46,18 @@ function LoginForm() {
                         required
                         disabled={loading}
                     />
+                    {mostrarSenha ? (
+                        <FaEye className="icon-eye" onClick={() => setMostrarSenha(false)} />
+                    ) : (
+                        <FaEyeSlash className="icon-eye" onClick={() => setMostrarSenha(true)} />
+                    )}
                 </div>
+
                 <button type="submit" disabled={loading}>
-                    {loading ? 'CARREGANDO...' : 'LOGIN'}
+                    {loading ? <LoadingText /> : 'LOGIN'}
                 </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
+
                 <div className="register-link">
                     Não tem uma conta? <Link to="/register">Cadastre-se</Link>
                 </div>

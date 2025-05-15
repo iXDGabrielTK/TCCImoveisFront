@@ -1,0 +1,43 @@
+.loading-text {
+    display: inline;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.dots-bounce {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: 2px;
+    vertical-align: baseline;
+    line-height: 1;
+}
+
+.dot {
+    width: 0.3em;
+    height: 0.3em;
+    background-color: currentColor;
+    border-radius: 50%;
+    animation: blink 1.4s infinite ease-in-out;
+    opacity: 0.3;
+
+    vertical-align: baseline;
+    transform-origin: bottom center;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1.3);
+    }
+}

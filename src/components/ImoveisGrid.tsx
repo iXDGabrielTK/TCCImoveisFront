@@ -103,13 +103,35 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             )}
 
             <div className="filters">
-                <FormControl variant="standard" sx={{ border: 'none', boxShadow: 'none', minWidth: 120, marginRight: '16px' }}>
+                <FormControl
+                    variant="standard"
+                    sx={{ border: 'none', boxShadow: 'none', minWidth: 120, marginRight: '16px' }}
+                >
                     <InputLabel>Tipo</InputLabel>
                     <Select
                         value={tipoResidencia}
                         onChange={(e) => setTipoResidencia(e.target.value as string)}
                         label="Tipo de Residência"
                         disabled={isLoading}
+                        MenuProps={{
+                            disablePortal: true,
+                            disableScrollLock: true,
+                            PaperProps: {
+                                sx: {
+                                    mt: 1,
+                                    backgroundColor: '#f3f3f3',
+                                    borderRadius: '8px',
+                                    boxShadow: 3,
+                                    border: 'none',
+                                    zIndex: 1100
+                                },
+                            },
+                            BackdropProps: {
+                                sx: {
+                                    backgroundColor: 'transparent',
+                                },
+                            },
+                        }}
                     >
                         <MenuItem value="">Todos</MenuItem>
                         <MenuItem value="Apartamento">Apartamento</MenuItem>
@@ -117,13 +139,35 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                     </Select>
                 </FormControl>
 
-                <FormControl variant="standard" sx={{ border: 'none', boxShadow: 'none', minWidth: 120 }}>
+                <FormControl
+                    variant="standard"
+                    sx={{ border: 'none', boxShadow: 'none', minWidth: 120 }}
+                >
                     <InputLabel>Valor</InputLabel>
                     <Select
                         value={valor}
                         onChange={(e) => setValor(e.target.value as string)}
                         label="Valor"
                         disabled={isLoading}
+                        MenuProps={{
+                            disablePortal: true,
+                            disableScrollLock: true,
+                            PaperProps: {
+                                sx: {
+                                    mt: 1,
+                                    backgroundColor: '#f3f3f3',
+                                    borderRadius: '8px',
+                                    boxShadow: 3,
+                                    border: 'none',
+                                    zIndex: 1100
+                                },
+                            },
+                            BackdropProps: {
+                                sx: {
+                                    backgroundColor: 'transparent',
+                                },
+                            },
+                        }}
                     >
                         <MenuItem value="">Sem ordenação</MenuItem>
                         <MenuItem value="Menor Valor">Menor Valor</MenuItem>
@@ -131,6 +175,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                     </Select>
                 </FormControl>
             </div>
+
 
             {isLoading ? (
                 <div style={{ textAlign: 'center', padding: '20px' }}>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import { FaUser, FaPhone, FaLock } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom";
+import {FaUser, FaPhone, FaLock, FaEye, FaEyeSlash} from 'react-icons/fa';
+import {Link, useNavigate} from "react-router-dom";
 
 interface RegistrationData {
     nome: string;
@@ -17,18 +17,21 @@ const RegisterForm: React.FC = () => {
     const [telefone, setTelefone] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
     const [tipo, setTipo] = useState(true);
     const [cpf, setCpf] = useState('');
+    const [cpfError, setCpfError] = useState('');
+    const [senhaError, setSenhaError] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [cpfError, setCpfError] = useState('');
     const navigate = useNavigate();
 
     function isValidCPF(value: string) {
         value = value.replace(/[^\d]+/g, '');
         if (value.length !== 11 || !!value.match(/(\d)\1{10}/)) return false;
-
         const digits = value.split('').map(el => +el);
         const getVerifyingDigit = (arr: number[]) => {
             const reduced = arr.reduce((sum, digit, index) => sum + digit * (arr.length + 1 - index), 0);
@@ -40,6 +43,12 @@ const RegisterForm: React.FC = () => {
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
+
+        if (senha !== confirmarSenha) {
+            setSenhaError("As senhas não coincidem.");
+            return;
+        }
+        setSenhaError('');
 
         const data: RegistrationData = {
             nome,
@@ -62,7 +71,6 @@ const RegisterForm: React.FC = () => {
             setIsPending(true);
             setIsError(false);
             setIsSuccess(false);
-
             await api.post("/usuarios", data);
             setIsSuccess(true);
             navigate('/login');
@@ -77,6 +85,7 @@ const RegisterForm: React.FC = () => {
     return (
         <form onSubmit={handleRegister} className="register-form">
             <h2>Registrar Usuário</h2>
+
             <div className="input-group">
                 <FaUser className="icon" />
                 <input
@@ -87,6 +96,7 @@ const RegisterForm: React.FC = () => {
                     required
                 />
             </div>
+
             <div className="input-group">
                 <FaUser className="icon" />
                 <select
@@ -98,6 +108,7 @@ const RegisterForm: React.FC = () => {
                     <option value="Funcionário">Funcionário</option>
                 </select>
             </div>
+
             {!tipo && (
                 <div className="input-group">
                     <FaUser className="icon" />
@@ -111,6 +122,7 @@ const RegisterForm: React.FC = () => {
                     />
                 </div>
             )}
+
             <div className="input-group">
                 <FaPhone className="icon" />
                 <input
@@ -121,6 +133,7 @@ const RegisterForm: React.FC = () => {
                     required
                 />
             </div>
+
             <div className="input-group">
                 <FaUser className="icon" />
                 <input
@@ -131,22 +144,50 @@ const RegisterForm: React.FC = () => {
                     required
                 />
             </div>
-            <div className="input-group">
+
+            <div className="input-group senha-group">
                 <FaLock className="icon" />
                 <input
-                    type="password"
+                    type={mostrarSenha ? "text" : "password"}
                     placeholder="Senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
                     required
                 />
+                {mostrarSenha ? (
+                    <FaEye className="icon-eye" onClick={() => setMostrarSenha(false)} />
+                ) : (
+                    <FaEyeSlash className="icon-eye" onClick={() => setMostrarSenha(true)} />
+                )}
             </div>
-            <button type="submit" disabled={isPending}>Registrar</button>
+
+            <div className="input-group senha-group">
+                <FaLock className="icon" />
+                <input
+                    type={mostrarConfirmarSenha ? "text" : "password"}
+                    placeholder="Confirmar Senha"
+                    value={confirmarSenha}
+                    onChange={(e) => setConfirmarSenha(e.target.value)}
+                    required
+                />
+                {mostrarConfirmarSenha ? (
+                    <FaEye className="icon-eye" onClick={() => setMostrarConfirmarSenha(false)} />
+                ) : (
+                    <FaEyeSlash className="icon-eye" onClick={() => setMostrarConfirmarSenha(true)} />
+                )}
+            </div>
 
             {cpfError && <p className="error-message">{cpfError}</p>}
-
+            {senhaError && <p className="error-message">{senhaError}</p>}
             {isError && <p className="error-message">Erro ao registrar usuário. Tente novamente.</p>}
             {isSuccess && <p className="success-message">Usuário registrado com sucesso!</p>}
+
+            <button type="submit" disabled={isPending}>
+                {isPending ? "Registrando..." : "Registrar"}
+            </button>
+            <div className="login-link">
+                Já possui uma conta? <Link to="/login">Entre aqui</Link>
+            </div>
         </form>
     );
 };

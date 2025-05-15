@@ -9,9 +9,9 @@
     width: 100%;
     box-sizing: border-box;
     position: relative;
+    z-index: 1400;
 }
 
-/* Layout base - desktop */
 .left {
     flex: 1;
     display: flex;

@@ -48,6 +48,12 @@
   padding: 0.5rem 0;
 }
 
+.login-link {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
 .input-group input[type="text"],
 .input-group input[type="number"],
 .input-group input[type="date"],
@@ -98,4 +104,65 @@
 .register-form .success-message {
   color: green;
   margin-top: 10px;
+}
+
+/* Grupo com olho à direita */
+.senha-group {
+  position: relative;
+}
+
+.icon-eye {
+  position: absolute;
+  right: 15px;
+  color: #666;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.icon-eye:hover {
+  color: #2e7d64;
+}
+
+
+@media (max-width: 480px) {
+  .register-form {
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0.75rem;
+  }
+
+  .register-form h2 {
+    font-size: 1.5rem;
+  }
+
+  .input-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .input-group input,
+  .input-group select {
+    font-size: 0.95rem;
+    padding: 10px 16px;
+  }
+
+  .icon {
+    font-size: 16px;
+    left: 10px;
+  }
+
+  .register-form button {
+    font-size: 0.95rem;
+    padding: 0.65rem;
+  }
+
+  .register-form .error-message,
+  .register-form .success-message {
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0 10px;
+  }
 }
