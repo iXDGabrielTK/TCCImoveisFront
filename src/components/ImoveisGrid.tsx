@@ -5,6 +5,8 @@ import '../styles/ImoveisGrid.css';
 import '../styles/shared.css';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import SkeletonImovel from './SkeletonImovel.tsx';
+import { useImoveisContext } from '../context/ImoveisContext';
 
 interface ApiError {
     response?: {
@@ -31,6 +33,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
     const [valor, setValor] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const { termoBusca } = useImoveisContext();
 
     const resetMessages = useCallback(() => {
         setErrorMessage("");
@@ -49,7 +52,6 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             } else {
                 response = await api.get('/imoveis');
             }
-
             setImoveis(response.data);
             setFilteredImoveis(response.data);
         } catch (error: unknown) {
@@ -68,11 +70,34 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         void loadImoveis();
     }, [fetchImoveis]);
 
+    const normalizar = (texto: string) =>
+        texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
     const filterImoveis = useCallback(() => {
         let filtered = [...imoveis];
 
         if (tipoResidencia) {
             filtered = filtered.filter(imovel => imovel.tipoImovel === tipoResidencia);
+        }
+
+        if (termoBusca) {
+            const termo = normalizar(termoBusca);
+
+            filtered = filtered.filter(imovel => {
+                const campos = [
+                    imovel.tipoImovel,
+                    imovel.descricaoImovel,
+                    imovel.enderecoImovel?.rua,
+                    imovel.enderecoImovel?.bairro,
+                    imovel.enderecoImovel?.cidade,
+                    imovel.enderecoImovel?.estado,
+                ];
+
+                return campos.some(campo =>
+                    typeof campo === 'string' &&
+                    normalizar(campo).includes(termo)
+                );
+            });
         }
 
         if (valor) {
@@ -87,7 +112,8 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         }
 
         setFilteredImoveis(filtered);
-    }, [imoveis, tipoResidencia, valor]);
+    }, [imoveis, tipoResidencia, valor, termoBusca]);
+
 
     useEffect(() => {
         filterImoveis();
@@ -176,10 +202,11 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                 </FormControl>
             </div>
 
-
             {isLoading ? (
-                <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <p>Carregando imóveis...</p>
+                <div className="imoveis-grid">
+                    {Array.from({ length: 8 }).map((_, index) => (
+                        <SkeletonImovel key={index} />
+                    ))}
                 </div>
             ) : (
                 <div className="imoveis-grid">

@@ -7,6 +7,7 @@
 }
 
 .label-vistoria {
+    margin-left: 2%;
     display: block;
     margin-top: 15px;
     font-size: 1rem;
@@ -15,7 +16,8 @@
 
 .input-vistoria,
 .vistoria-select {
-    width: 100%;
+    margin-left: 2%;
+    width: 95%;
     padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -64,6 +66,8 @@
 }
 
 .modal-actions button:first-child {
+    margin-left: 2%;
+
     background: #007bff;
     color: white;
 }
@@ -73,6 +77,7 @@
 }
 
 .modal-actions button:last-child {
+    margin-right: 3%;
     background: #d9534f;
     color: white;
 }

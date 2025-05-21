@@ -47,7 +47,7 @@ const CalculadoraFinanciamento: React.FC = () => {
                 {
                     rendaMensal: renda,
                     valorEntrada: valorEntrada,
-                    prazo: prazo // enviando o novo campo
+                    prazo: prazo
                 }
             );
             setResultado(response.data);

@@ -1,8 +1,8 @@
 import React, { FormEvent, useState, useCallback } from 'react';
-import axios from 'axios'; // Para fazer a requisição à API
+import axios from 'axios';
 import api from '../services/api';
-import '../styles/CadastroImovel.css';
 import '../styles/shared.css';
+import '../styles/CadastroImovel.css';
 import { ApiError, getErrorMessage, isValidUrl, isValidCep } from '../utils/errorHandling';
 import { useToast } from '../context/ToastContext';
 
@@ -308,8 +308,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             )}
             {step === 1 && (
                 <div className="form-step">
-                    <label className="input-required">
-                        Tipo:
+                    <label>
+                        <span className="label-text">
+                        * Tipo:
+                        </span>
                         <input
                             type="text"
                             value={tipo}
@@ -322,8 +324,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.tipo && <span className="field-error-message">{fieldErrors.tipo}</span>}
                     </label>
-                    <label className="input-required">
-                        Descrição:
+                    <label>
+                        <span className="label-text">
+                        * Descrição:
+                        </span>
                         <input
                             type="text"
                             value={descricao}
@@ -337,7 +341,9 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         {fieldErrors.descricao && <span className="field-error-message">{fieldErrors.descricao}</span>}
                     </label>
                     <label>
-                        Status:
+                        <span className="label-text">
+                        * Status:
+                        </span>     
                         <select
                             value={status ? "Desocupado" : "Ocupado"}
                             onChange={(e) => setStatus(e.target.value === "Desocupado")}
@@ -347,8 +353,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                             <option value="Ocupado">Ocupado</option>
                         </select>
                     </label>
-                    <label className="input-required">
-                        Tamanho (m²):
+                    <label>
+                        <span className="label-text">
+                        * Tamanho (m²):
+                        </span>
                         <input
                             type="number"
                             value={tamanho}
@@ -361,8 +369,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.tamanho && <span className="field-error-message">{fieldErrors.tamanho}</span>}
                     </label>
-                    <label className="input-required">
-                        Preço:
+                    <label>
+                        <span className="label-text">
+                        * Preço:
+                        </span>    
                         <input
                             type="number"
                             value={preco}
@@ -375,8 +385,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.preco && <span className="field-error-message">{fieldErrors.preco}</span>}
                     </label>
-                    <label className="input-required">
-                        URLs das Imagens (separadas por vírgula):
+                    <label>
+                        <span className="label-text">
+                        * URLs das Imagens (separadas por vírgula):
+                        </span>
                         <input
                             type="text"
                             value={imagem}
@@ -408,8 +420,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
             {step === 2 && (
                 <div className="form-step">
-                    <label className="input-required">
-                        CEP:
+                    <label>
+                        <span className="label-text">
+                        * CEP:
+                        </span>
                         <input
                             type="text"
                             name="cep"
@@ -421,8 +435,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.cep && <span className="field-error-message">{fieldErrors.cep}</span>}
                     </label>
-                    <label className="input-required">
-                        Estado:
+                    <label>
+                        <span className="label-text">
+                        * Estado:
+                        </span>
                         <input
                             type="text"
                             name="estado"
@@ -433,8 +449,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.estado && <span className="field-error-message">{fieldErrors.estado}</span>}
                     </label>
-                    <label className="input-required">
-                        Cidade:
+                    <label>
+                        <span className="label-text">
+                        * Cidade:
+                        </span>
                         <input
                             type="text"
                             name="cidade"
@@ -445,8 +463,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.cidade && <span className="field-error-message">{fieldErrors.cidade}</span>}
                     </label>
-                    <label className="input-required">
-                        Rua:
+                    <label>
+                        <span className="label-text">
+                        * Rua:
+                        </span>
                         <input
                             type="text"
                             name="rua"
@@ -457,8 +477,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.rua && <span className="field-error-message">{fieldErrors.rua}</span>}
                     </label>
-                    <label className="input-required">
-                        Bairro:
+                    <label>
+                        <span className="label-text">
+                        * Bairro:
+                        </span>
                         <input
                             type="text"
                             name="bairro"
@@ -469,8 +491,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         />
                         {fieldErrors.bairro && <span className="field-error-message">{fieldErrors.bairro}</span>}
                     </label>
-                    <label className="input-required">
-                        Número:
+                    <label>
+                        <span className="label-text">
+                        * Número:
+                        </span>
                         <input
                             type="text"
                             name="numero"

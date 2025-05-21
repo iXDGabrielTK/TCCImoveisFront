@@ -26,7 +26,6 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
         bairro: ''
     });
 
-    // Validation functions
     const validateLaudo = (value: string) => {
         if (!value.trim()) {
             setFieldErrors(prev => ({ ...prev, laudo: 'Laudo é obrigatório' }));
@@ -104,7 +103,6 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        // Validate all fields before submission
         if (!validateAllFields()) {
             showToast('Por favor, corrija os erros no formulário antes de enviar.', 'error');
             return;
@@ -141,7 +139,7 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
             showToast('Vistoria registrada com sucesso!', 'success');
             setTimeout(() => {
                 onClose();
-            }, 2000); // Fecha o formulário após 2 segundos
+            }, 2000);
         } catch (error: unknown) {
             console.error('Erro ao cadastrar vistoria:', error);
             const apiError = error as ApiError;
@@ -153,8 +151,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
 
     return (
         <form className="form-step" onSubmit={handleSubmit}>
-            <label className="input-required">
-                Laudo:
+            <label>
+                <span className="label-text">
+                * Laudo:
+                </span>    
                 <input 
                     type="text" 
                     value={laudo} 
@@ -166,8 +166,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 />
                 {fieldErrors.laudo && <span className="field-error-message">{fieldErrors.laudo}</span>}
             </label>
-            <label className="input-required">
-                Tipo (Inicial, Periódica ou Final):
+            <label>
+                <span className="label-text">
+                * Tipo (Inicial, Periódica ou Final):
+                </span>    
                 <input 
                     type="text" 
                     value={tipo} 
@@ -179,8 +181,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 />
                 {fieldErrors.tipo && <span className="field-error-message">{fieldErrors.tipo}</span>}
             </label>
-            <label className="input-required">
-                Data:
+            <label>
+                <span className="label-text">
+                * Data:
+                </span>    
                 <input 
                     type="date" 
                     value={dataVistoria} 
@@ -192,8 +196,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 />
                 {fieldErrors.dataVistoria && <span className="field-error-message">{fieldErrors.dataVistoria}</span>}
             </label>
-            <label className="input-required">
-                Rua:
+            <label>
+                <span className="label-text">
+                * Rua:
+                </span>    
                 <input 
                     type="text" 
                     value={rua} 
@@ -205,8 +211,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 />
                 {fieldErrors.rua && <span className="field-error-message">{fieldErrors.rua}</span>}
             </label>
-            <label className="input-required">
-                Número:
+            <label>
+                <span className="label-text">
+                * Número:
+                </span>    
                 <input 
                     type="text" 
                     value={numero} 
@@ -218,8 +226,10 @@ const VistoriaForm: React.FC<VistoriaFormProps> = ({ onClose }) => {
                 />
                 {fieldErrors.numero && <span className="field-error-message">{fieldErrors.numero}</span>}
             </label>
-            <label className="input-required">
-                Bairro:
+            <label>
+                <span className="label-text">
+                * Bairro:
+                </span>    
                 <input 
                     type="text" 
                     value={bairro} 

@@ -37,8 +37,8 @@ const ImoveisPage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (isAuthenticated) { // Certifique-se de que esta verificação está presente
-            fetchImoveis(); // Evite chamadas automáticas antes de o login estar resolvido
+        if (isAuthenticated) {
+            fetchImoveis();
         }
     }, [isAuthenticated]);
 

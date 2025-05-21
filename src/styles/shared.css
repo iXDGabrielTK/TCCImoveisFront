@@ -1,9 +1,9 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 80px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 80px);
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
@@ -11,9 +11,10 @@
     z-index: 1000;
 }
 
+
 .modal {
     background: #fff;
-    padding: 20px;
+    padding-bottom: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 80%;
@@ -136,7 +137,7 @@
 }
 
 /* Botão de fechar genérico */
-.close-button {
+.close-button, .btn-close-modal{
     position: absolute;
     top: 10px;
     right: 10px;
@@ -150,7 +151,7 @@
     z-index: 1050;
 }
 
-.close-button:hover {
+.close-button:hover, .btn-close-modal {
     background-color: #e00000;
 }
 
@@ -164,6 +165,13 @@
 .input-error {
     border: 1px solid red !important;
     background-color: #fff0f0 !important;
+}
+
+.label-text {
+    font-weight: bold;
+    margin-bottom: 4px;
+    display: inline-block;
+    color: #333;
 }
 
 .field-error-message {

@@ -120,13 +120,36 @@
     background-color: #ddd;
 }
 
-.logo-bemco-mobile {
-    width:100%;
+.logo-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100%;
-    object-fit: contain;
-    cursor: pointer;
-    vertical-align: middle;
+    padding: 0;
 }
+
+.logo-bemco-mobile {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.logo-button {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 73%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
 
 @media (max-width: 600px) {
     .navbar {
@@ -151,7 +174,6 @@
     }
 
     .center {
-        flex: 1 1 auto;
         justify-content: center;
         align-items: baseline;
         gap: 8px;

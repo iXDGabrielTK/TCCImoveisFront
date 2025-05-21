@@ -17,7 +17,6 @@ import {
 import Grid from "@mui/material/Grid2";
 import {
     Close as CloseIcon,
-    Person as PersonIcon,
     Save as SaveIcon,
     Delete as DeleteIcon
 } from "@mui/icons-material";
@@ -188,8 +187,13 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                     ) : user ? (
                         <Grid container spacing={3}>
                             <Grid size={{ xs: 12 }} display="flex" justifyContent="center" mb={2}>
-                                <Avatar sx={{ width: 80, height: 80, bgcolor: 'primary.main' }}>
-                                    <PersonIcon sx={{ fontSize: 40 }} />
+                                <Avatar sx={{ width: 80, height: 80, bgcolor: '#14453e', fontSize: 32 }}>
+                                    {user?.nome
+                                        ?.split(' ')
+                                        .map((n) => n[0])
+                                        .slice(0, 2)
+                                        .join('')
+                                        .toUpperCase()}
                                 </Avatar>
                             </Grid>
 

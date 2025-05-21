@@ -1,100 +1,109 @@
-import { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, InputBase } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { useImoveisContext } from '../context/ImoveisContext';
 
-const SearchContainer = styled(Box)({
+const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.black, 0.05),
+    overflow: 'hidden',
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.common.black, 0.08),
+    },
+    margin: '1rem auto',
+    width: '90%',
+    maxWidth: 600,
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
-    position: 'relative',
-    marginRight: '0.2%',
-});
+    justifyContent: 'center',
+    color: theme.palette.grey[700],
+}));
 
-const SearchIconButton = styled(IconButton)({
-    backgroundColor: '#fff',
-    borderRadius: '50%',
-    padding: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    '&:hover': {
-        backgroundColor: '#e0e0e0',
-    },
-});
-
-const AnimatedInput = styled(InputBase)<{ open: boolean }>(({ theme, open }) => ({
-    position: 'absolute',
-    right: 0,
-    width: open ? '200px' : '0px',
-    opacity: open ? 1 : 0,
-    transition: theme.transitions.create(['width', 'opacity'], {
-        duration: theme.transitions.duration.short,
-        easing: theme.transitions.easing.easeInOut,
-    }),
-    borderBottom: open ? `1px solid ${theme.palette.divider}` : 'none',
-    padding: '4px 8px',
-    borderRadius: '20px',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    fontSize: '1rem',
-    '&::placeholder': {
-        color: '#aaa',
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    width: '100%',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1.2, 1, 1.2, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        paddingRight: theme.spacing(5),
+        fontSize: '1rem',
     },
 }));
 
-const debounce = (func: (term: string) => void, delay: number) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (term: string) => {
-        if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            func(term);
-        }, delay);
-    };
-};
 
 const SearchBar = () => {
-    const [open, setOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const debouncedSearch = useRef(debounce((term: string) => {
-        console.log('Searching for:', term);
-        // Add your search logic here
-    }, 500)).current;
+    const { setTermoBusca } = useImoveisContext();
+    const [termoLocal, setTermoLocal] = useState('');
 
     useEffect(() => {
-        if (searchTerm) {
-            debouncedSearch(searchTerm);
-        }
-    }, [searchTerm, debouncedSearch]);
+        const delay = setTimeout(() => {
+            setTermoBusca(termoLocal.trim());
+        }, 300);
+        return () => clearTimeout(delay);
+    }, [setTermoBusca, termoLocal]);
 
-    const handleClear = () => {
-        setSearchTerm('');
-    };
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const elementoAtivo = document.activeElement;
+            const tagAtual = elementoAtivo?.tagName.toLowerCase();
 
-    const handleToggle = () => {
-        setOpen((prev) => !prev);
-        if (open) {
-            setSearchTerm('');
-        }
-    };
+            if (e.key === '/' && tagAtual !== 'input' && tagAtual !== 'textarea') {
+                e.preventDefault();
+                document.getElementById('campo-busca')?.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     return (
-        <SearchContainer>
-            <SearchIconButton onClick={handleToggle}>
+        <Search>
+            <SearchIconWrapper>
                 <SearchIcon />
-            </SearchIconButton>
-            <AnimatedInput
-                open={open}
-                placeholder="Pesquisando..."
-                inputProps={{ 'aria-label': 'pesquisar' }}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                disabled={true}
+            </SearchIconWrapper>
+            <StyledInputBase
+                placeholder="Buscar imóvel..."
+                value={termoLocal}
+                onChange={(e) => setTermoLocal(e.target.value)}
+                inputProps={{ 'aria-label': 'search', id: 'campo-busca' }}
+                endAdornment={
+                    termoLocal && (
+                        <InputAdornment position="end">
+                            <IconButton
+                                onClick={() => setTermoLocal('')}
+                                edge="end"
+                                size="small"
+                                sx={{
+                                    color: 'grey.600',
+                                    p: 2.5,
+                                    ml: 0.5,
+                                    borderRadius: '20%',
+                                    transition: 'background-color 0.3s ease',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    },
+                                }}
+                            >
+                                <CloseIcon fontSize="medium" />
+                            </IconButton>
+                        </InputAdornment>
+                    )
+                }
             />
-            {open && searchTerm && (
-                <IconButton onClick={handleClear} style={{ position: 'absolute', right: '210px' }}>
-                    <ClearIcon />
-                </IconButton>
-            )}
-        </SearchContainer>
+        </Search>
     );
 };
 

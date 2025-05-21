@@ -21,7 +21,6 @@ const AgendamentosPopUp: React.FC<Props> = ({ agendamentos, onClose, onCancel })
     const [cancelReason, setCancelReason] = useState<string>("");
     const [localAgendamentos, setLocalAgendamentos] = useState<Agendamento[]>(agendamentos);
 
-    // Update local state when props change
     useEffect(() => {
         setLocalAgendamentos(agendamentos);
     }, [agendamentos]);

@@ -1,4 +1,3 @@
-// ToastContext.ts
 import { createContext, useContext } from 'react';
 
 export type ToastType = 'success' | 'error' | 'info';

@@ -15,91 +15,94 @@ import ImobiliariaPage from "./pages/ImobiliariaPage.tsx";
 import ImoveisFiltradosPage from './pages/ImoveisFiltradosValorPage';
 import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
+import { ImoveisProvider } from './context/ImoveisContext.tsx';
 
 const App: React.FC = () => {
     return (
         <ToastProvider>
             <Router>
-                <AuthProvider>
-                    <Routes>
-                        <Route path="/" element={<MainLayout />}>
-                            <Route
-                                path="/imoveis-filtrados"
-                                element={
-                                    <PrivateRoute>
-                                        <ImoveisFiltradosPage />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="financiamento"
-                                element={
-                                    <PrivateRoute>
-                                        <CalculadoraFinanciamento />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="imoveis"
-                                element={
-                                    <PrivateRoute requiredRole="funcionario">
-                                        <ImoveisPage />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="imobiliarias"
-                                element={
-                                    <PrivateRoute>
-                                        <ImobiliariaPage />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="imovel/:id"
-                                element={
-                                    <PrivateRoute>
-                                        <ImovelDetalhesPage />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="relatorio-usuarios"
-                                element={
-                                    <PrivateRoute>
-                                        <RelatorioUsuarios />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="relatorio-agendamentos"
-                                element={
-                                    <PrivateRoute>
-                                        <RelatorioAgendamentos />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="relatorio-vistorias"
-                                element={
-                                    <PrivateRoute>
-                                        <RelatorioVistorias />
-                                    </PrivateRoute>
-                                }
-                            />
-                            <Route
-                                path="home"
-                                element={
-                                    <PrivateRoute>
-                                        <HomePage />
-                                    </PrivateRoute>
-                                }
-                            />
-                        </Route>
-                        <Route path="/login" element={<LoginForm />} />
-                        <Route path="/register" element={<Register />} />
-                    </Routes>
-                </AuthProvider>
+                <ImoveisProvider>
+                    <AuthProvider>
+                        <Routes>
+                            <Route path="/" element={<MainLayout />}>
+                                <Route
+                                    path="/imoveis-filtrados"
+                                    element={
+                                        <PrivateRoute>
+                                            <ImoveisFiltradosPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="financiamento"
+                                    element={
+                                        <PrivateRoute>
+                                            <CalculadoraFinanciamento />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="imoveis"
+                                    element={
+                                        <PrivateRoute requiredRole="funcionario">
+                                            <ImoveisPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="imobiliarias"
+                                    element={
+                                        <PrivateRoute>
+                                            <ImobiliariaPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="imovel/:id"
+                                    element={
+                                        <PrivateRoute>
+                                            <ImovelDetalhesPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="relatorio-usuarios"
+                                    element={
+                                        <PrivateRoute>
+                                            <RelatorioUsuarios />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="relatorio-agendamentos"
+                                    element={
+                                        <PrivateRoute>
+                                            <RelatorioAgendamentos />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="relatorio-vistorias"
+                                    element={
+                                        <PrivateRoute>
+                                            <RelatorioVistorias />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="home"
+                                    element={
+                                        <PrivateRoute>
+                                            <HomePage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                            </Route>
+                            <Route path="/login" element={<LoginForm />} />
+                            <Route path="/register" element={<Register />} />
+                        </Routes>
+                    </AuthProvider>
+                </ImoveisProvider>
             </Router>
         </ToastProvider>
     );

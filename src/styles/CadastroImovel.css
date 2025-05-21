@@ -1,18 +1,3 @@
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-
 .close-modal-button {
     position: absolute;
     top: 10px;
@@ -69,8 +54,7 @@
 
 /* Botões do formulário */
 .btn-next-step,
-.btn-prev-step,
-.btn-submit-form {
+.btn-prev-step{
     max-width: 150px;
     align-self: center;
     background-color: #007BFF;
@@ -84,8 +68,7 @@
 }
 
 .btn-next-step:hover,
-.btn-prev-step:hover,
-.btn-submit-form:hover {
+.btn-prev-step:hover{
     background-color: #0056b3;
 }
 
@@ -95,14 +78,6 @@
 
 .btn-prev-step:hover {
     background-color: #5a6268;
-}
-
-.btn-submit-form {
-    background-color: #28a745;
-}
-
-.btn-submit-form:hover {
-    background-color: #218838;
 }
 
 /* Navegação entre passos */

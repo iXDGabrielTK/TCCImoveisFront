@@ -1,4 +1,3 @@
-// ToastProvider.tsx
 import React, { useState, useCallback } from 'react';
 import { ToastContext, Toast, ToastType } from './ToastContext';
 import ToastItem from './ToastItem';
@@ -13,10 +12,12 @@ const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 
     const showToast = useCallback((message: string, type: ToastType) => {
         const id = Date.now();
-        setToasts(prev => [...prev, { id, message, type }]);
-        setTimeout(() => {
-            setToasts(prev => prev.filter(toast => toast.id !== id));
-        }, 3000);
+
+        setToasts(prev => {
+            if (prev.some(t => t.message === message && t.type === type)) return prev;
+            const next = [...prev, { id, message, type }];
+            return next.length > 5 ? next.slice(1) : next;
+        });
     }, []);
 
     return (
@@ -24,11 +25,11 @@ const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
             {children}
             <div className="toast-container">
                 {toasts.map((toast) => (
-
-                    <div key={toast.id} className={`toast toast-${toast.type}`}>
-                        <ToastItem key={toast.id} {...toast} onRemove={(id) => setToasts(prev => prev.filter(t => t.id !== id))} />
-                        {toast.message}
-                    </div>
+                    <ToastItem
+                        key={toast.id}
+                        {...toast}
+                        onRemove={(id) => setToasts(prev => prev.filter(t => t.id !== id))}
+                    />
                 ))}
             </div>
         </ToastContext.Provider>
