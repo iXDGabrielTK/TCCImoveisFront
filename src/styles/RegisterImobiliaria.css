@@ -1,100 +1,126 @@
-.register-imobiliaria-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f2f5;
+.imobiliaria-form-grid {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #222;
 }
 
-.register-imobiliaria-form {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    max-width: 90%;
-    text-align: center;
+.imobiliaria-form-grid h2 {
+    font-size: 26px;
+    margin-bottom: 24px;
 }
 
-.register-imobiliaria-form h2 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
+fieldset {
+    border: none;
+    padding: 0;
+    margin-bottom: 32px;
 }
 
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.icon {
-    position: absolute;
-    left: 15px;
-    color: #666;
+legend {
     font-size: 18px;
-    transition: opacity 0.3s ease;
-}
-
-.input-group input {
-    flex: 1;
-    border: none;
-    background: none;
-    outline: none;
-    color: #333;
-    font-size: 1rem;
-    padding: 0.5rem 0;
-}
-
-.input-group input[type="text"],
-.input-group input[type="number"],
-.input-group input[type="date"],
-.input-group input[type="password"],
-.input-group select {
-    width: 100%;
-    padding: 12px 20px;
-    border: 1px solid #dee5fe;
-    border-radius: 25px;
-    background-color: transparent;
-    font-size: 16px;
-    color: #333;
-    transition: border-color 0.3s;
-    appearance: none;
-    outline: none;
-}
-
-.input-group input:focus,
-.input-group select:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-.register-imobiliaria-form button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 25px;
-    background: linear-gradient(90deg, #14453e, #2e7d64);
-    color: white;
-    font-size: 16px;
     font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.form-group input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+.form-group input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    outline: none;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 200px;
+    margin: 40px auto 0;
+    padding: 14px;
+    background-color: #14453e;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;
 }
 
-.register-imobiliaria-form button:hover {
-    background: linear-gradient(90deg, #2e7d64, #4CAF50);
+button[type="submit"]:hover {
+    background-color: #2e7d64;
 }
 
-.register-imobiliaria-form .error-message {
-    color: red;
-    margin-top: 10px;
+
+.cep-wrapper {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap; /* permite quebrar no mobile */
 }
 
-.register-imobiliaria-form .success-message {
-    color: green;
-    margin-top: 10px;
+.cep-wrapper .form-group {
+    flex: 1;
+    min-width: 240px;
 }
+
+
+
+.cep-link {
+    color: #5b21b6;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.cep-link:hover {
+    color: #7c3aed;
+    text-decoration: underline;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 180px;
+    margin: 32px auto 0;
+    padding: 12px;
+    background-color: #14453e;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #2e7d64;
+}
+
+
