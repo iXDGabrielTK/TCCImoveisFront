@@ -66,8 +66,10 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
         setIsLoading(true);
         resetMessages();
         try {
-            const response = await api.get('/imoveis');
-            setImoveis(response.data);
+            const response = await api.get('/imoveis', {
+                params: { page: 0, size: 1000, sort: 'idImovel,asc' }
+            });
+            setImoveis(response.data?.content ?? []);
         } catch (error: unknown) {
             console.error("Erro ao buscar imóveis:", error);
             const apiError = error as ApiError;

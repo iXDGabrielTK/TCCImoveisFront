@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Imovel } from '../types/Imovel';
 import api from '../services/api';
 import '../styles/ImoveisGrid.css';
 import '../styles/shared.css';
-import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import SkeletonImovel from './SkeletonImovel.tsx';
 import { useImoveisContext } from '../context/ImoveisContext';
+import LoadingText from "./LoadingText.tsx";
 
 interface ApiError {
     response?: {
@@ -24,7 +25,6 @@ interface ImoveisGridProps {
     onImovelClick?: (imovel: Imovel) => void;
 }
 
-
 const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick }) => {
     const navigate = useNavigate();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -32,46 +32,102 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
     const [tipoResidencia, setTipoResidencia] = useState<string>('');
     const [valor, setValor] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
     const { termoBusca } = useImoveisContext();
+    const observerRef = useRef<HTMLDivElement | null>(null);
 
     const resetMessages = useCallback(() => {
         setErrorMessage("");
     }, []);
 
-    const fetchImoveis = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            resetMessages();
-            let response;
+    const fetchImoveis = useCallback(async (reset = false) => {
+        if (reset) {
+            setPage(0);
+            setImoveis([]);
+            setHasMore(true);
+        }
 
-            if (modo === 'filtrados' && valorMaximo) {
-                response = await api.get('/imoveis/disponiveis', {
-                    params: { valorMax: valorMaximo },
-                });
-            } else {
-                response = await api.get('/imoveis');
+        setIsLoading(true);
+        resetMessages();
+
+        const params: {
+            page: number;
+            size: number;
+            sort: string;
+            valorMax?: number;
+        } = {
+            page: reset ? 0 : page,
+            size: 8,
+            sort: 'idImovel,asc',
+        };
+
+        if (modo === 'filtrados' && valorMaximo) {
+            params.valorMax = valorMaximo;
+        }
+
+        try {
+            const endpoint = modo === 'filtrados' && valorMaximo
+                ? '/imoveis/disponiveis'
+                : '/imoveis';
+
+            const response = await api.get(endpoint, { params });
+            const pageData = response.data;
+            const novosImoveis = pageData.content;
+
+            setImoveis(prev => {
+                const idsExistentes = new Set(prev.map((imv: Imovel) => imv.idImovel));
+                const novosFiltrados = novosImoveis.filter((imv: Imovel) => !idsExistentes.has(imv.idImovel));
+                return [...prev, ...novosFiltrados];
+            });
+
+            if (pageData.last || novosImoveis.length < 8) {
+                setHasMore(false);
             }
-            setImoveis(response.data);
-            setFilteredImoveis(response.data);
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Erro ao buscar imóveis:", error);
             const apiError = error as ApiError;
             setErrorMessage(apiError?.response?.data?.message || "Erro ao buscar imóveis. Tente novamente mais tarde.");
         } finally {
             setIsLoading(false);
         }
-    }, [resetMessages, modo, valorMaximo]);
+    }, [modo, valorMaximo, page, resetMessages]);
 
     useEffect(() => {
-        const loadImoveis = async () => {
-            await fetchImoveis();
+        void fetchImoveis(true);
+    }, [tipoResidencia, valor, termoBusca, fetchImoveis]);
+
+    useEffect(() => {
+        if (page !== 0) void fetchImoveis();
+    }, [fetchImoveis, page]);
+
+    useEffect(() => {
+        if (!hasMore || isLoading) return;
+
+        const currentRef = observerRef.current;
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting) {
+                    setPage(prevPage => prevPage + 1);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (currentRef) {
+            observer.observe(currentRef);
+        }
+
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef);
+            }
         };
-        void loadImoveis();
-    }, [fetchImoveis]);
+    }, [hasMore, isLoading]);
 
     const normalizar = (texto: string) =>
-        texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
     const filterImoveis = useCallback(() => {
         let filtered = [...imoveis];
@@ -82,7 +138,6 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
 
         if (termoBusca) {
             const termo = normalizar(termoBusca);
-
             filtered = filtered.filter(imovel => {
                 const campos = [
                     imovel.tipoImovel,
@@ -92,28 +147,20 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                     imovel.enderecoImovel?.cidade,
                     imovel.enderecoImovel?.estado,
                 ];
-
-                return campos.some(campo =>
-                    typeof campo === 'string' &&
-                    normalizar(campo).includes(termo)
-                );
+                return campos.some(campo => typeof campo === 'string' && normalizar(campo).includes(termo));
             });
         }
 
         if (valor) {
             filtered = filtered.sort((a, b) => {
-                if (valor === 'Menor Valor') {
-                    return a.precoImovel - b.precoImovel;
-                } else if (valor === 'Maior Valor') {
-                    return b.precoImovel - a.precoImovel;
-                }
+                if (valor === 'Menor Valor') return a.precoImovel - b.precoImovel;
+                if (valor === 'Maior Valor') return b.precoImovel - a.precoImovel;
                 return 0;
             });
         }
 
         setFilteredImoveis(filtered);
     }, [imoveis, tipoResidencia, valor, termoBusca]);
-
 
     useEffect(() => {
         filterImoveis();
@@ -129,72 +176,17 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             )}
 
             <div className="filters">
-                <FormControl
-                    variant="standard"
-                    sx={{ border: 'none', boxShadow: 'none', minWidth: 120, marginRight: '16px' }}
-                >
+                <FormControl variant="standard" sx={{ minWidth: 120, marginRight: '16px' }}>
                     <InputLabel>Tipo</InputLabel>
-                    <Select
-                        value={tipoResidencia}
-                        onChange={(e) => setTipoResidencia(e.target.value as string)}
-                        label="Tipo de Residência"
-                        disabled={isLoading}
-                        MenuProps={{
-                            disablePortal: true,
-                            disableScrollLock: true,
-                            PaperProps: {
-                                sx: {
-                                    mt: 1,
-                                    backgroundColor: '#f3f3f3',
-                                    borderRadius: '8px',
-                                    boxShadow: 3,
-                                    border: 'none',
-                                    zIndex: 1100
-                                },
-                            },
-                            BackdropProps: {
-                                sx: {
-                                    backgroundColor: 'transparent',
-                                },
-                            },
-                        }}
-                    >
+                    <Select value={tipoResidencia} onChange={(e) => setTipoResidencia(e.target.value)} disabled={isLoading}>
                         <MenuItem value="">Todos</MenuItem>
-                        <MenuItem value="Apartamento">Apartamento</MenuItem>
+                        <MenuItem value="Apartamento"                                               >Apartamento</MenuItem>
                         <MenuItem value="Casa">Casa</MenuItem>
                     </Select>
                 </FormControl>
-
-                <FormControl
-                    variant="standard"
-                    sx={{ border: 'none', boxShadow: 'none', minWidth: 120 }}
-                >
+                <FormControl variant="standard" sx={{ minWidth: 120 }}>
                     <InputLabel>Valor</InputLabel>
-                    <Select
-                        value={valor}
-                        onChange={(e) => setValor(e.target.value as string)}
-                        label="Valor"
-                        disabled={isLoading}
-                        MenuProps={{
-                            disablePortal: true,
-                            disableScrollLock: true,
-                            PaperProps: {
-                                sx: {
-                                    mt: 1,
-                                    backgroundColor: '#f3f3f3',
-                                    borderRadius: '8px',
-                                    boxShadow: 3,
-                                    border: 'none',
-                                    zIndex: 1100
-                                },
-                            },
-                            BackdropProps: {
-                                sx: {
-                                    backgroundColor: 'transparent',
-                                },
-                            },
-                        }}
-                    >
+                    <Select value={valor} onChange={(e) => setValor(e.target.value)} disabled={isLoading}>
                         <MenuItem value="">Sem ordenação</MenuItem>
                         <MenuItem value="Menor Valor">Menor Valor</MenuItem>
                         <MenuItem value="Maior Valor">Maior Valor</MenuItem>
@@ -202,7 +194,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                 </FormControl>
             </div>
 
-            {isLoading ? (
+            {isLoading && page === 0 ? (
                 <div className="imoveis-grid">
                     {Array.from({ length: 8 }).map((_, index) => (
                         <SkeletonImovel key={index} />
@@ -215,17 +207,14 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                             typeof imovel.fotosImovel?.[0] === "string" && (imovel.fotosImovel[0] as string).trim() !== ""
                                 ? imovel.fotosImovel[0]
                                 : "https://placehold.co/300x200";
-
                         return (
                             <div
-                                key={imovel.idImovel || Math.random()}
+                                key={imovel.idImovel}
                                 className="imovel-card"
                                 onClick={() =>
                                     onImovelClick
                                         ? onImovelClick(imovel)
-                                        : navigate(`/imovel/${imovel.idImovel}`, {
-                                            state: { origem }, // ⬅️ passando origem para a próxima tela
-                                        })
+                                        : navigate(`/imovel/${imovel.idImovel}`, { state: { origem } })
                                 }
                             >
                                 <img
@@ -237,6 +226,22 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {isLoading && page > 0 && (
+                <Box textAlign="center" mt={2}>
+                    <LoadingText />
+                </Box>
+            )}
+
+            {hasMore && (
+                <div ref={observerRef}>
+                    {isLoading && page > 0 && (
+                        <Box textAlign="center" mt={2}>
+                            <LoadingText />
+                        </Box>
+                    )}
                 </div>
             )}
         </div>

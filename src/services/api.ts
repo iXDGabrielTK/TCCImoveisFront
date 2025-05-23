@@ -9,7 +9,7 @@ const api = axios.create({
     withCredentials: true,
 });
 
-// === Controle de fila para requisições enquanto token está sendo renovado ===
+// === Controle de fila para requisições enquanto “token” está a ser renovado ===
 let isRefreshing = false;
 let failedQueue: Array<{
     resolve: (value?: unknown) => void;
@@ -30,7 +30,7 @@ const processQueue = (error: AxiosError | null, token: string | null) => {
 // === Interceptor de Requisição: adiciona Authorization em toda requisição ===
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("access_token"); // Corrigido para "access_token"
+        const token = localStorage.getItem("access_token");
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -45,35 +45,39 @@ api.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-        // Só tenta refresh se a resposta for 401 e a requisição ainda não foi tentada com novo token
         if (error.response?.status === 401 && !originalRequest._retry) {
             const refreshToken = localStorage.getItem('refresh_token');
+
+            console.warn("Com token.");
+
             if (!refreshToken) {
+                console.warn("Sem refresh token — redirecionando para login.");
                 localStorage.clear();
                 window.location.href = '/login';
                 return Promise.reject(error);
             }
 
             if (isRefreshing) {
+                console.warn("Refresh token já está a ser renovado.");
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
-                })
-                    .then(token => {
-                        if (originalRequest.headers) {
-                            originalRequest.headers.Authorization = `Bearer ${token}`;
-                        }
-                        return api(originalRequest);
-                    })
-                    .catch(err => Promise.reject(err));
+                }).then(token => {
+                    if (originalRequest.headers)
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                    return api(originalRequest);
+                }).catch(err => {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return Promise.reject(err);
+                });
             }
 
             originalRequest._retry = true;
             isRefreshing = true;
 
             try {
-                const response = await api.post('/usuarios/refresh-token', {
-                    refreshToken,
-                });
+                console.warn("Tentando renovar token.");
+                const response = await api.post('/usuarios/refresh-token', { refreshToken });
 
                 const { access_token, refresh_token } = response.data;
 
@@ -82,12 +86,13 @@ api.interceptors.response.use(
 
                 processQueue(null, access_token);
 
-                if (originalRequest.headers) {
+                if (originalRequest.headers)
                     originalRequest.headers.Authorization = `Bearer ${access_token}`;
-                }
 
+                console.warn("Token renovado com sucesso.");
                 return api(originalRequest);
             } catch (err) {
+                console.error("Erro ao tentar renovar token. Redirecionando para login.");
                 processQueue(err as AxiosError, null);
                 localStorage.clear();
                 window.location.href = '/login';

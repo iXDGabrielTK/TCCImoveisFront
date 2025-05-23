@@ -96,7 +96,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                 user.nome !== userOriginal.nome ||
                 user.email !== userOriginal.email ||
                 user.telefone !== userOriginal.telefone ||
-                (user.senha && user.senha.trim().length > 0);
+                (!!user.senha && user.senha.trim().length > 0);
 
             // Atualizar usuário
             if (usuarioFoiModificado) {

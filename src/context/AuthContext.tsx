@@ -11,7 +11,10 @@ import {
     RefreshTokenResponse,
 } from './AuthContext.context';
 
-
+/**
+ * Componente AuthProvider que fornece o contexto de autenticação para a aplicação.
+ * Ele gerencia o estado de autenticação, carrega os dados do usuário e lida com login/logout.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<User | null>(null);
@@ -46,6 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         setIsAuthenticated(false);
     };
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('access_token');
+        if (!loading && !accessToken) {
+            navigate('/login', { replace: true });
+        }
+    }, [loading, navigate]);
 
     const refreshToken = useCallback(async (): Promise<boolean> => {
         try {

@@ -25,10 +25,11 @@ interface ImovelDetalhesProps {
 
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padrao" }) => {
     const imageUrls = useMemo(() => {
+        // noinspection SuspiciousTypeOfGuard
         return Array.isArray(imovel.fotosImovel)
             ? imovel.fotosImovel
-                .map(f => typeof f === "string" ? f : f.urlFotoImovel)
-                .filter(url => typeof url === "string" && url.includes("http"))
+                .map(f => (typeof f === "string" ? f : f.urlFotoImovel))
+                .filter(url => url && url.includes("http"))
                 .flatMap(url => url.split(','))
             : [];
     }, [imovel.fotosImovel]);
