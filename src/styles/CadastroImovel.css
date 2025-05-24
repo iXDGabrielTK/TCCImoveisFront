@@ -1,81 +1,134 @@
-.close-modal-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
+/* Layout principal */
+.cadastro-imovel-page {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.cadastro-imovel-page h1 {
+    font-size: 26px;
+    margin-bottom: 24px;
+}
+
+/* Agrupamento de campos */
+fieldset {
     border: none;
+    padding: 0;
+    margin-bottom: 32px;
+}
+
+legend {
     font-size: 18px;
-    cursor: pointer;
-    color: #333;
-}
-
-/* Formulário de Cadastro de Imóvel */
-.form-carousel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-step {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px 15px;
-    box-sizing: border-box;
-}
-
-.form-step label {
     font-weight: bold;
-    color: #333;
+    margin-bottom: 16px;
+}
+
+/* Grid responsivo */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Estilo de grupos de input */
+.form-group {
     display: flex;
     flex-direction: column;
 }
 
-.form-step input,
-.form-step select,
-.form-step textarea {
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.form-group label {
     font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
+    margin-bottom: 6px;
+    color: #555;
 }
 
-/* Específico para textarea de Histórico de Manutenção */
-.form-step textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    outline: none;
+}
+
+.form-group textarea {
     resize: vertical;
     min-height: 80px;
     max-height: 200px;
 }
 
-/* Botões do formulário */
-.btn-next-step,
-.btn-prev-step{
-    max-width: 150px;
-    align-self: center;
-    background-color: #007BFF;
-    color: white;
-    padding: 10px;
-    font-weight: bold;
+/* CEP com botão ao lado */
+.cep-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.cep-wrapper .form-group {
+    flex: 1;
+    min-width: 240px;
+}
+
+.cep-link {
+    color: #5b21b6;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.cep-link:hover {
+    color: #7c3aed;
+    text-decoration: underline;
+}
+
+/* Botões padrão */
+.btn-step {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    color: #fff;
+    background-color: #14453e;
+    min-width: 200px;
     text-align: center;
+    height: 48px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
 }
 
-.btn-next-step:hover,
-.btn-prev-step:hover{
-    background-color: #0056b3;
+/* Botão Próximo */
+.btn-next-step {
+    background-color: #14453e;
+}
+.btn-next-step:hover {
+    background-color: #2e7d64;
 }
 
+/* Botão Voltar */
 .btn-prev-step {
     background-color: #6c757d;
 }
-
 .btn-prev-step:hover {
     background-color: #5a6268;
 }
@@ -84,24 +137,25 @@
 .navigation-buttons {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    align-items: center;
+    margin-top: 32px;
+    flex-wrap: nowrap;
+    gap: 20px;
 }
 
-/* Botão Voltar */
-.btn-prev-step {
-    background-color: #0056b3;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    max-width: 150px;
-    text-align: center;
+@media (max-width: 600px) {
+    .navigation-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-step {
+        width: 100%;
+        max-width: none;
+    }
 }
 
-.btn-prev-step:hover {
-    background-color: #5a6268;
-}
+
+
+
 

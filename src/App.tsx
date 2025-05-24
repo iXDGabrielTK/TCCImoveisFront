@@ -16,6 +16,7 @@ import ImoveisFiltradosPage from './pages/ImoveisFiltradosValorPage';
 import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
 import { ImoveisProvider } from './context/ImoveisContext.tsx';
+import CadastroImovelForm from './components/CadastroImovelForm';
 
 const App: React.FC = () => {
     return (
@@ -54,6 +55,15 @@ const App: React.FC = () => {
                                     element={
                                         <PrivateRoute>
                                             <ImobiliariaPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+
+                                <Route
+                                    path="/cadastro-imovel"
+                                    element={
+                                        <PrivateRoute>
+                                            <CadastroImovelForm/>
                                         </PrivateRoute>
                                     }
                                 />

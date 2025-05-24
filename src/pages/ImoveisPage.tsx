@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import CadastroImovelForm from '../components/CadastroImovelForm';
 import VistoriaForm from '../components/VistoriaForm';
 import ImoveisGrid from '../components/ImoveisGrid';
 import RelatorioModal from '../components/RelatorioModal';
@@ -16,7 +15,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
 
 const ImoveisPage: React.FC = () => {
-    const cadastroModal = useModal();
     const vistoriaModal = useModal();
     const editarVistoriaModal = useModal();
     const editarImovelModal = useModal();
@@ -49,7 +47,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="success"
-                        onClick={cadastroModal.openModal}
+                        onClick={() => navigate('/cadastro-imovel')}
                         className="btn-cadastrar-imovel"
                         startIcon={<HomeIcon />}
                     >
@@ -92,16 +90,7 @@ const ImoveisPage: React.FC = () => {
                     </Button>
                 </Stack>
             </div>
-            {cadastroModal.isOpen && (
-                <div className="modal-overlay" onClick={cadastroModal.closeModal}>
-                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={cadastroModal.closeModal} className="btn-close-modal">
-                            Fechar
-                        </button>
-                        <CadastroImovelForm onClose={cadastroModal.closeModal} />
-                    </div>
-                </div>
-            )}
+
             {vistoriaModal.isOpen && (
                 <div className="modal-overlay" onClick={vistoriaModal.closeModal}>
                     <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
