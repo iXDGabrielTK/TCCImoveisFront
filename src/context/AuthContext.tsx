@@ -50,13 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(false);
     };
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem('access_token');
-        if (!loading && !accessToken) {
-            navigate('/login', { replace: true });
-        }
-    }, [loading, navigate]);
-
     const refreshToken = useCallback(async (): Promise<boolean> => {
         try {
             const currentRefreshToken = localStorage.getItem('refresh_token');

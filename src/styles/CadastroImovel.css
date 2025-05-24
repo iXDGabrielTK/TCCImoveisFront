@@ -101,47 +101,57 @@ legend {
 .btn-step {
     padding: 12px 24px;
     font-size: 16px;
-    font-weight: 600;
     border: none;
     border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
-    color: #fff;
-    background-color: #14453e;
-    min-width: 200px;
-    text-align: center;
-    height: 48px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
-/* Botão Próximo */
-.btn-next-step {
-    background-color: #14453e;
+.btn-prev {
+    background-color: #ccc;
+    color: #222;
 }
-.btn-next-step:hover {
+
+.btn-prev:hover {
+    background-color: #bbb;
+}
+
+.btn-next {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-next:hover {
+    background-color: #0056b3;
+}
+
+.btn-submit {
+    background-color: #14453e;
+    color: white;
+}
+
+.btn-submit:hover {
     background-color: #2e7d64;
 }
 
-/* Botão Voltar */
-.btn-prev-step {
-    background-color: #6c757d;
-}
-.btn-prev-step:hover {
-    background-color: #5a6268;
-}
 
 /* Navegação entre passos */
 .navigation-buttons {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
+    align-items: flex-end;
     margin-top: 32px;
     flex-wrap: nowrap;
-    gap: 20px;
+    padding: 0; /* Garantir que não tem padding */
 }
+.navigation-buttons-back {
+    display: flex;
+    gap: 80%;
+    margin-top: 24px;
+}
+
+
 
 @media (max-width: 600px) {
     .navigation-buttons {
@@ -154,8 +164,3 @@ legend {
         max-width: none;
     }
 }
-
-
-
-
-

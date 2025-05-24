@@ -305,16 +305,15 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                             </div>
                         </div>
                         <div className="navigation-buttons">
-                            <div></div> {/* Espaço à esquerda vazio */}
+                            <div></div>
                             <button
                                 type="button"
-                                className="btn-step btn-next-step"
+                                className="btn-step btn-next"
                                 onClick={() => validateFirstStep() ? setStep(2) : showToast('Corrija os erros.', 'error')}
                             >
                                 Próximo ➔
                             </button>
                         </div>
-
                     </fieldset>
                 )}
 
@@ -408,17 +407,17 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                         <small style={{ color: 'gray' }}>
                             Dados preenchidos automaticamente. Você pode ajustá-los, se necessário.
                         </small>
-                        <div className="navigation-buttons">
+                        <div className="navigation-buttons-back">
                             <button
                                 type="button"
-                                className="btn-step btn-prev-step"
+                                className="btn-step btn-prev"
                                 onClick={() => setStep(1)}
                             >
                                 ⬅ Voltar
                             </button>
                             <button
                                 type="submit"
-                                className="btn-step btn-next-step"
+                                className="btn-step btn-submit"
                                 disabled={isLoading}
                             >
                                 {isLoading ? 'Cadastrando...' : 'Cadastrar Imóvel'}
