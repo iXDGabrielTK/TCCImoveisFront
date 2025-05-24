@@ -6,6 +6,7 @@ import '../styles/CadastroImovel.css';
 import { ApiError, getErrorMessage, isValidUrl, isValidCep } from '../utils/errorHandling';
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
+import { NumericFormat } from "react-number-format";
 
 interface CadastroImovelFormProps {
     onClose?: () => void;
@@ -30,6 +31,9 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         tipo: '', descricao: '', tamanho: '', preco: '', imagem: '',
         cep: '', rua: '', numero: '', bairro: '', cidade: '', estado: '',
     });
+    const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+        (props, ref) => <input ref={ref} {...props} />
+    );
 
     const resetMessages = useCallback(() => {
         setFieldErrors({
@@ -194,6 +198,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
     const validateFirstStep = () => validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateImagem(imagem);
 
+
     return (
         <div className="cadastro-imovel-page">
             <h1>Cadastrar Novo Imóvel</h1>
@@ -212,6 +217,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                         setTipo(e.target.value);
                                         validateTipo(e.target.value);
                                     }}
+                                    placeholder="Ex: Casa, Apartamento, Terreno"
                                     className={fieldErrors.tipo ? "input-error" : ""}
                                     required
                                 />
@@ -228,6 +234,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                         setDescricao(e.target.value);
                                         validateDescricao(e.target.value);
                                     }}
+                                    placeholder="Breve descrição do imóvel"
                                     className={fieldErrors.descricao ? "input-error" : ""}
                                     required
                                 />
@@ -249,32 +256,40 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
                             <div className="form-group">
                                 <label htmlFor="tamanho">* Tamanho (m²):</label>
-                                <input
+                                <NumericFormat
                                     id="tamanho"
-                                    type="number"
-                                    value={tamanho}
-                                    onChange={(e) => {
-                                        setTamanho(e.target.value);
-                                        validateTamanho(e.target.value);
-                                    }}
                                     className={fieldErrors.tamanho ? "input-error" : ""}
+                                    value={tamanho}
+                                    onValueChange={(values: { value: string }) => {
+                                        setTamanho(values.value);
+                                        validateTamanho(values.value);
+                                    }}
+                                    suffix=" m²"
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    placeholder="Área em m²"
                                     required
-                                />
+                                    customInput={CustomInput}
+                                    ></NumericFormat>
                                 {fieldErrors.tamanho && <span className="field-error-message">{fieldErrors.tamanho}</span>}
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="preco">* Preço:</label>
-                                <input
+                                <NumericFormat
                                     id="preco"
-                                    type="number"
-                                    value={preco}
-                                    onChange={(e) => {
-                                        setPreco(e.target.value);
-                                        validatePreco(e.target.value);
-                                    }}
                                     className={fieldErrors.preco ? "input-error" : ""}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    value={preco}
+                                    onValueChange={(values: { value: string }) => {
+                                        setPreco(values.value);
+                                        validatePreco(values.value);
+                                    }}
                                     required
+                                    placeholder="Digite o valor do imóvel"
+                                    customInput={CustomInput}
                                 />
                                 {fieldErrors.preco && <span className="field-error-message">{fieldErrors.preco}</span>}
                             </div>
@@ -289,18 +304,20 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                         setImagem(e.target.value);
                                         validateImagem(e.target.value);
                                     }}
+                                    placeholder="URLs separadas por vírgula"
                                     className={fieldErrors.imagem ? "input-error" : ""}
                                     required
                                 />
                                 {fieldErrors.imagem && <span className="field-error-message">{fieldErrors.imagem}</span>}
                             </div>
 
-                            <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                            <div className="form-group" style={{gridColumn: "1 / -1"}}>
                                 <label htmlFor="manutencao">Histórico de Manutenção:</label>
                                 <textarea
                                     id="manutencao"
                                     value={historicoManutencao}
                                     onChange={(e) => setHistoricoManutencao(e.target.value)}
+                                    placeholder="Ex: Pintura em 2023, troca de telhado em 2022..."
                                 />
                             </div>
                         </div>
@@ -329,6 +346,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     value={endereco.cep}
                                     onChange={handleEnderecoChange}
                                     onBlur={buscarCep}
+                                    placeholder="Digite o CEP do imóvel"
                                     className={fieldErrors.cep ? "input-error" : ""}
                                     required
                                 />
@@ -341,6 +359,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="estado"
                                     value={endereco.estado}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Ex: PR, SP, RJ"
                                     className={fieldErrors.estado ? "input-error" : ""}
                                     required
                                 />
@@ -353,6 +372,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="cidade"
                                     value={endereco.cidade}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Ex: Curitiba, São Paulo"
                                     className={fieldErrors.cidade ? "input-error" : ""}
                                     required
                                 />
@@ -365,6 +385,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="rua"
                                     value={endereco.rua}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Ex: Rua das Flores"
                                     className={fieldErrors.rua ? "input-error" : ""}
                                     required
                                 />
@@ -377,6 +398,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="bairro"
                                     value={endereco.bairro}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Ex: Centro, Jardim América"
                                     className={fieldErrors.bairro ? "input-error" : ""}
                                     required
                                 />
@@ -389,6 +411,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="numero"
                                     value={endereco.numero}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Número do imóvel"
                                     className={fieldErrors.numero ? "input-error" : ""}
                                     required
                                 />
@@ -401,29 +424,33 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     name="complemento"
                                     value={endereco.complemento}
                                     onChange={handleEnderecoChange}
+                                    placeholder="Ex: Bloco B, Apt 303"
                                 />
                             </div>
                         </div>
                         <small style={{ color: 'gray' }}>
                             Dados preenchidos automaticamente. Você pode ajustá-los, se necessário.
                         </small>
-                        <div className="navigation-buttons-back">
-                            <button
-                                type="button"
-                                className="btn-step btn-prev"
-                                onClick={() => setStep(1)}
-                            >
-                                ⬅ Voltar
-                            </button>
-                            <button
-                                type="submit"
-                                className="btn-step btn-submit"
-                                disabled={isLoading}
-                            >
-                                {isLoading ? 'Cadastrando...' : 'Cadastrar Imóvel'}
-                            </button>
+                        <div className="navigation-buttons">
+                            <div style={{flex: 1}}>
+                                <button
+                                    type="button"
+                                    className="btn-step btn-prev-step"
+                                    onClick={() => setStep(1)}
+                                >
+                                    ⬅ Voltar
+                                </button>
+                            </div>
+                            <div className="submit-button">
+                                <button
+                                    type="submit"
+                                    className="btn-step btn-next-step"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? 'Cadastrando...' : 'Cadastrar Imóvel'}
+                                </button>
+                            </div>
                         </div>
-
                     </fieldset>
                 )}
             </form>
