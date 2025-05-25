@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -25,6 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const location = useLocation();
     const isMounted = useRef(true);
     const refreshTokenTimeoutId = useRef<NodeJS.Timeout | null>(null);
+    const publicRoutes = useMemo(() => ['/', '/login', '/register'], []);
 
     const isTokenExpired = useCallback((token: string) => {
         try {
@@ -132,6 +133,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [isTokenExpired, getTokenExpirationTime, refreshToken]);
 
     useEffect(() => {
+        if (!loading && isAuthenticated) {
+            const isPublicRoute = publicRoutes.includes(location.pathname);
+            if (isPublicRoute) {
+                navigate('/home', { replace: true });
+            }
+        }
+    }, [isAuthenticated, loading, location.pathname, navigate, publicRoutes]);
+
+    useEffect(() => {
         loadUser();
         return () => {
             isMounted.current = false;
@@ -141,7 +151,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
-            const publicRoutes = ['/login', '/register', '/'];
             const isProtectedRoute = !publicRoutes.some(route =>
                 location.pathname === route || location.pathname.startsWith(route + '/')
             );
@@ -155,7 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             sessionStorage.removeItem('redirectAfterLogin');
             navigate(redirectPath, { replace: true });
         }
-    }, [isAuthenticated, loading, location.pathname, navigate]);
+    }, [isAuthenticated, loading, location.pathname, navigate, publicRoutes]);
 
     const login = async (email: string, senha: string): Promise<void> => {
         try {

@@ -17,6 +17,7 @@ import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
 import { ImoveisProvider } from './context/ImoveisContext.tsx';
 import CadastroImovelForm from './components/CadastroImovelForm';
+import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
     return (

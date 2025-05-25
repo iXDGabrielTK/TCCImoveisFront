@@ -14,6 +14,7 @@ import '../styles/shared.css';
 import api from "../services/api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useToast } from "../context/ToastContext";
 
 interface RelatorioModalProps {
     isOpen: boolean;
@@ -46,29 +47,50 @@ interface UsuarioRelatorio {
     quantidadeAcessos: number;
 }
 
+const getCurrentMonthYear = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // mês começa do 0
+    return `${year}-${month}`;
+};
+
 const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
-    const [selectedMonth, setSelectedMonth] = useState<string>("2024-01");
+    const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonthYear());
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [selectedImovel, setSelectedImovel] = useState<number | null>(null);
+    const { showToast } = useToast();
+
+    const fetchImoveis = useCallback(async () => {
+        try {
+            const response = await api.get("/imoveis", {
+                params: {
+                    page: 0,
+                    size: 1000,
+                    sort: "idImovel,asc"
+                }
+            });
+            if (Array.isArray(response.data.content)) {
+                setImoveis(response.data.content);
+            } else {
+                console.warn("Resposta inesperada de /imoveis:", response.data);
+                showToast("Resposta inesperada de /imoveis:", "error");
+                setImoveis([]);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar imóveis:", error);
+            showToast("Erro ao buscar imóveis.", "error");
+        }
+    }, [showToast]);
 
     useEffect(() => {
         if (isOpen) {
-            fetchImoveis();
+            void fetchImoveis();
         }
-    }, [isOpen]);
-
-    const fetchImoveis = async () => {
-        try {
-            const response = await api.get("/imoveis");
-            setImoveis(response.data);
-        } catch (error) {
-            console.error("Erro ao buscar imóveis:", error);
-        }
-    };
+    }, [isOpen, fetchImoveis]);
 
     const gerarRelatorioVistorias = async () => {
         if (!selectedImovel) {
-            alert("Selecione um imóvel.");
+            showToast("Selecione um imóvel.", "error");
             return;
         }
 
@@ -82,7 +104,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             const dados = response.data;
 
             if (dados.length === 0) {
-                alert("Nenhum dado encontrado para o imóvel selecionado.");
+                showToast("Nenhum dado encontrado para o imóvel selecionado.", "error");
                 return;
             }
 
@@ -108,6 +130,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             doc.save(`relatorio-vistorias-imovel-${selectedImovel}.pdf`);
         } catch (error) {
             console.error("Erro ao gerar o relatório de vistorias:", error);
+            showToast("Erro ao gerar o relatório de vistorias. Tente novamente.", "error");
         }
     };
 
@@ -119,7 +142,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             const dados = response.data;
 
             if (dados.length === 0) {
-                alert("Nenhum dado encontrado para o período solicitado.");
+                showToast("Nenhum dado encontrado para o período solicitado.", "error");
                 return;
             }
 
@@ -153,6 +176,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             doc.save(`relatorio-agendamentos-${selectedMonth}.pdf`);
         } catch (error) {
             console.error("Erro ao gerar o relatório de agendamentos:", error);
+            showToast("Erro ao gerar o relatório de agendamentos. Tente novamente.", "error");
         }
     };
 
@@ -164,7 +188,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             const dados = response.data;
 
             if (dados.length === 0) {
-                alert("Nenhum dado encontrado para o período solicitado.");
+                showToast("Nenhum dado encontrado para o período solicitado.", "error");
                 return;
             }
 
@@ -198,6 +222,7 @@ const RelatorioModal: React.FC<RelatorioModalProps> = ({ isOpen, onClose }) => {
             doc.save(`relatorio-usuarios-${selectedMonth}.pdf`);
         } catch (error) {
             console.error("Erro ao gerar o relatório de usuários:", error);
+            showToast("Erro ao gerar o relatório de usuários. Tente novamente.", "error");
         }
     };
 

@@ -16,11 +16,12 @@ import { getHolidays } from "../types/holidays";
 import CustomDatePicker from "./CustomDatePicker";
 import api from "../services/api";
 import axios from "axios";
-import CriarProposta from "./CriarProposta"; // adicionado
+import CriarProposta from "./CriarProposta";
+import MapaEndereco from "./MapaEndereco.tsx";
 
 interface ImovelDetalhesProps {
     imovel: Imovel;
-    origem?: "simulacao" | "padrao"; // adicionado
+    origem?: "simulacao" | "padrao";
 }
 
 const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padrao" }) => {
@@ -123,8 +124,33 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
                             <Grid size={{ xs: 4, sm: 4, md: 3 }}>
                                 <Typography variant="body1"><strong>Status:</strong> {imovel.statusImovel ? "Disponível" : "Indisponível"}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 4 }}>
-                                <Typography variant="body1"><strong>Endereço:</strong> {imovel.enderecoImovel?.rua}, {imovel.enderecoImovel?.numero} - {imovel.enderecoImovel?.bairro}, {imovel.enderecoImovel?.cidade}</Typography>
+                        </Grid>
+                        <Grid container {...{ columns: { xs: 4, sm: 8, md: 12 } }} sx={{ mt: 2 }}>
+                            <Grid size={{ xs: 4, md: 12 }} sx={{ mt: 3 }}>
+                                <Typography variant="body1" sx={{ mb: 1 }}>
+                                    <strong>Endereço:</strong>{" "}
+                                    {[
+                                        imovel.enderecoImovel?.rua && `Rua ${imovel.enderecoImovel.rua}`,
+                                        imovel.enderecoImovel?.numero && `nº ${imovel.enderecoImovel.numero}`,
+                                        imovel.enderecoImovel?.bairro,
+                                        imovel.enderecoImovel?.cidade,
+                                        imovel.enderecoImovel?.estado?.toUpperCase()
+                                    ]
+                                        .filter(Boolean)
+                                        .join(", ")}
+                                </Typography>
+
+                                <MapaEndereco
+                                    enderecoCompleto={[
+                                        imovel.enderecoImovel?.rua,
+                                        imovel.enderecoImovel?.numero,
+                                        imovel.enderecoImovel?.bairro,
+                                        imovel.enderecoImovel?.cidade,
+                                        imovel.enderecoImovel?.estado
+                                    ]
+                                        .filter(Boolean)
+                                        .join(", ")}
+                                />
                             </Grid>
                         </Grid>
                     </Grid>

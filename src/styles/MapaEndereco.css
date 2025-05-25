@@ -1,0 +1,51 @@
+.mapa-card {
+    position: relative;
+    background-color: white;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: none;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+
+.mapa-card .info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mapa-card .titulo {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.mapa-card .subtitulo {
+    font-size: 13px;
+    color: #888;
+}
+
+.mapa-card .seta {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    font-size: 18px;
+    color: #bbb;
+}
+.centralizar-botao-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .centralizar-botao-wrapper {
+        top: auto;
+        bottom: 12px;
+        right: 12px;
+    }
+}
