@@ -11,6 +11,9 @@ import { NumericFormat } from "react-number-format";
 interface CadastroImovelFormProps {
     onClose?: () => void;
 }
+const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+    (props, ref) => <input ref={ref} {...props} />
+);
 
 const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     const navigate = useNavigate();
@@ -31,9 +34,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         tipo: '', descricao: '', tamanho: '', preco: '', imagem: '',
         cep: '', rua: '', numero: '', bairro: '', cidade: '', estado: '',
     });
-    const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-        (props, ref) => <input ref={ref} {...props} />
-    );
+
 
     const resetMessages = useCallback(() => {
         setFieldErrors({
@@ -260,7 +261,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     id="tamanho"
                                     className={fieldErrors.tamanho ? "input-error" : ""}
                                     value={tamanho}
-                                    onValueChange={(values: { value: string }) => {
+                                    onValueChange={(values) => {
                                         setTamanho(values.value);
                                         validateTamanho(values.value);
                                     }}
@@ -269,9 +270,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     decimalSeparator=","
                                     placeholder="Área em m²"
                                     required
-                                    customInput={CustomInput}
-                                    ></NumericFormat>
-                                {fieldErrors.tamanho && <span className="field-error-message">{fieldErrors.tamanho}</span>}
+                                    customInput={CustomInput} // Usando o CustomInput estável
+                                />
+                                {fieldErrors.tamanho &&
+                                    <span className="field-error-message">{fieldErrors.tamanho}</span>}
                             </div>
 
                             <div className="form-group">
@@ -283,13 +285,13 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     decimalSeparator=","
                                     prefix="R$ "
                                     value={preco}
-                                    onValueChange={(values: { value: string }) => {
+                                    onValueChange={(values) => {
                                         setPreco(values.value);
                                         validatePreco(values.value);
                                     }}
                                     required
                                     placeholder="Digite o valor do imóvel"
-                                    customInput={CustomInput}
+                                    customInput={CustomInput} // Usando o CustomInput estável
                                 />
                                 {fieldErrors.preco && <span className="field-error-message">{fieldErrors.preco}</span>}
                             </div>

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import VistoriaForm from '../components/VistoriaForm';
 import ImoveisGrid from '../components/ImoveisGrid';
 import RelatorioModal from '../components/RelatorioModal';
-import EditarVistoriaModal from '../components/EditarVistoriaModal';
 import EditarImovelModal from '../components/EditarImovelModal';
 import '../styles/ImoveisPage.css';
 import { Imovel } from '../types/Imovel';
@@ -15,8 +13,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
 
 const ImoveisPage: React.FC = () => {
-    const vistoriaModal = useModal();
-    const editarVistoriaModal = useModal();
+    // REMOVIDO: A chamada ao hook useModal para editarVistoriaModal não é mais necessária
+    // const editarVistoriaModal = useModal();
     const editarImovelModal = useModal();
     const relatorioModal = useModal();
     const navigate = useNavigate();
@@ -56,7 +54,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="success"
-                        onClick={vistoriaModal.openModal}
+                        onClick={() => navigate('/cadastro-vistoria')}
                         className="btn-registrar-vistoria"
                         startIcon={<DescriptionIcon />}
                     >
@@ -65,7 +63,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={editarVistoriaModal.openModal}
+                        onClick={() => navigate('/editar-vistoria')} // ALTERADO AQUI: Navega para a tela de edição
                         className="btn-editar-vistoria"
                         startIcon={<DescriptionIcon />}
                     >
@@ -91,22 +89,13 @@ const ImoveisPage: React.FC = () => {
                 </Stack>
             </div>
 
-            {vistoriaModal.isOpen && (
-                <div className="modal-overlay" onClick={vistoriaModal.closeModal}>
-                    <div className="imoveis-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={vistoriaModal.closeModal} className="btn-close-modal">
-                            Fechar
-                        </button>
-                        <VistoriaForm onClose={vistoriaModal.closeModal} />
-                    </div>
-                </div>
-            )}
-            {editarVistoriaModal.isOpen && (
+            {/* REMOVIDO: O modal de edição de vistoria não é mais renderizado aqui */}
+            {/* {editarVistoriaModal.isOpen && (
                 <EditarVistoriaModal
                     isOpen={editarVistoriaModal.isOpen}
                     onClose={editarVistoriaModal.closeModal}
                 />
-            )}
+            )} */}
             {editarImovelModal.isOpen && (
                 <EditarImovelModal
                     isOpen={editarImovelModal.isOpen}

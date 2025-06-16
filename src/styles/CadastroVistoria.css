@@ -1,0 +1,259 @@
+/* Layout principal - REMOVIDO DESTE ARQUIVO, ASSUMIMOS QUE CADASTROIMOVEL.CSS CONTROLA */
+.cadastro-vistoria-page {
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.cadastro-vistoria-page h1 {
+    font-size: 26px;
+    margin-bottom: 24px;
+}
+
+/* Agrupamento de campos */
+fieldset {
+    border: none;
+    padding: 0; /* Alterado para 0 para ser consistente com CadastroImovel.css */
+    margin-bottom: 32px;
+}
+
+legend {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+/* Grid responsivo */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Estilo de grupos de input */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Erros de validação */
+.input-error {
+    border-color: #ef4444;
+    background-color: #fff0f0;
+}
+
+.field-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+/* Botões padrão */
+.btn-step {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-next-step {
+    background-color: #14453e; /* Cor ajustada para combinar com o submit do CadastroImovel.css */
+    color: white;
+}
+
+.btn-next-step:hover {
+    background-color: #2e7d64; /* Cor ajustada */
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-top: 32px;
+    flex-wrap: nowrap;
+    padding: 0; /* Adicionado para igualar CadastroImovel.css */
+}
+
+/* Estilo para botão de remover Ambiente */
+.btn-remove-ambiente {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-remove-ambiente:hover {
+    background-color: #d32f2f;
+}
+
+/* Estilo do input de arquivo customizado */
+.form-group-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.hidden-file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #E0E0E0; /* Um cinza bem claro */
+    color: #333333; /* Texto escuro para contraste */
+    border: 1px solid #D0D0D0; /* Borda um pouco mais escura que o fundo */
+    border-radius: 8px; /* Mantém um arredondamento padrão */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+}
+
+.file-input-label:hover {
+    background-color: #D0D0D0; /* Um cinza um pouco mais escuro no hover */
+    border-color: #C0C0C0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra levemente maior no hover */
+}
+
+.file-name-display {
+    font-size: 14px;
+    color: #555;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Estilo para miniaturas de imagem */
+.thumbnail-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.thumbnail-container {
+    position: relative;
+    width: 100px; /* Tamanho fixo menor da miniatura */
+    height: 100px; /* Tamanho fixo menor da miniatura */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o container sem distorcer */
+}
+
+.remove-thumbnail-btn {
+    position: absolute;
+    top: 3px; /* Ajuste a posição para um pouco mais próximo da borda */
+    right: 3px; /* Ajuste a posição para um pouco mais próximo da borda */
+    background-color: rgba(0, 0, 0, 0.4); /* Preto semitransparente */
+    color: #f0f0f0; /* Um cinza bem claro para o "X" */
+    border: none;
+    border-radius: 50%;
+    width: 20px; /* Levemente menor */
+    height: 20px; /* Levemente menor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px; /* Tamanho da fonte menor para o "X" */
+    cursor: pointer;
+    line-height: 1;
+    transition: background-color 0.2s ease, transform 0.2s ease; /* Adiciona transição para transform */
+}
+
+.remove-thumbnail-btn:hover {
+    background-color: rgba(0, 0, 0, 0.6); /* Mais opaco no hover */
+    transform: scale(1.1); /* Leve aumento no hover */
+}
+/* Responsividade */
+@media (max-width: 600px) {
+    .navigation-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-step {
+        width: 100%;
+        max-width: none;
+    }
+
+    /* Adicionado para cobrir o submit-button do CadastroImovel.css */
+    .submit-button {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .submit-button button {
+        width: 100%;
+    }
+
+    .form-group-file {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .file-input-label {
+        width: 100%;
+        text-align: center;
+    }
+}

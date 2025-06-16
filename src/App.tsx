@@ -17,6 +17,8 @@ import ToastProvider from './context/ToastProvider';
 import { AuthProvider } from './context/AuthContext';
 import { ImoveisProvider } from './context/ImoveisContext.tsx';
 import CadastroImovelForm from './components/CadastroImovelForm';
+import CadastroVistoriaForm from './components/CadastroVistoriaForm';
+import EditarVistoriaForm from './components/EditarVistoriaForm';
 import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
@@ -65,6 +67,22 @@ const App: React.FC = () => {
                                     element={
                                         <PrivateRoute>
                                             <CadastroImovelForm/>
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/cadastro-vistoria"
+                                    element={
+                                    <PrivateRoute>
+                                        <CadastroVistoriaForm />
+                                    </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/editar-vistoria"
+                                    element={
+                                        <PrivateRoute>
+                                            <EditarVistoriaForm />
                                         </PrivateRoute>
                                     }
                                 />

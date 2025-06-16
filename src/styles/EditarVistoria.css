@@ -1,98 +1,56 @@
+/* ... (Seu código existente do CadastroVistoria.css, incluindo os estilos para .file-input-label, .thumbnail-container, .remove-thumbnail-btn) ... */
 
-.modal h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #333;
-    text-align: center;
-}
-
-.label-vistoria {
-    margin-left: 2%;
-    display: block;
-    margin-top: 15px;
-    font-size: 1rem;
-    color: #555;
-}
-
-.input-vistoria,
-.vistoria-select {
-    margin-left: 2%;
-    width: 95%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.input-vistoria:disabled,
-.vistoria-select:disabled {
-    background: #f2f2f2;
-    cursor: not-allowed;
-}
-
-.error {
-    color: #d9534f;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.success {
-    color: #5cb85c;
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.modal-actions button {
-    padding: 10px 20px;
-    font-size: 1rem;
+/* Ajuste para o botão "Remover Ambiente" que agora pode ser vermelho */
+.btn-remove-ambiente {
+    background-color: #dc3545; /* Vermelho padrão para ação de remover/perigo */
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
+    margin-top: 20px; /* Aumenta o espaçamento */
+    transition: background-color 0.3s;
 }
 
-.modal-actions button:disabled {
-    background: #ccc;
+.btn-remove-ambiente:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+.btn-remove-ambiente:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
-.modal-actions button:first-child {
-    margin-left: 2%;
 
-    background: #007bff;
-    color: white;
+/* Ajustes para o layout de navegação se o botão "Adicionar Ambiente" ficar à esquerda */
+.navigation-buttons {
+    display: flex;
+    /* justify-content: flex-end; Removido ou alterado para flex-start se o + Adicionar for à esquerda */
+    align-items: center; /* Alinha verticalmente */
+    margin-top: 32px;
+    flex-wrap: nowrap;
+    padding: 0;
 }
 
-.modal-actions button:first-child:hover:not(:disabled) {
-    background: #0056b3;
+/* Estilo para campos desabilitados na edição (opcional, mas bom para feedback) */
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #f0f0f0; /* Cor de fundo mais clara */
+    color: #888; /* Texto mais acinzentado */
+    cursor: not-allowed;
+    border-color: #e0e0e0;
 }
 
-.modal-actions button:last-child {
-    margin-right: 3%;
-    background: #d9534f;
-    color: white;
+/* Estilos para a seleção da vistoria no topo da página de edição */
+.fieldset .form-group.full-width {
+    margin-bottom: 20px; /* Espaçamento abaixo do seletor de vistoria */
 }
 
-.modal-actions button:last-child:hover:not(:disabled) {
-    background: #c9302c;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Garantir que o span de erro fique visível */
+.field-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 4px;
 }
