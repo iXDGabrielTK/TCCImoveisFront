@@ -19,6 +19,7 @@ import { ImoveisProvider } from './context/ImoveisContext.tsx';
 import CadastroImovelForm from './components/CadastroImovelForm';
 import CadastroVistoriaForm from './components/CadastroVistoriaForm';
 import EditarVistoriaForm from './components/EditarVistoriaForm';
+import EditarImovelForm from './components/EditarImovelForm';
 import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
@@ -83,6 +84,14 @@ const App: React.FC = () => {
                                     element={
                                         <PrivateRoute>
                                             <EditarVistoriaForm />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/editar-imovel" // Nova Rota
+                                    element={
+                                        <PrivateRoute>
+                                            <EditarImovelForm />
                                         </PrivateRoute>
                                     }
                                 />

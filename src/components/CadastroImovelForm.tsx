@@ -3,14 +3,17 @@ import axios from 'axios';
 import api from '../services/api';
 import '../styles/shared.css';
 import '../styles/CadastroImovel.css';
-import { ApiError, getErrorMessage, isValidUrl, isValidCep } from '../utils/errorHandling';
+import { ApiError, getErrorMessage, isValidCep } from '../utils/errorHandling';
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from "react-number-format";
+import InputMask from 'react-input-mask'; // Importar InputMask para a máscara de CEP
 
 interface CadastroImovelFormProps {
     onClose?: () => void;
 }
+
+// CustomInput para NumericFormat e InputMask
 const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
     (props, ref) => <input ref={ref} {...props} />
 );
@@ -18,28 +21,27 @@ const CustomInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes
 const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(1); // Mantém o controle de passos
     const [tipo, setTipo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [status, setStatus] = useState(true);
     const [tamanho, setTamanho] = useState('');
     const [preco, setPreco] = useState('');
-    const [imagem, setImagem] = useState('');
+    const [fotosImovel, setFotosImovel] = useState<File[]>([]); // Estado para as fotos (File[])
     const [endereco, setEndereco] = useState({
         rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '',
     });
     const [historicoManutencao, setHistoricoManutencao] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({
-        tipo: '', descricao: '', tamanho: '', preco: '', imagem: '',
-        cep: '', rua: '', numero: '', bairro: '', cidade: '', estado: '',
+        tipo: '', descricao: '', tamanho: '', preco: '', fotosImovel: '',
+        cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '',
     });
-
 
     const resetMessages = useCallback(() => {
         setFieldErrors({
-            tipo: '', descricao: '', tamanho: '', preco: '', imagem: '',
-            cep: '', rua: '', numero: '', bairro: '', cidade: '', estado: '',
+            tipo: '', descricao: '', tamanho: '', preco: '', fotosImovel: '',
+            cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '',
         });
     }, []);
 
@@ -54,13 +56,19 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 
         if (name === 'cep') {
             if (!value.trim()) setFieldErrors((prev) => ({ ...prev, cep: 'CEP é obrigatório' }));
-            else if (!isValidCep(value)) setFieldErrors((prev) => ({ ...prev, cep: 'CEP deve ter 8 dígitos' }));
+            else if (!isValidCep(value.replace(/\D/g, ''))) setFieldErrors((prev) => ({ ...prev, cep: 'CEP inválido' }));
             else setFieldErrors((prev) => ({ ...prev, cep: '' }));
         }
 
         if (['rua', 'numero', 'bairro', 'cidade', 'estado'].includes(name)) {
-            if (!value.trim()) setFieldErrors((prev) => ({ ...prev, [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} é obrigatório` }));
-            else setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+            if (!value.trim()) {
+                setFieldErrors((prev) => ({ ...prev, [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} é obrigatório` }));
+            } else {
+                setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+            }
+        }
+        if (name === 'complemento') {
+            setFieldErrors((prev) => ({ ...prev, complemento: '' })); // Complemento é opcional
         }
     };
 
@@ -79,7 +87,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             return false;
         }
         if (v.trim().length < 10) {
-            setFieldErrors((prev) => ({ ...prev, descricao: 'Descrição deve ter pelo menos 10 caracteres' }));
+            setFieldErrors((prev) => ({ ...prev, descricao: 'Mínimo de 10 caracteres' }));
             return false;
         }
         setFieldErrors((prev) => ({ ...prev, descricao: '' }));
@@ -93,7 +101,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             return false;
         }
         if (isNaN(n) || n <= 0) {
-            setFieldErrors((prev) => ({ ...prev, tamanho: 'Tamanho deve ser um número positivo' }));
+            setFieldErrors((prev) => ({ ...prev, tamanho: 'Deve ser positivo' }));
             return false;
         }
         setFieldErrors((prev) => ({ ...prev, tamanho: '' }));
@@ -107,32 +115,50 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             return false;
         }
         if (isNaN(n) || n <= 0) {
-            setFieldErrors((prev) => ({ ...prev, preco: 'Preço deve ser um número positivo' }));
+            setFieldErrors((prev) => ({ ...prev, preco: 'Deve ser positivo' }));
             return false;
         }
         setFieldErrors((prev) => ({ ...prev, preco: '' }));
         return true;
     };
 
-    const validateImagem = (v: string) => {
-        if (!v.trim()) {
-            setFieldErrors((prev) => ({ ...prev, imagem: 'URL da imagem é obrigatória' }));
+    const validateFotosImovel = (files: File[]) => {
+        if (files.length === 0) {
+            setFieldErrors((prev) => ({ ...prev, fotosImovel: 'Adicione pelo menos uma foto.' }));
             return false;
         }
-        const urls = v.split(',').map((u) => u.trim()).filter(Boolean);
-        const valid = urls.every((u) => isValidUrl(u));
-        if (!valid) {
-            setFieldErrors((prev) => ({ ...prev, imagem: 'Algumas URLs são inválidas' }));
-            return false;
-        }
-        setFieldErrors((prev) => ({ ...prev, imagem: '' }));
+        setFieldErrors((prev) => ({ ...prev, fotosImovel: '' }));
         return true;
     };
+
+    const handleImageInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const newFiles = Array.from(event.target.files);
+            setFotosImovel(prevFotos => {
+                const updatedFotos = [...prevFotos, ...newFiles]; // CONCATENA as novas fotos com as existentes
+                validateFotosImovel(updatedFotos); // Valida o array atualizado
+                return updatedFotos;
+            });
+        }
+    }, []);
+
+
+    const removeNewPhoto = useCallback((index: number) => {
+        setFotosImovel(prev => {
+            const newPhotos = [...prev];
+            newPhotos.splice(index, 1);
+            validateFotosImovel(newPhotos);
+            return newPhotos;
+        });
+    }, []);
 
     const buscarCep = async () => {
         resetMessages();
         const cep = endereco.cep.replace(/\D/g, '');
-        if (!isValidCep(cep)) return showToast('Digite um CEP válido com 8 dígitos.', 'error');
+        if (!isValidCep(cep)) {
+            setFieldErrors((prev) => ({ ...prev, cep: 'CEP inválido' }));
+            return showToast('Digite um CEP válido com 8 dígitos.', 'error');
+        }
         try {
             setIsLoading(true);
             const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
@@ -140,52 +166,84 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                 setEndereco((prev) => ({ ...prev, rua: data.logradouro, bairro: data.bairro, cidade: data.localidade, estado: data.uf }));
                 setFieldErrors((prev) => ({ ...prev, rua: '', bairro: '', cidade: '', estado: '' }));
                 showToast('Endereço encontrado com sucesso!', 'success');
-            } else showToast('CEP não encontrado.', 'error');
+            } else {
+                showToast('CEP não encontrado.', 'error');
+                setFieldErrors((prev) => ({ ...prev, cep: 'CEP não encontrado' }));
+            }
         } catch (e) {
             console.error(e);
             showToast('Erro ao buscar o CEP.', 'error');
+            setFieldErrors((prev) => ({ ...prev, cep: 'Erro ao buscar o CEP' }));
         } finally {
             setIsLoading(false);
         }
     };
 
-    const validateAllFields = () => {
-        const valid = [validateTipo(tipo), validateDescricao(descricao), validateTamanho(tamanho), validatePreco(preco), validateImagem(imagem)];
-        const fields = ['rua', 'numero', 'bairro', 'cidade', 'estado', 'cep'] as const;
-        let addressValid = true;
-        for (const f of fields) {
+    const validateFirstStep = () => {
+        let valid = validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateFotosImovel(fotosImovel);
+        // Complemento é opcional, então apenas limpa erro se estiver preenchido, mas não o torna obrigatório
+        setFieldErrors((prev) => ({ ...prev, complemento: '' }));
+        return valid;
+    };
+
+    const validateSecondStep = () => {
+        let valid = true;
+        const addressFields = ['rua', 'numero', 'bairro', 'cidade', 'estado', 'cep'] as const;
+        for (const f of addressFields) {
             if (!endereco[f].trim()) {
                 setFieldErrors((prev) => ({ ...prev, [f]: `${f.charAt(0).toUpperCase() + f.slice(1)} é obrigatório` }));
-                addressValid = false;
+                valid = false;
+            } else {
+                setFieldErrors((prev) => ({ ...prev, [f]: '' }));
             }
         }
-        if (!isValidCep(endereco.cep)) {
-            setFieldErrors((prev) => ({ ...prev, cep: 'CEP deve ter 8 dígitos' }));
-            addressValid = false;
+        if (!isValidCep(endereco.cep.replace(/\D/g, ''))) {
+            setFieldErrors((prev) => ({ ...prev, cep: 'CEP inválido' }));
+            valid = false;
+        } else {
+            setFieldErrors((prev) => ({ ...prev, cep: '' }));
         }
-        return valid.every(Boolean) && addressValid;
+        return valid;
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         resetMessages();
-        if (!validateAllFields()) return showToast('Por favor, corrija os erros.', 'error');
 
-        const fotosArray = imagem.split(',').map((url) => url.trim()).filter((url) => isValidUrl(url));
-        const data = {
+        // Valida ambos os passos antes de submeter
+        if (!validateFirstStep()) {
+            setStep(1); // Retorna para o primeiro passo se houver erros
+            return showToast('Por favor, corrija os erros na primeira etapa.', 'error');
+        }
+        if (!validateSecondStep()) {
+            setStep(2); // Retorna para o segundo passo se houver erros
+            return showToast('Por favor, corrija os erros na segunda etapa.', 'error');
+        }
+
+        const imovelData = {
             tipoImovel: tipo,
             descricaoImovel: descricao,
             statusImovel: status,
             tamanhoImovel: parseFloat(tamanho),
             precoImovel: parseFloat(preco),
-            fotosImovel: fotosArray,
-            enderecoImovel: endereco,
             historicoManutencao,
+            enderecoImovel: endereco,
         };
+
+        const formData = new FormData();
+        formData.append('dados', new Blob([JSON.stringify(imovelData)], { type: 'application/json' }));
+
+        fotosImovel.forEach((file) => {
+            formData.append('fotos', file, file.name);
+        });
 
         try {
             setIsLoading(true);
-            await api.post('/imoveis', data);
+            await api.post('/imoveis', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
             showToast('Imóvel cadastrado com sucesso!', 'success');
             setTimeout(() => redirectOrClose(), 2000);
         } catch (error) {
@@ -196,9 +254,6 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             setIsLoading(false);
         }
     };
-
-    const validateFirstStep = () => validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateImagem(imagem);
-
 
     return (
         <div className="cadastro-imovel-page">
@@ -239,7 +294,8 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     className={fieldErrors.descricao ? "input-error" : ""}
                                     required
                                 />
-                                {fieldErrors.descricao && <span className="field-error-message">{fieldErrors.descricao}</span>}
+                                {fieldErrors.descricao &&
+                                    <span className="field-error-message">{fieldErrors.descricao}</span>}
                             </div>
 
                             <div className="form-group">
@@ -270,7 +326,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     decimalSeparator=","
                                     placeholder="Área em m²"
                                     required
-                                    customInput={CustomInput} // Usando o CustomInput estável
+                                    customInput={CustomInput}
                                 />
                                 {fieldErrors.tamanho &&
                                     <span className="field-error-message">{fieldErrors.tamanho}</span>}
@@ -291,29 +347,14 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     }}
                                     required
                                     placeholder="Digite o valor do imóvel"
-                                    customInput={CustomInput} // Usando o CustomInput estável
+                                    customInput={CustomInput}
                                 />
                                 {fieldErrors.preco && <span className="field-error-message">{fieldErrors.preco}</span>}
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="imagem">* URLs das Imagens (separadas por vírgula):</label>
-                                <input
-                                    id="imagem"
-                                    type="text"
-                                    value={imagem}
-                                    onChange={(e) => {
-                                        setImagem(e.target.value);
-                                        validateImagem(e.target.value);
-                                    }}
-                                    placeholder="URLs separadas por vírgula"
-                                    className={fieldErrors.imagem ? "input-error" : ""}
-                                    required
-                                />
-                                {fieldErrors.imagem && <span className="field-error-message">{fieldErrors.imagem}</span>}
-                            </div>
 
-                            <div className="form-group" style={{gridColumn: "1 / -1"}}>
+                            {/* Histórico de Manutenção ocupa a largura total */}
+                            <div className="form-group full-width">
                                 <label htmlFor="manutencao">Histórico de Manutenção:</label>
                                 <textarea
                                     id="manutencao"
@@ -322,13 +363,59 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     placeholder="Ex: Pintura em 2023, troca de telhado em 2022..."
                                 />
                             </div>
+
+                            {/* Campo de Upload de Fotos - Último item da primeira tela, ocupa largura total */}
+                            <div className="form-group-file full-width">
+                                <label className="file-input-label" htmlFor="file-upload-imovel">
+                                    * Escolher Fotos do Imóvel
+                                </label>
+                                <input
+                                    id="file-upload-imovel"
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleImageInputChange}
+                                    className="hidden-file-input"
+                                />
+                                <span className="file-name-display">
+                                    {fotosImovel.length > 0 ?
+                                        `${fotosImovel.length} foto(s) selecionada(s)` :
+                                        'Nenhuma foto escolhida'
+                                    }
+                                </span>
+                                {fieldErrors.fotosImovel &&
+                                    <span className="field-error-message">{fieldErrors.fotosImovel}</span>}
+                            </div>
+
+                            {fotosImovel.length > 0 && (
+                                <div className="thumbnail-grid full-width">
+                                    {fotosImovel.map((foto, i) => (
+                                        <div key={i} className="thumbnail-container">
+                                            <img
+                                                src={URL.createObjectURL(foto)}
+                                                alt={`Foto ${i + 1}`}
+                                                className="thumbnail"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="remove-thumbnail-btn"
+                                                onClick={() => removeNewPhoto(i)}
+                                            >
+                                                X
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
+                        {/* Fim do grid principal */}
                         <div className="navigation-buttons">
-                            <div></div>
                             <button
                                 type="button"
-                                className="btn-step btn-next"
-                                onClick={() => validateFirstStep() ? setStep(2) : showToast('Corrija os erros.', 'error')}
+                                className="btn-step btn-next-step"
+                                // Remova o onClick anterior se for para teste e adicione as validações
+                                onClick={() => validateFirstStep() ? setStep(2) : showToast('Por favor, corrija os erros na primeira etapa.', 'error')}
+                                style={{marginLeft: 'auto'}} // Adicione esta linha inline ou crie uma classe específica no CSS
                             >
                                 Próximo ➔
                             </button>
@@ -339,33 +426,85 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                 {step === 2 && (
                     <fieldset>
                         <legend>Endereço do Imóvel</legend>
-                        <div className="grid">
+                        {/* Título para a seção de endereço */}
+                        <div className="grid"> {/* Grid para endereço */}
                             <div className="form-group">
                                 <label htmlFor="cep">* CEP:</label>
-                                <input
-                                    type="text"
-                                    name="cep"
+                                <InputMask
+                                    mask="99999-999"
+                                    maskChar="_"
                                     value={endereco.cep}
                                     onChange={handleEnderecoChange}
                                     onBlur={buscarCep}
-                                    placeholder="Digite o CEP do imóvel"
-                                    className={fieldErrors.cep ? "input-error" : ""}
-                                    required
-                                />
-                                {fieldErrors.cep && <span className="field-error-message">{fieldErrors.cep}</span>}
+                                >
+                                    {(inputProps) => (
+                                        <input
+                                            {...inputProps}
+                                            type="text"
+                                            id="cep"
+                                            name="cep"
+                                            placeholder="Digite o CEP do imóvel"
+                                            className={fieldErrors.cep ? "input-error" : ""}
+                                            required
+                                        />
+                                    )}
+                                </InputMask>
+
+                                <a
+                                    href="https://buscacepinter.correios.com.br/app/endereco/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="cep-link"
+                                >
+                                    não sei o meu CEP
+                                </a>
+
+                                {fieldErrors.cep && (
+                                    <span className="field-error-message">{fieldErrors.cep}</span>
+                                )}
                             </div>
+
+
                             <div className="form-group">
                                 <label htmlFor="estado">* Estado:</label>
-                                <input
-                                    type="text"
+                                <select
                                     name="estado"
                                     value={endereco.estado}
                                     onChange={handleEnderecoChange}
-                                    placeholder="Ex: PR, SP, RJ"
                                     className={fieldErrors.estado ? "input-error" : ""}
                                     required
-                                />
-                                {fieldErrors.estado && <span className="field-error-message">{fieldErrors.estado}</span>}
+                                >
+                                    <option value="">Selecione o estado</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                                {fieldErrors.estado &&
+                                    <span className="field-error-message">{fieldErrors.estado}</span>}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="cidade">* Cidade:</label>
@@ -378,7 +517,8 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     className={fieldErrors.cidade ? "input-error" : ""}
                                     required
                                 />
-                                {fieldErrors.cidade && <span className="field-error-message">{fieldErrors.cidade}</span>}
+                                {fieldErrors.cidade &&
+                                    <span className="field-error-message">{fieldErrors.cidade}</span>}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="rua">* Rua:</label>
@@ -404,7 +544,8 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     className={fieldErrors.bairro ? "input-error" : ""}
                                     required
                                 />
-                                {fieldErrors.bairro && <span className="field-error-message">{fieldErrors.bairro}</span>}
+                                {fieldErrors.bairro &&
+                                    <span className="field-error-message">{fieldErrors.bairro}</span>}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="numero">* Número:</label>
@@ -417,9 +558,10 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     className={fieldErrors.numero ? "input-error" : ""}
                                     required
                                 />
-                                {fieldErrors.numero && <span className="field-error-message">{fieldErrors.numero}</span>}
+                                {fieldErrors.numero &&
+                                    <span className="field-error-message">{fieldErrors.numero}</span>}
                             </div>
-                            <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                            <div className="form-group full-width">
                                 <label htmlFor="complemento">Complemento:</label>
                                 <input
                                     type="text"
@@ -427,31 +569,31 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                     value={endereco.complemento}
                                     onChange={handleEnderecoChange}
                                     placeholder="Ex: Bloco B, Apt 303"
+                                    className={fieldErrors.complemento ? "input-error" : ""}
                                 />
+                                {fieldErrors.complemento &&
+                                    <span className="field-error-message">{fieldErrors.complemento}</span>}
                             </div>
+
                         </div>
-                        <small style={{ color: 'gray' }}>
-                            Dados preenchidos automaticamente. Você pode ajustá-los, se necessário.
-                        </small>
+                        {/* Fim do grid de endereço */}
+
                         <div className="navigation-buttons">
-                            <div style={{flex: 1}}>
-                                <button
-                                    type="button"
-                                    className="btn-step btn-prev-step"
-                                    onClick={() => setStep(1)}
-                                >
-                                    ⬅ Voltar
-                                </button>
-                            </div>
-                            <div className="submit-button">
-                                <button
-                                    type="submit"
-                                    className="btn-step btn-next-step"
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? 'Cadastrando...' : 'Cadastrar Imóvel'}
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                className="btn-step btn-prev"
+                                onClick={() => setStep(1)}
+                            >
+                                ⬅ Voltar
+                            </button>
+                            {/* REMOVA o div.submit-button AQUI. Deixe o botão ser filho direto. */}
+                            <button
+                                type="submit"
+                                className="btn-step btn-next-step" // Já tem o estilo verde para submit
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Cadastrando...' : 'Cadastrar Imóvel'}
+                            </button>
                         </div>
                     </fieldset>
                 )}

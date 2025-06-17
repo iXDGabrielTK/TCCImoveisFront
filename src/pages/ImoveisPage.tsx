@@ -1,7 +1,7 @@
+// ImoveisPage.tsx
 import React, { useEffect } from 'react';
 import ImoveisGrid from '../components/ImoveisGrid';
 import RelatorioModal from '../components/RelatorioModal';
-import EditarImovelModal from '../components/EditarImovelModal';
 import '../styles/ImoveisPage.css';
 import { Imovel } from '../types/Imovel';
 import useModal from '../hooks/useModal';
@@ -13,9 +13,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
 
 const ImoveisPage: React.FC = () => {
-    // REMOVIDO: A chamada ao hook useModal para editarVistoriaModal não é mais necessária
-    // const editarVistoriaModal = useModal();
-    const editarImovelModal = useModal();
     const relatorioModal = useModal();
     const navigate = useNavigate();
     const isAuthenticated = true; // Exemplo de verificação de autenticação
@@ -63,7 +60,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => navigate('/editar-vistoria')} // ALTERADO AQUI: Navega para a tela de edição
+                        onClick={() => navigate('/editar-vistoria')}
                         className="btn-editar-vistoria"
                         startIcon={<DescriptionIcon />}
                     >
@@ -72,7 +69,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="info"
-                        onClick={editarImovelModal.openModal}
+                        onClick={() => navigate('/editar-imovel')}
                         startIcon={<EditIcon />}
                     >
                         Editar Imóvel
@@ -89,19 +86,6 @@ const ImoveisPage: React.FC = () => {
                 </Stack>
             </div>
 
-            {/* REMOVIDO: O modal de edição de vistoria não é mais renderizado aqui */}
-            {/* {editarVistoriaModal.isOpen && (
-                <EditarVistoriaModal
-                    isOpen={editarVistoriaModal.isOpen}
-                    onClose={editarVistoriaModal.closeModal}
-                />
-            )} */}
-            {editarImovelModal.isOpen && (
-                <EditarImovelModal
-                    isOpen={editarImovelModal.isOpen}
-                    onClose={editarImovelModal.closeModal}
-                />
-            )}
             {relatorioModal.isOpen && (
                 <RelatorioModal
                     isOpen={relatorioModal.isOpen}

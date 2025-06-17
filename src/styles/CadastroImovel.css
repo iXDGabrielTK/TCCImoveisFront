@@ -5,24 +5,35 @@
     margin: 0 auto;
     font-family: Arial, sans-serif;
     color: #222;
+    background-color: #f8f9fa; /* Fundo mais claro para a página */
 }
 
 .cadastro-imovel-page h1 {
     font-size: 26px;
     margin-bottom: 24px;
+    text-align: center; /* Centraliza o título */
+    color: #333;
 }
 
 /* Agrupamento de campos */
 fieldset {
-    border: none;
-    padding: 0;
+    border: 1px solid #ddd; /* Adicionado borda para delimitar as seções */
+    border-radius: 8px;
+    padding: 20px;
     margin-bottom: 32px;
+    background-color: #fff; /* Fundo branco para os fieldsets */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra suave */
 }
 
 legend {
-    font-size: 18px;
+    font-size: 1.3rem; /* Aumentado um pouco o tamanho */
     font-weight: bold;
     margin-bottom: 16px;
+    padding: 0 10px; /* Adicionado padding para separar da borda */
+    background-color: #fff; /* Garante que o fundo do legend seja branco */
+    color: #007bff; /* Cor para o título da seção */
+    border-radius: 4px;
+    margin-left: -10px; /* Para 'invadir' um pouco a borda do fieldset */
 }
 
 /* Grid responsivo */
@@ -42,6 +53,7 @@ legend {
     font-size: 14px;
     margin-bottom: 6px;
     color: #555;
+    font-weight: 500; /* Levemente mais negrito */
 }
 
 .form-group input,
@@ -53,6 +65,8 @@ legend {
     border-radius: 8px;
     transition: border-color 0.3s, box-shadow 0.3s;
     background-color: #fff;
+    width: 100%; /* Garante que inputs e selects preencham o grid */
+    box-sizing: border-box; /* Inclui padding e borda na largura */
 }
 
 .form-group input:focus,
@@ -69,32 +83,50 @@ legend {
     max-height: 200px;
 }
 
-/* CEP com botão ao lado */
-.cep-wrapper {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
-.cep-wrapper .form-group {
-    flex: 1;
-    min-width: 240px;
-}
-
 .cep-link {
-    color: #5b21b6;
-    font-size: 0.9rem;
+    color: #007bff;
+    font-size: 0.85rem;
     font-weight: 500;
     text-decoration: none;
-    margin-bottom: 4px;
-    white-space: nowrap;
+    margin-top: 6px;
+    display: block; /* Isso garante que fique embaixo */
+    text-align: left; /* Alinha à esquerda */
 }
 
 .cep-link:hover {
-    color: #7c3aed;
+    color: #0056b3;
     text-decoration: underline;
+}
+
+.cep-flex-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cep-inline-link {
+    font-size: 0.85rem;
+    color: #007bff;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.cep-inline-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Estilo de erro para campos */
+.input-error {
+    border-color: #ef4444 !important; /* Vermelho para erro */
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+.field-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
 }
 
 /* Botões padrão */
@@ -105,20 +137,26 @@ legend {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para botões */
+}
+
+.btn-step:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-prev {
-    background-color: #ccc;
-    color: #222;
+    background-color: #6c757d; /* Cinza para voltar */
+    color: white;
 }
 
 .btn-prev:hover {
-    background-color: #bbb;
+    background-color: #5a6268;
 }
 
 .btn-next {
-    background-color: #007bff;
+    background-color: #007bff; /* Azul para próximo */
     color: white;
 }
 
@@ -126,50 +164,165 @@ legend {
     background-color: #0056b3;
 }
 
-.btn-submit {
-    background-color: #14453e;
+.btn-next-step { /* Para o botão "Cadastrar Imóvel" */
+    background-color: #28a745; /* Verde para sucesso */
     color: white;
 }
 
-.btn-submit:hover {
-    background-color: #2e7d64;
+.btn-next-step:hover:not(:disabled) {
+    background-color: #218838;
 }
 
+.btn-step:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
 /* Navegação entre passos */
 .navigation-buttons {
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: space-between;
     margin-top: 32px;
-    flex-wrap: nowrap;
-    padding: 0; /* Garantir que não tem padding */
+    flex-wrap: wrap;
+    gap: 15px; /* Espaço entre os botões */
 }
-.navigation-buttons-back {
+
+
+.navigation-buttons button {
+    min-width: 150px; /* Garante um tamanho mínimo para os botões */
+}
+.navigation-buttons button:last-child {
+    margin: auto;
+    min-width: 150px;
+
+}
+
+
+/* Estilos para Upload de Fotos (Baseado em EditarImovelForm.tsx) */
+.form-group-file {
+    margin-top: 15px;
     display: flex;
-    gap: 80%;
-    margin-top: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    grid-column: 1 / -1; /* Ocupa a largura total no grid */
 }
 
+.file-input-label {
+    background-color: #007bff; /* Cor azul do botão principal */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-@media (max-width: 600px) {
-    .navigation-buttons{
+.file-input-label:hover {
+    background-color: #0056b3;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.file-name-display {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+    display: block; /* Garante que fique em sua própria linha */
+}
+
+.thumbnail-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px; /* Mais espaço para o grid de thumbnails */
+    padding: 10px; /* Padding ao redor dos thumbnails */
+    border: 1px dashed #e0e0e0; /* Borda tracejada para a área de thumbnails */
+    border-radius: 8px;
+    background-color: #fafafa; /* Fundo claro para a área de thumbnails */
+    justify-content: center; /* Centraliza os thumbnails */
+    grid-column: 1 / -1; /* Ocupa a largura total no grid */
+}
+
+.thumbnail-container {
+    position: relative;
+    width: 120px; /* Aumentado o tamanho do thumbnail */
+    height: 120px;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Cantos mais arredondados */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para o thumbnail */
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o container sem distorcer */
+}
+
+.remove-thumbnail-btn {
+    position: absolute;
+    top: -8px; /* Ajuste para fora da imagem */
+    right: -8px; /* Ajuste para fora da imagem */
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    border: 2px solid white; /* Borda branca para destacar */
+    border-radius: 50%;
+    width: 28px; /* Tamanho maior para o botão */
+    height: 28px;
+    font-size: 0.9rem; /* Fonte maior */
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 10;
+    padding: 0;
+}
+
+.remove-thumbnail-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .cadastro-imovel-page {
+        padding: 20px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .navigation-buttons {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .btn-step{
+    .navigation-buttons button {
         width: 100%;
-        max-width: none;
-    }
-}
-@media (max-width: 600px) {
-    .submit-button {
-        width: 100%;
-        justify-content: stretch;
+        min-width: unset;
     }
 
-    .submit-button button {
-        width: 100%;
+    .cep-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
     }
+
+    .cep-wrapper .form-group {
+        min-width: unset;
+    }
+
 }

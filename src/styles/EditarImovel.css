@@ -1,3 +1,5 @@
+/* EditarImovel.css - Atualizado com base em EditarVistoria.css */
+
 .modal h2 {
     margin: 0;
     font-size: 1.5rem;
@@ -30,6 +32,7 @@
     cursor: not-allowed;
 }
 
+/* Estilos de erro e sucesso existentes */
 .error {
     color: #d9534f;
     font-size: 0.9rem;
@@ -43,6 +46,38 @@
     margin-top: 10px;
     text-align: center;
 }
+
+/* Novos estilos para mensagens de erro/sucesso (se usados) */
+.error-container {
+    background-color: #ffebeb;
+    border: 1px solid #d9534f;
+    color: #d9534f;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.success-container {
+    background-color: #ebffe9;
+    border: 1px solid #5cb85c;
+    color: #5cb85c;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.error-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.error-message,
+.success-message {
+    margin: 0;
+}
+
 
 .modal-actions {
     display: flex;
@@ -112,4 +147,338 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Estilos herdados/adaptados do EditarVistoria.css para consistência */
+
+/* Ajuste para o botão "Remover Ambiente" que agora pode ser vermelho */
+.btn-remove-ambiente {
+    background-color: #dc3545; /* Vermelho padrão para ação de remover/perigo */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px; /* Aumenta o espaçamento */
+    transition: background-color 0.3s;
+}
+
+.btn-remove-ambiente:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+.btn-remove-ambiente:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between; /* Mantém o espaçamento entre os botões */
+    align-items: center;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    gap: 15px; /* Espaço entre os botões */
+}
+
+/* Adicione esta regra */
+.navigation-buttons .btn-next-step {
+    margin-left: auto; /* Isso empurrará o botão para a direita */
+}
+
+/* Mantenha o min-width geral para os botões */
+.navigation-buttons button {
+    min-width: 150px;
+}
+
+/* Novo estilo para alinhar o botão de submissão à direita */
+.navigation-buttons .submit-button button { /* Alvo o botão dentro do submit-button */
+    margin-left: auto; /* Isso empurrará o botão para a direita se ele for o último item flex */
+}
+/* Estilo para campos desabilitados na edição (opcional, mas bom para feedback) */
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #f0f0f0; /* Cor de fundo mais clara */
+    color: #888; /* Texto mais acinzentado */
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
+
+/* Estilos para a seleção do imóvel no topo da página de edição */
+.fieldset .form-group.full-width {
+    margin-bottom: 20px; /* Espaçamento abaixo do seletor de imóvel */
+}
+
+/* Garantir que o span de erro fique visível */
+.field-error-message {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block; /* Garante que o erro fique em sua própria linha */
+}
+
+/* Estilos para o confirm-dialog */
+.confirm-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.confirm-dialog p {
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.confirm-dialog strong {
+    color: #dc3545; /* Vermelho para destaque da ação */
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.dialog-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.dialog-buttons button:first-child {
+    background-color: #6c757d; /* Cinza para "Não" */
+    color: white;
+}
+
+.dialog-buttons button:first-child:hover {
+    background-color: #5a6268;
+}
+
+.dialog-buttons .danger-button {
+    background-color: #dc3545; /* Vermelho para "Sim, apagar" */
+    color: white;
+}
+
+.dialog-buttons .danger-button:hover {
+    background-color: #c82333;
+}
+
+.dialog-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Estilos para upload de fotos (thumbnail-grid, etc.) */
+.thumbnail-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.thumbnail-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+}
+
+.thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.remove-thumbnail-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(220, 53, 69, 0.8); /* Vermelho translúcido */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 10; /* Garante que o botão fique acima da imagem */
+    padding: 0;
+}
+
+.remove-thumbnail-btn:hover {
+    background-color: #dc3545;
+}
+
+.form-group-file {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.file-input-label {
+    background-color: #2196f3; /* Azul */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    display: inline-block; /* Para o padding funcionar */
+    margin-bottom: 10px;
+}
+
+.file-input-label:hover {
+    background-color: #1976d2;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.file-name-display {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Reutilizando estilos de botões de passo do CadastroImovel.css para consistência */
+.btn-step {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-decoration: none; /* Para botões que também são links */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-step.btn-next-step {
+    background-color: #28a745; /* Verde para "Salvar" */
+    color: white;
+}
+
+.btn-step.btn-next-step:hover:not(:disabled) {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-step:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Adicionando alguns estilos gerais para o layout da página de formulário */
+.cadastro-imovel-page {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cadastro-imovel-page h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.form-carousel fieldset {
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.form-carousel legend {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #007bff;
+    padding: 0 10px;
+    margin-left: -10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: calc(100% - 20px); /* Ajuste para padding */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Garante que padding não aumente a largura */
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Grid para campos */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+@media (min-width: 600px) {
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1; /* Ocupa todas as colunas no grid */
+}
+
+/* Estilos de erro para inputs */
+.input-error {
+    border-color: #ef4444 !important; /* Vermelho para erro */
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }

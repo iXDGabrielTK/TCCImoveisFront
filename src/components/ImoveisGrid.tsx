@@ -203,10 +203,14 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             ) : (
                 <div className="imoveis-grid">
                     {filteredImoveis.map((imovel) => {
+                        // MODIFICAÇÃO AQUI:
                         const primeiraImagem =
-                            typeof imovel.fotosImovel?.[0] === "string" && (imovel.fotosImovel[0] as string).trim() !== ""
-                                ? imovel.fotosImovel[0]
-                                : "https://placehold.co/300x200";
+                            imovel.fotosImovel?.[0]?.urlFotoImovel // Acessa a propriedade 'urlFotoImovel' do primeiro objeto
+                            && typeof imovel.fotosImovel[0].urlFotoImovel === "string" // Garante que é uma string
+                            && (imovel.fotosImovel[0].urlFotoImovel as string).trim() !== "" // Garante que não está vazia
+                                ? imovel.fotosImovel[0].urlFotoImovel // Usa a URL completa se todas as condições forem verdadeiras
+                                : "https://placehold.co/300x200"; // Caso contrário, usa o placeholder
+
                         return (
                             <div
                                 key={imovel.idImovel}
