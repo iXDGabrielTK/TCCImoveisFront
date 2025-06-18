@@ -130,7 +130,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
                                 <Typography variant="body1" sx={{ mb: 1 }}>
                                     <strong>Endereço:</strong>{" "}
                                     {[
-                                        imovel.enderecoImovel?.rua && `Rua ${imovel.enderecoImovel.rua}`,
+                                        imovel.enderecoImovel?.rua && ` ${imovel.enderecoImovel.rua}`,
                                         imovel.enderecoImovel?.numero && `nº ${imovel.enderecoImovel.numero}`,
                                         imovel.enderecoImovel?.bairro,
                                         imovel.enderecoImovel?.cidade,

@@ -68,13 +68,13 @@ const CadastroVistoriaForm: React.FC = () => {
         setAmbientes(novaLista);
     };
 
-    const atualizarAmbiente = (index: number, campo: keyof Ambiente, valor: any) => {
+    const atualizarAmbiente = (index: number, campo: keyof Ambiente, valor: string | File[]) => {
         const novaLista = [...ambientes];
         if (campo === 'fotos') {
-            // Se o campo for 'fotos', adicione as novas fotos às existentes
-            novaLista[index]['fotos'] = [...novaLista[index]['fotos'], ...valor];
+            // Garante que valor é File[]
+            novaLista[index].fotos = [...novaLista[index].fotos, ...((valor as File[]).filter((v): v is File => v instanceof File))];
         } else {
-            novaLista[index][campo] = valor;
+            novaLista[index][campo] = valor as string;
         }
         setAmbientes(novaLista);
     };

@@ -1,5 +1,4 @@
 import React, { FormEvent, useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import '../styles/shared.css';
@@ -7,17 +6,6 @@ import '../styles/CadastroImovel.css'; // Estilos de layout principais
 import '../styles/CadastroVistoria.css'; // Estilos específicos de vistoria
 
 import { ApiError, getErrorMessage, isValidDate } from '../utils/errorHandling';
-
-interface Imovel {
-    idImovel: number;
-    descricaoImovel: string;
-    tipoImovel: string;
-    enderecoImovel: {
-        rua: string;
-        numero: string;
-        bairro: string;
-    };
-}
 
 interface VistoriaExistente {
     idVistoria: number;
@@ -53,12 +41,10 @@ type AmbienteForm = {
 };
 
 const EditarVistoriaForm: React.FC = () => {
-    const navigate = useNavigate();
     const { showToast } = useToast();
 
     const [vistorias, setVistorias] = useState<VistoriaExistente[]>([]);
     const [selectedVistoriaId, setSelectedVistoriaId] = useState('');
-    const [imoveis, setImoveis] = useState<Imovel[]>([]); // Para mostrar o imóvel, mas o select será da vistoria
 
     const [tipoVistoria, setTipoVistoria] = useState('');
     const [laudoVistoria, setLaudoVistoria] = useState('');
@@ -95,11 +81,14 @@ const EditarVistoriaForm: React.FC = () => {
     }, [showToast]);
 
     useEffect(() => {
-        // Carrega as vistorias existentes ao montar a página
-        fetchVistorias();
-        // Opcional: Carregar imóveis se precisar para um seletor de imóvel separado,
-        // mas como a vistoria já tem o imóvel, pode não ser necessário aqui.
-        // api.get('/imoveis').then(res => setImoveis(res.data)).catch(() => setImoveis([]));
+        const fetchData = async () => {
+            try {
+                await fetchVistorias();
+            } catch (e) {
+                console.error("Erro ao buscar dados iniciais de vistoria:", e);
+            }
+        };
+        void fetchData();
     }, [fetchVistorias]);
 
     const handleVistoriaSelectChange = useCallback(async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -162,12 +151,13 @@ const EditarVistoriaForm: React.FC = () => {
 
     // EditarVistoriaForm.tsx
 
-    const atualizarAmbiente = (index: number, campo: keyof AmbienteForm, valor: any) => {
+    const atualizarAmbiente = (index: number, campo: keyof AmbienteForm, valor: string | File[]) => {
         const novaLista = [...ambientes];
         if (campo === 'fotos') {
-            novaLista[index]['fotos'] = [...novaLista[index]['fotos'], ...valor];
-        } else {
-            (novaLista[index] as any)[campo] = valor;
+            // Garante que valor é File[]
+            novaLista[index].fotos = [...novaLista[index].fotos, ...((valor as File[]).filter((v): v is File => v instanceof File))];
+        } else if (campo === 'nome' || campo === 'descricao') {
+            novaLista[index][campo] = valor as string;
         }
         setAmbientes(novaLista);
     };
@@ -214,10 +204,13 @@ const EditarVistoriaForm: React.FC = () => {
             valid = false;
         } else errors.laudoVistoria = '';
 
-        if (!isValidDate(dataVistoria)) {
+        if (!dataVistoria.trim()) {
+            errors.dataVistoria = 'Data é obrigatória';
+            valid = false;
+        } else if (!isValidDate(dataVistoria)) {
             errors.dataVistoria = 'Data inválida';
             valid = false;
-        } else errors.dataVistoria = '';
+        }
 
         setFieldErrors(errors);
         return valid;
@@ -505,3 +498,4 @@ const EditarVistoriaForm: React.FC = () => {
 };
 
 export default EditarVistoriaForm;
+

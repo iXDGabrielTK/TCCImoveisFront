@@ -50,7 +50,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         else navigate('/imoveis');
     };
 
-    const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEnderecoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setEndereco((prev) => ({ ...prev, [name]: value }));
 
@@ -180,7 +180,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     };
 
     const validateFirstStep = () => {
-        let valid = validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateFotosImovel(fotosImovel);
+        const valid = validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateFotosImovel(fotosImovel);
         // Complemento é opcional, então apenas limpa erro se estiver preenchido, mas não o torna obrigatório
         setFieldErrors((prev) => ({ ...prev, complemento: '' }));
         return valid;

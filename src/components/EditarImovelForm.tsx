@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/EditarImovel.css";
 import "../styles/shared.css";
 import "../styles/CadastroImovel.css";
 import api from "../services/api.ts";
 import { ApiError, getErrorMessage } from "../utils/errorHandling";
 import { useToast } from "../context/ToastContext";
+import axios from "axios";
+import InputMask from 'react-input-mask';
 
 interface Imovel {
     idImovel: number;
@@ -34,7 +35,6 @@ interface FotoImovelExistente {
 }
 
 const EditarImovelForm: React.FC = () => {
-    const navigate = useNavigate();
     const { showToast } = useToast();
 
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
@@ -45,7 +45,7 @@ const EditarImovelForm: React.FC = () => {
     const [statusImovel, setStatusImovel] = useState<boolean>(true);
     const [tamanhoImovel, setTamanhoImovel] = useState<number>(0);
     const [precoImovel, setPrecoImovel] = useState<number>(0);
-    const [fotosImovel, setFotosImovel] = useState<File[]>([]); // Novas fotos para upload
+    const [fotosImovel, setFotosImovel] = useState<File[]>([]);
     const [fotosImovelExistentes, setFotosImovelExistentes] = useState<FotoImovelExistente[]>([]); // Fotos existentes da API
     const [endereco, setEndereco] = useState({
         rua: '',
@@ -401,218 +401,317 @@ const EditarImovelForm: React.FC = () => {
         }
     };
 
+    // Função buscarCep igual ao CadastroImovelForm
+    const buscarCep = async () => {
+        const cep = endereco.cep.replace(/\D/g, '');
+        if (!cep || cep.length !== 8) {
+            setFieldErrors((prev) => ({ ...prev, cep: 'CEP inválido' }));
+            return showToast('Digite um CEP válido com 8 dígitos.', 'error');
+        }
+        try {
+            setIsLoading(true);
+            const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+            if (!data.erro) {
+                setEndereco((prev) => ({ ...prev, rua: data.logradouro, bairro: data.bairro, cidade: data.localidade, estado: data.uf }));
+                setFieldErrors((prev) => ({ ...prev, rua: '', bairro: '', cidade: '', estado: '' }));
+                showToast('Endereço encontrado com sucesso!', 'success');
+            } else {
+                showToast('CEP não encontrado.', 'error');
+                setFieldErrors((prev) => ({ ...prev, cep: 'CEP não encontrado' }));
+            }
+        } catch (e) {
+            console.error(e);
+            showToast('Erro ao buscar o CEP.', 'error');
+            setFieldErrors((prev) => ({ ...prev, cep: 'Erro ao buscar o CEP' }));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <div className="cadastro-imovel-page">
-            <h1>Editar Imóvel</h1>
-            <form className="form-carousel" onSubmit={handleEditSubmit}>
-                <fieldset>
-                    <legend>Selecionar Imóvel para Edição</legend>
-                    <div className="form-group full-width">
-                        <label htmlFor="imovel-select">* Selecione o imóvel:</label>
-                        <select
-                            id="imovel-select"
-                            className={fieldErrors.selectedImovelId ? 'input-error' : ''}
-                            value={selectedImovelId || ""}
-                            onChange={handleSelectChange}
-                            disabled={isLoading}
-                        >
-                            <option value="">Selecione...</option>
-                            {imoveis.map((imovel) => (
-                                <option key={imovel.idImovel} value={imovel.idImovel}>
-                                    {imovel.descricaoImovel} - {imovel.tipoImovel}
-                                </option>
-                            ))}
-                        </select>
-                        {fieldErrors.selectedImovelId && <span className="field-error-message">{fieldErrors.selectedImovelId}</span>}
-                    </div>
-                </fieldset>
+        <>
+            {errorMessage && (
+                <div className="error-message">{errorMessage}</div>
+            )}
+            {successMessage && (
+                <div className="success-message">{successMessage}</div>
+            )}
+            <div className="cadastro-imovel-page">
+                <h1>Editar Imóvel</h1>
+                <form className="form-carousel" onSubmit={handleEditSubmit}>
+                    <fieldset>
+                        <legend>Selecionar Imóvel para Edição</legend>
+                        <div className="form-group full-width">
+                            <label htmlFor="imovel-select">* Selecione o imóvel:</label>
+                            <select
+                                id="imovel-select"
+                                className={fieldErrors.selectedImovelId ? 'input-error' : ''}
+                                value={selectedImovelId || ""}
+                                onChange={handleSelectChange}
+                                disabled={isLoading}
+                            >
+                                <option value="">Selecione...</option>
+                                {imoveis.map((imovel) => (
+                                    <option key={imovel.idImovel} value={imovel.idImovel}>
+                                        {imovel.descricaoImovel} - {imovel.tipoImovel}
+                                    </option>
+                                ))}
+                            </select>
+                            {fieldErrors.selectedImovelId && <span className="field-error-message">{fieldErrors.selectedImovelId}</span>}
+                        </div>
+                    </fieldset>
 
-                {selectedImovelId && (
-                    <>
-                        <fieldset>
-                            <legend>Dados do Imóvel</legend>
-                            <div className="grid">
-                                <div className="form-group">
-                                    <label htmlFor="tipo">* Tipo do Imóvel:</label>
-                                    <input
-                                        id="tipo"
-                                        type="text"
-                                        value={tipoImovel}
-                                        onChange={(e) => setTipoImovel(e.target.value)}
-                                        className={fieldErrors.tipoImovel ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.tipoImovel && <span className="field-error-message">{fieldErrors.tipoImovel}</span>}
+                    {selectedImovelId && (
+                        <>
+                            <fieldset>
+                                <legend>Dados do Imóvel</legend>
+                                <div className="grid">
+                                    <div className="form-group">
+                                        <label htmlFor="tipo">* Tipo do Imóvel:</label>
+                                        <input
+                                            id="tipo"
+                                            type="text"
+                                            value={tipoImovel}
+                                            onChange={(e) => setTipoImovel(e.target.value)}
+                                            className={fieldErrors.tipoImovel ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.tipoImovel && <span className="field-error-message">{fieldErrors.tipoImovel}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="tamanho">* Tamanho (m²):</label>
+                                        <input
+                                            id="tamanho"
+                                            type="number"
+                                            value={tamanhoImovel}
+                                            onChange={(e) => setTamanhoImovel(parseFloat(e.target.value))}
+                                            className={fieldErrors.tamanhoImovel ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.tamanhoImovel && <span className="field-error-message">{fieldErrors.tamanhoImovel}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="preco">* Preço:</label>
+                                        <input
+                                            id="preco"
+                                            type="number"
+                                            value={precoImovel}
+                                            onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
+                                            className={fieldErrors.precoImovel ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.precoImovel && <span className="field-error-message">{fieldErrors.precoImovel}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="status">* Status:</label>
+                                        <select
+                                            id="status"
+                                            value={statusImovel ? "Ativo" : "Inativo"}
+                                            onChange={(e) => setStatusImovel(e.target.value === "Ativo")}
+                                            disabled={isLoading}
+                                        >
+                                            <option value="Ativo">Ativo</option>
+                                            <option value="Inativo">Inativo</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="tamanho">* Tamanho (m²):</label>
-                                    <input
-                                        id="tamanho"
-                                        type="number"
-                                        value={tamanhoImovel}
-                                        onChange={(e) => setTamanhoImovel(parseFloat(e.target.value))}
-                                        className={fieldErrors.tamanhoImovel ? 'input-error' : ''}
+                                <div className="form-group full-width">
+                                    <label htmlFor="descricao">* Descrição:</label>
+                                    <textarea
+                                        id="descricao"
+                                        rows={4}
+                                        value={descricaoImovel}
+                                        onChange={(e) => setDescricaoImovel(e.target.value)}
+                                        placeholder="Descreva o imóvel com detalhes..."
+                                        className={fieldErrors.descricaoImovel ? 'input-error' : ''}
                                         disabled={isLoading}
-                                    />
-                                    {fieldErrors.tamanhoImovel && <span className="field-error-message">{fieldErrors.tamanhoImovel}</span>}
+                                    ></textarea>
+                                    {fieldErrors.descricaoImovel && <span className="field-error-message">{fieldErrors.descricaoImovel}</span>}
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="preco">* Preço:</label>
-                                    <input
-                                        id="preco"
-                                        type="number"
-                                        value={precoImovel}
-                                        onChange={(e) => setPrecoImovel(parseFloat(e.target.value))}
-                                        className={fieldErrors.precoImovel ? 'input-error' : ''}
+                                <div className="form-group full-width">
+                                    <label htmlFor="historico">Histórico Manutenção:</label>
+                                    <textarea
+                                        id="historico"
+                                        rows={3}
+                                        value={historicoManutencao}
+                                        onChange={(e) => setHistoricoManutencao(e.target.value)}
+                                        placeholder="Histórico de manutenções..."
                                         disabled={isLoading}
-                                    />
-                                    {fieldErrors.precoImovel && <span className="field-error-message">{fieldErrors.precoImovel}</span>}
+                                    ></textarea>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="status">* Status:</label>
-                                    <select
-                                        id="status"
-                                        value={statusImovel ? "Ativo" : "Inativo"}
-                                        onChange={(e) => setStatusImovel(e.target.value === "Ativo")}
-                                        disabled={isLoading}
-                                    >
-                                        <option value="Ativo">Ativo</option>
-                                        <option value="Inativo">Inativo</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="form-group full-width">
-                                <label htmlFor="descricao">* Descrição:</label>
-                                <textarea
-                                    id="descricao"
-                                    rows={4}
-                                    value={descricaoImovel}
-                                    onChange={(e) => setDescricaoImovel(e.target.value)}
-                                    placeholder="Descreva o imóvel com detalhes..."
-                                    className={fieldErrors.descricaoImovel ? 'input-error' : ''}
-                                    disabled={isLoading}
-                                ></textarea>
-                                {fieldErrors.descricaoImovel && <span className="field-error-message">{fieldErrors.descricaoImovel}</span>}
-                            </div>
-                            <div className="form-group full-width">
-                                <label htmlFor="historico">Histórico Manutenção:</label>
-                                <textarea
-                                    id="historico"
-                                    rows={3}
-                                    value={historicoManutencao}
-                                    onChange={(e) => setHistoricoManutencao(e.target.value)}
-                                    placeholder="Histórico de manutenções..."
-                                    disabled={isLoading}
-                                ></textarea>
-                            </div>
-                        </fieldset>
+                            </fieldset>
 
-                        <fieldset>
-                            <legend>Endereço</legend>
-                            <div className="grid">
-                                <div className="form-group">
-                                    <label htmlFor="rua">* Rua:</label>
-                                    <input
-                                        id="rua"
-                                        type="text"
-                                        value={endereco.rua}
-                                        onChange={(e) => handleEnderecoChange('rua', e.target.value)}
-                                        className={fieldErrors.rua ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.rua && <span className="field-error-message">{fieldErrors.rua}</span>}
+                            <fieldset>
+                                <legend>Endereço</legend>
+                                <div className="grid">
+                                    <div className="form-group">
+                                        <label htmlFor="rua">* Rua:</label>
+                                        <input
+                                            id="rua"
+                                            type="text"
+                                            value={endereco.rua}
+                                            onChange={(e) => handleEnderecoChange('rua', e.target.value)}
+                                            className={fieldErrors.rua ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.rua && <span className="field-error-message">{fieldErrors.rua}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="numero">* Número:</label>
+                                        <input
+                                            id="numero"
+                                            type="text"
+                                            value={endereco.numero}
+                                            onChange={(e) => handleEnderecoChange('numero', e.target.value)}
+                                            className={fieldErrors.numero ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.numero && <span className="field-error-message">{fieldErrors.numero}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="complemento">Complemento:</label>
+                                        <input
+                                            id="complemento"
+                                            type="text"
+                                            value={endereco.complemento}
+                                            onChange={(e) => handleEnderecoChange('complemento', e.target.value)}
+                                            disabled={isLoading}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="bairro">* Bairro:</label>
+                                        <input
+                                            id="bairro"
+                                            type="text"
+                                            value={endereco.bairro}
+                                            onChange={(e) => handleEnderecoChange('bairro', e.target.value)}
+                                            className={fieldErrors.bairro ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.bairro && <span className="field-error-message">{fieldErrors.bairro}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="cidade">* Cidade:</label>
+                                        <input
+                                            id="cidade"
+                                            type="text"
+                                            value={endereco.cidade}
+                                            onChange={(e) => handleEnderecoChange('cidade', e.target.value)}
+                                            className={fieldErrors.cidade ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.cidade && <span className="field-error-message">{fieldErrors.cidade}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="estado">* Estado:</label>
+                                        <input
+                                            id="estado"
+                                            type="text"
+                                            value={endereco.estado}
+                                            onChange={(e) => handleEnderecoChange('estado', e.target.value)}
+                                            className={fieldErrors.estado ? 'input-error' : ''}
+                                            disabled={isLoading}
+                                        />
+                                        {fieldErrors.estado && <span className="field-error-message">{fieldErrors.estado}</span>}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="cep">* CEP:</label>
+                                        <InputMask
+                                            mask="99999-999"
+                                            maskChar="_"
+                                            value={endereco.cep}
+                                            onChange={e => handleEnderecoChange('cep', e.target.value)}
+                                            onBlur={buscarCep}
+                                            disabled={isLoading}
+                                        >
+                                            {(inputProps) => (
+                                                <input
+                                                    {...inputProps}
+                                                    type="text"
+                                                    id="cep"
+                                                    className={fieldErrors.cep ? 'input-error' : ''}
+                                                    required
+                                                />
+                                            )}
+                                        </InputMask>
+                                        <a
+                                            href="https://buscacepinter.correios.com.br/app/endereco/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="cep-link"
+                                        >
+                                            não sei o meu CEP
+                                        </a>
+                                        {fieldErrors.cep && <span className="field-error-message">{fieldErrors.cep}</span>}
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="numero">* Número:</label>
-                                    <input
-                                        id="numero"
-                                        type="text"
-                                        value={endereco.numero}
-                                        onChange={(e) => handleEnderecoChange('numero', e.target.value)}
-                                        className={fieldErrors.numero ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.numero && <span className="field-error-message">{fieldErrors.numero}</span>}
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="complemento">Complemento:</label>
-                                    <input
-                                        id="complemento"
-                                        type="text"
-                                        value={endereco.complemento}
-                                        onChange={(e) => handleEnderecoChange('complemento', e.target.value)}
-                                        disabled={isLoading}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="bairro">* Bairro:</label>
-                                    <input
-                                        id="bairro"
-                                        type="text"
-                                        value={endereco.bairro}
-                                        onChange={(e) => handleEnderecoChange('bairro', e.target.value)}
-                                        className={fieldErrors.bairro ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.bairro && <span className="field-error-message">{fieldErrors.bairro}</span>}
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="cidade">* Cidade:</label>
-                                    <input
-                                        id="cidade"
-                                        type="text"
-                                        value={endereco.cidade}
-                                        onChange={(e) => handleEnderecoChange('cidade', e.target.value)}
-                                        className={fieldErrors.cidade ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.cidade && <span className="field-error-message">{fieldErrors.cidade}</span>}
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="estado">* Estado:</label>
-                                    <input
-                                        id="estado"
-                                        type="text"
-                                        value={endereco.estado}
-                                        onChange={(e) => handleEnderecoChange('estado', e.target.value)}
-                                        className={fieldErrors.estado ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.estado && <span className="field-error-message">{fieldErrors.estado}</span>}
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="cep">* CEP:</label>
-                                    <input
-                                        id="cep"
-                                        type="text"
-                                        value={endereco.cep}
-                                        onChange={(e) => handleEnderecoChange('cep', e.target.value)}
-                                        className={fieldErrors.cep ? 'input-error' : ''}
-                                        disabled={isLoading}
-                                    />
-                                    {fieldErrors.cep && <span className="field-error-message">{fieldErrors.cep}</span>}
-                                </div>
-                            </div>
-                        </fieldset>
+                            </fieldset>
 
-                        <fieldset>
-                            <legend>Fotos do Imóvel</legend>
-                            {fotosImovelExistentes.filter(f => !f.isDeleted).length > 0 && (
-                                <>
-                                    <label style={{marginTop: '15px'}}>Fotos Existentes:</label>
+                            <fieldset>
+                                <legend>Fotos do Imóvel</legend>
+                                {fotosImovelExistentes.filter(f => !f.isDeleted).length > 0 && (
+                                    <>
+                                        <label style={{marginTop: '15px'}}>Fotos Existentes:</label>
+                                        <div className="thumbnail-grid">
+                                            {fotosImovelExistentes.filter(f => !f.isDeleted).map((foto, i) => (
+                                                <div key={foto.id}
+                                                     className="thumbnail-container"> {/* <--- Adicionado key={foto.id} */}
+                                                    <img
+                                                        src={foto.urlFotoImovel}
+                                                        alt={`Foto existente ${i + 1}`}
+                                                        className="thumbnail"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="remove-thumbnail-btn"
+                                                        onClick={() => removeExistingPhoto(i)}
+                                                        disabled={isLoading}
+                                                    >
+                                                        X
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+
+                                <div className="form-group-file"
+                                     style={{marginTop: fotosImovelExistentes.filter(f => !f.isDeleted).length > 0 ? '15px' : '0'}}>
+                                    <label className="file-input-label" htmlFor="file-upload-imovel">
+                                        Escolher Novas Fotos
+                                    </label>
+                                    <input
+                                        id="file-upload-imovel"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={handleNewImageChange}
+                                        className="hidden-file-input"
+                                        disabled={isLoading}
+                                    />
+                                    <span className="file-name-display">
+                                        {fotosImovel.length > 0 ?
+                                            `${fotosImovel.length} nova(s) foto(s) selecionada(s)` :
+                                            'Nenhuma nova foto escolhida'
+                                        }
+                                    </span>
+                                </div>
+                                {fieldErrors.fotosImovel &&
+                                    <span className="field-error-message">{fieldErrors.fotosImovel}</span>}
+
+                                {fotosImovel.length > 0 && (
                                     <div className="thumbnail-grid">
-                                        {fotosImovelExistentes.filter(f => !f.isDeleted).map((foto, i) => (
-                                            <div key={foto.id}
-                                                 className="thumbnail-container"> {/* <--- Adicionado key={foto.id} */}
+                                        {fotosImovel.map((foto, i) => (
+                                            <div key={i} className="thumbnail-container"> {/* <--- Adicionado key={i} */}
                                                 <img
-                                                    src={foto.urlFotoImovel}
-                                                    alt={`Foto existente ${i + 1}`}
+                                                    src={URL.createObjectURL(foto)}
+                                                    alt={`Nova foto ${i + 1}`}
                                                     className="thumbnail"
                                                 />
                                                 <button
                                                     type="button"
                                                     className="remove-thumbnail-btn"
-                                                    onClick={() => removeExistingPhoto(i)}
+                                                    onClick={() => removeNewPhoto(i)}
                                                     disabled={isLoading}
                                                 >
                                                     X
@@ -620,86 +719,41 @@ const EditarImovelForm: React.FC = () => {
                                             </div>
                                         ))}
                                     </div>
-                                </>
-                            )}
+                                )}
+                            </fieldset>
 
-                            <div className="form-group-file"
-                                 style={{marginTop: fotosImovelExistentes.filter(f => !f.isDeleted).length > 0 ? '15px' : '0'}}>
-                                <label className="file-input-label" htmlFor="file-upload-imovel">
-                                    Escolher Novas Fotos
-                                </label>
-                                <input
-                                    id="file-upload-imovel"
-                                    type="file"
-                                    multiple
-                                    accept="image/*"
-                                    onChange={handleNewImageChange}
-                                    className="hidden-file-input"
-                                    disabled={isLoading}
-                                />
-                                <span className="file-name-display">
-                                    {fotosImovel.length > 0 ?
-                                        `${fotosImovel.length} nova(s) foto(s) selecionada(s)` :
-                                        'Nenhuma nova foto escolhida'
-                                    }
-                                </span>
+                            <div className="navigation-buttons">
+                                <button type="submit" className="btn-step btn-next-step" disabled={isLoading}>
+                                    {isLoading ? 'Salvando Edição...' : 'Salvar Edição do Imóvel'}
+                                </button>
+                                <button type="button" className="btn-step btn-remove-ambiente" onClick={handleCancelImovel}
+                                        disabled={isLoading}>
+                                    {isLoading ? "Apagando..." : "Apagar Imóvel"}
+                                </button>
                             </div>
-                            {fieldErrors.fotosImovel &&
-                                <span className="field-error-message">{fieldErrors.fotosImovel}</span>}
+                        </>
+                    )}
+                </form>
 
-                            {fotosImovel.length > 0 && (
-                                <div className="thumbnail-grid">
-                                    {fotosImovel.map((foto, i) => (
-                                        <div key={i} className="thumbnail-container"> {/* <--- Adicionado key={i} */}
-                                            <img
-                                                src={URL.createObjectURL(foto)}
-                                                alt={`Nova foto ${i + 1}`}
-                                                className="thumbnail"
-                                            />
-                                            <button
-                                                type="button"
-                                                className="remove-thumbnail-btn"
-                                                onClick={() => removeNewPhoto(i)}
-                                                disabled={isLoading}
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </fieldset>
-
-                        <div className="navigation-buttons">
-                            <button type="submit" className="btn-step btn-next-step" disabled={isLoading}>
-                                {isLoading ? 'Salvando Edição...' : 'Salvar Edição do Imóvel'}
-                            </button>
-                            <button type="button" className="btn-step btn-remove-ambiente" onClick={handleCancelImovel}
-                                    disabled={isLoading}>
-                                {isLoading ? "Apagando..." : "Apagar Imóvel"}
+                {showConfirmDialog && (
+                    <div className="confirm-dialog">
+                        <p>Tem certeza que deseja <strong>apagar</strong> este imóvel? Esta ação não pode ser desfeita.</p>
+                        <div className="dialog-buttons">
+                            <button onClick={() => setShowConfirmDialog(false)} disabled={isLoading}>Não</button>
+                            <button
+                                onClick={proceedWithCancellation}
+                                className="danger-button"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? "Processando..." : "Sim, apagar"}
                             </button>
                         </div>
-                    </>
-                )}
-            </form>
-
-            {showConfirmDialog && (
-                <div className="confirm-dialog">
-                    <p>Tem certeza que deseja <strong>apagar</strong> este imóvel? Esta ação não pode ser desfeita.</p>
-                    <div className="dialog-buttons">
-                        <button onClick={() => setShowConfirmDialog(false)} disabled={isLoading}>Não</button>
-                        <button
-                            onClick={proceedWithCancellation}
-                            className="danger-button"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? "Processando..." : "Sim, apagar"}
-                        </button>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </>
     );
 };
 
 export default EditarImovelForm;
+
