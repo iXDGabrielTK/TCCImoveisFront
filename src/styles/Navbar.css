@@ -9,7 +9,7 @@
     width: 100%;
     box-sizing: border-box;
     position: relative;
-    z-index: 1400;
+    z-index: 20;
 }
 
 .left {
@@ -76,9 +76,8 @@
 .dropbtn:hover {
     background-color: #a0e8af;
 }
-
 .dropdown-content {
-    display: block;
+    display: none;
     overflow: hidden;
     position: absolute;
     font-size: 16px;
@@ -90,14 +89,17 @@
     opacity: 0;
     transition: max-height 0s ease-in, opacity 1ms ease-out;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    z-index: 10;
     border-radius: 8px;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .dropdown:hover .dropdown-content {
+    display: block;
     max-height: 500px;
     opacity: 1;
     transition: max-height 1ms ease-out, opacity 0.2s ease-in;
+    pointer-events: auto;
 }
 
 .dropdown-content a,
