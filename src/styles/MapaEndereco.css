@@ -34,11 +34,12 @@
     font-size: 18px;
     color: #bbb;
 }
+
 .centralizar-botao-wrapper {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 4;
     transition: all 0.3s ease;
 }
 
