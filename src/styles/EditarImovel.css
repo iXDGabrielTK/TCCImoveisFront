@@ -229,7 +229,7 @@ textarea:disabled {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    z-index: 3;
     text-align: center;
     max-width: 400px;
     width: 90%;
@@ -329,7 +329,7 @@ textarea:disabled {
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
-    z-index: 10; /* Garante que o botão fique acima da imagem */
+    z-index: 10;
     padding: 0;
 }
 
