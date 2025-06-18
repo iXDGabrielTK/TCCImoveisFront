@@ -18,7 +18,7 @@ const ImobiliariaForm: React.FC = () => {
         e.preventDefault();
 
         try {
-            await api.post('/api/imobiliarias', {
+            await api.post('/imobiliaria/candidatura', {
                 nome,
                 razaoSocial,
                 cnpj,
@@ -91,11 +91,10 @@ const ImobiliariaForm: React.FC = () => {
                                     id="cnpj"
                                     placeholder="Insira o CNPJ"
                                     inputMode="numeric"
-                                    pattern="\d*"
+                                    pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"
                                 />
                             )}
                         </InputMask>
-
 
                     </div>
 
@@ -128,7 +127,7 @@ const ImobiliariaForm: React.FC = () => {
                                         id="cep"
                                         placeholder="Digite seu CEP"
                                         inputMode="numeric"
-                                        pattern="\d*"
+                                        pattern="\d{5}-\d{3}"
                                     />
                                 )}
                             </InputMask>
@@ -147,10 +146,10 @@ const ImobiliariaForm: React.FC = () => {
                 </div>
             </fieldset>
 
-            <button type="submit">Cadastrar</button>
+            <button type="submit">Solicitar</button>
 
-            {isSuccess && <p className="success-message">Imobiliária cadastrada com sucesso!</p>}
-            {isError && <p className="error-message">Erro ao cadastrar. Verifique os dados e tente novamente.</p>}
+            {isSuccess && <p className="success-message">Solicitação de Imobiliária enviada com sucesso!</p>}
+            {isError && <p className="error-message">Erro ao Solicitar. Verifique os dados e tente novamente.</p>}
         </form>
     );
 };

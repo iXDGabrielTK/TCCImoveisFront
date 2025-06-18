@@ -135,8 +135,8 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                 }
 
                 if (!jaEhCorretor) {
-                    await api.post("/corretores/candidatura", {
-                        usuarioId: userId.toString(),
+                    await api.post("/corretores/solicitar", {
+                        usuarioId: userId,
                         creci: creciTrimmed
                     });
                 }

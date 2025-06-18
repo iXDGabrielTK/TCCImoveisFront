@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import api from '../services/api';
+import api, { setLogoutHandler } from '../services/api';
 import {
     AuthContext,
     User,
@@ -235,6 +235,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const hasRole = useCallback((role: string) => {
         return !!user?.tipo?.includes(role.toUpperCase());
     }, [user]);
+
+    useEffect(() => {
+        setLogoutHandler(logout);
+    }, [logout]);
 
     return (
         <AuthContext.Provider

@@ -9,8 +9,7 @@ import logo from "../assets/logo.jpg";
 import logoBemcoSVG from "../assets/Bemco.svg";
 import SearchBar from "./SearchBar";
 import { useAuth } from "../hooks/useAuth";
-import { useToast } from "../context/ToastContext.ts";
-
+import NotificationDropdown from './NotificationDropdown';
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -20,8 +19,6 @@ const Navbar: React.FC = () => {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
     const [isMobile, setIsMobile] = useState(false);
-    const { showToast } = useToast();
-
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -96,9 +93,7 @@ const Navbar: React.FC = () => {
                                             >
                                                 Agendamentos
                                             </button>
-                                            <button onClick={() => showToast("Erro de teste! Isso é um toast de erro. Tentando ver a Resposividade dessa mensagem por isso ela precisa es", "error")}>
-                                                Testar Toast
-                                            </button>
+                                            <Link to="/inbox">Inbox</Link>
                                             <Link to="/imobiliarias">Imobiliária</Link>
                                             <Link to="/financiamento">Financiamento</Link>
                                             <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
@@ -120,6 +115,7 @@ const Navbar: React.FC = () => {
                         </div>
 
                         <div className="right">
+                            <NotificationDropdown />
                             {!isOnDetalheImovel && (
                                 <IconButton
                                     color="primary"
@@ -172,7 +168,7 @@ const Navbar: React.FC = () => {
                                 </IconButton>
                             )}
 
-
+                            <NotificationDropdown />
                             <div className="menu-button">
                                 <div className="dropdown">
                                     <button className="dropbtn">☰</button>
@@ -195,9 +191,7 @@ const Navbar: React.FC = () => {
                                                 >
                                                     Agendamentos
                                                 </button>
-                                                <button onClick={() => showToast("Erro de teste! Isso é um toast de erro.", "error")}>
-                                                    Testar Toast
-                                                </button>
+                                                <Link to="/inbox">Inbox</Link>
                                                 <Link to="/imobiliarias">Imobiliária</Link>
                                                 <Link to="/financiamento">Financiamento</Link>
                                                 <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>

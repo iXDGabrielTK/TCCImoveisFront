@@ -10,11 +10,16 @@ const api = axios.create({
 });
 
 // === Controle de fila para requisições enquanto “token” está a ser renovado ===
+let onLogout: (() => void) | null = null;
 let isRefreshing = false;
 let failedQueue: Array<{
     resolve: (value?: unknown) => void;
     reject: (reason?: unknown) => void;
 }> = [];
+
+export const setLogoutHandler = (handler: () => void) => {
+    onLogout = handler;
+};
 
 const processQueue = (error: AxiosError | null, token: string | null) => {
     failedQueue.forEach(prom => {
@@ -53,7 +58,12 @@ api.interceptors.response.use(
             if (!refreshToken) {
                 console.warn("Sem refresh token — redirecionando para login.");
                 localStorage.clear();
-                window.location.href = '/login';
+                window.location.replace('/login')
+                return Promise.reject(error);
+            }
+
+            if (onLogout) {
+                onLogout();
                 return Promise.reject(error);
             }
 
@@ -67,7 +77,7 @@ api.interceptors.response.use(
                     return api(originalRequest);
                 }).catch(err => {
                     localStorage.clear();
-                    window.location.href = '/login';
+                    window.location.replace('/login')
                     return Promise.reject(err);
                 });
             }
@@ -95,7 +105,8 @@ api.interceptors.response.use(
                 console.error("Erro ao tentar renovar token. Redirecionando para login.");
                 processQueue(err as AxiosError, null);
                 localStorage.clear();
-                window.location.href = '/login';
+                console.warn("Redirecionando para login...");
+                window.location.replace('/login')
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;

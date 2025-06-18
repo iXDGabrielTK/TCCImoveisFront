@@ -21,6 +21,7 @@ import CadastroVistoriaForm from './components/CadastroVistoriaForm';
 import EditarVistoriaForm from './components/EditarVistoriaForm';
 import EditarImovelForm from './components/EditarImovelForm';
 import 'leaflet/dist/leaflet.css';
+import InboxNotifications from "./pages/InboxNotifications.tsx";
 
 const App: React.FC = () => {
     return (
@@ -51,6 +52,14 @@ const App: React.FC = () => {
                                     element={
                                         <PrivateRoute requiredRole="funcionario">
                                             <ImoveisPage />
+                                        </PrivateRoute>
+                                    }
+                                />
+                                <Route
+                                    path="inbox"
+                                    element={
+                                        <PrivateRoute>
+                                            <InboxNotifications />
                                         </PrivateRoute>
                                     }
                                 />
