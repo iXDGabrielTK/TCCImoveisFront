@@ -15,15 +15,7 @@
     color: #333;
 }
 
-/* Agrupamento de campos */
-fieldset {
-    border: 1px solid #ddd; /* Adicionado borda para delimitar as seções */
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 32px;
-    background-color: #fff; /* Fundo branco para os fieldsets */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra suave */
-}
+
 
 legend {
     font-size: 1.3rem; /* Aumentado um pouco o tamanho */
