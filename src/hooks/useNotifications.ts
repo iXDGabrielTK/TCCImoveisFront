@@ -1,21 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-export interface Notificacao {
-    id: number;
-    titulo: string;
-    mensagem: string;
-    dataCriacao: string;
-    lida: boolean;
-    tipo: 'Sistema' | 'Agendamento' | 'Proposta' | 'Corretor' | 'Imobiliaria';
-    resumo: string;
-    nomeUsuario?: string;
-    emailUsuario?: string;
-    creciSolicitado?: string;
-    cnpj?: string;
-    imagemUrl?: string;
-}
+import { Notificacao } from '../types/Notificacao';
 
 export const aprovarSolicitacao = async (tipo: 'corretor' | 'imobiliaria', id: number) => {
     const endpoint = tipo === 'corretor'

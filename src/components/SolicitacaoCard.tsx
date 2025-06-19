@@ -8,25 +8,36 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 interface SolicitacaoCardProps {
     tipo: 'Corretor' | 'Imobiliaria';
     resumo: string;
-    nome: string;
-    email: string;
+    nome?: string; // agora opcional
+    email?: string; // agora opcional
+    razaoSocial?: string; // novo campo para imobiliária
     creciSolicitado?: string;
     cnpj?: string;
     imagemUrl?: string;
+    telefone?: string;
+    endereco?: string;
+    cidade?: string;
+    estado?: string;
     onAprovar: () => void;
     onReprovar: () => void;
 }
 
 const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
-                                                             tipo,
-                                                             nome,
-                                                             email,
-                                                             creciSolicitado,
-                                                             cnpj,
-                                                             imagemUrl,
-                                                             onAprovar,
-                                                             onReprovar
-                                                         }) => {
+    tipo,
+    nome,
+    email,
+    razaoSocial,
+    creciSolicitado,
+    cnpj,
+    imagemUrl,
+    resumo,
+    telefone,
+    endereco,
+    cidade,
+    estado,
+    onAprovar,
+    onReprovar
+}) => {
     const gerarIniciais = (nome: string) => {
         if (!nome) return '?';
         return nome
@@ -50,7 +61,9 @@ const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                 borderRadius: 3,
                 boxShadow: 3,
                 mx: 'auto',
-                overflow: 'visible'
+                overflow: 'visible',
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)',
+                border: '1px solid #e0e7ef'
             }}
         >
             <CardContent>
@@ -66,15 +79,22 @@ const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                             boxShadow: 3
                         }}
                     >
-                        {!imagemUrl && gerarIniciais(nome)}
+                        {!imagemUrl && gerarIniciais(tipo === 'Imobiliaria' ? (razaoSocial || 'Imobiliária') : (nome || ''))}
                     </Avatar>
 
                     <Box textAlign="center" px={1}>
-                        <Typography variant="h6" fontWeight={600}>
-                            {nome}
+                        <Typography variant="h6" fontWeight={600} sx={{ color: '#14453e' }}>
+                            {tipo === 'Imobiliaria'
+                                ? (razaoSocial || 'Imobiliária')
+                                : (nome || 'Nome não informado')}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                            {email}
+                        {email && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                {email}
+                            </Typography>
+                        )}
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontStyle: 'italic' }}>
+                            {resumo}
                         </Typography>
 
                         {tipo === 'Corretor' && (
@@ -88,13 +108,39 @@ const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                         )}
 
                         {tipo === 'Imobiliaria' && (
-                            <Chip
-                                icon={<VerifiedUserIcon fontSize="small" />}
-                                label={`CNPJ: ${cnpj || 'N/A'}`}
-                                color="warning"
-                                variant="outlined"
-                                sx={{ fontWeight: 500, mt: 1 }}
-                            />
+                            <Stack direction="column" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                                <Chip
+                                    icon={<VerifiedUserIcon fontSize="small" />}
+                                    label={`CNPJ: ${cnpj || 'N/A'}`}
+                                    color="warning"
+                                    variant="outlined"
+                                    sx={{ fontWeight: 500 }}
+                                />
+                                {telefone && (
+                                    <Chip
+                                        label={`Telefone: ${telefone}`}
+                                        color="primary"
+                                        variant="outlined"
+                                        sx={{ fontWeight: 500 }}
+                                    />
+                                )}
+                                {endereco && (
+                                    <Chip
+                                        label={`Endereço: ${endereco}`}
+                                        color="default"
+                                        variant="outlined"
+                                        sx={{ fontWeight: 500 }}
+                                    />
+                                )}
+                                {(cidade || estado) && (
+                                    <Chip
+                                        label={`Cidade/UF: ${cidade || ''}${cidade && estado ? ' - ' : ''}${estado || ''}`}
+                                        color="default"
+                                        variant="outlined"
+                                        sx={{ fontWeight: 500 }}
+                                    />
+                                )}
+                            </Stack>
                         )}
                     </Box>
 
@@ -108,6 +154,7 @@ const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                             variant="contained"
                             color="success"
                             onClick={onAprovar}
+                            sx={{ fontWeight: 600, letterSpacing: 1 }}
                         >
                             Aprovar
                         </Button>
@@ -116,6 +163,7 @@ const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                             variant="outlined"
                             color="error"
                             onClick={onReprovar}
+                            sx={{ fontWeight: 600, letterSpacing: 1 }}
                         >
                             Reprovar
                         </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box, Typography, Paper, List, ListItemIcon, Stack,
     FormControl, InputLabel, Select, MenuItem, useMediaQuery, useTheme, ListItemText, ListItemButton, Skeleton,
@@ -22,14 +22,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SolicitacaoCard from '../components/SolicitacaoCard';
 import Fade from '@mui/material/Fade';
 import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
-
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & { children: React.ReactElement },
-    ref: React.Ref<unknown>
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import Snackbar from '@mui/material/Snackbar';
+import { Notificacao } from '../types/Notificacao';
 
 const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -53,21 +47,6 @@ const formatTimestamp = (timestampStr: string | undefined) => {
     if (diffDays === 1 && timestamp.getDate() === now.getDate() - 1) return 'ontem';
     return timestamp.toLocaleDateString('pt-BR') + ' às ' + timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 };
-
-interface Notificacao {
-    id: number;
-    titulo: string;
-    mensagem: string;
-    dataCriacao: string;
-    lida: boolean;
-    tipo: 'Sistema' | 'Agendamento' | 'Proposta' | 'Corretor' | 'Imobiliaria';
-    resumo: string;
-    nomeUsuario?: string;
-    emailUsuario?: string;
-    creciSolicitado?: string;
-    cnpj?: string;
-    imagemUrl?: string;
-}
 
 const backgroundColorByType = {
     Proposta: '#eafaf1',
@@ -111,7 +90,10 @@ const InboxNotifications: React.FC = () => {
     const [currentTab, setCurrentTab] = useState('Todos');
     const [selectedNotification, setSelectedNotification] = useState<Notificacao | null>(null);
     const [readNotifications, setReadNotifications] = useState<number[]>([]);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMsg, setSnackbarMsg] = useState('');
     const queryClient = useQueryClient();
+
     const { mutate: arquivar } = useArquivarNotificacao();
 
     const theme = useTheme();
@@ -121,37 +103,58 @@ const InboxNotifications: React.FC = () => {
         setCurrentTab(newValue);
     };
 
+    const canOpenCard = (notificacao: Notificacao | null): boolean => {
+        if (!notificacao) return false;
+        return (
+            (notificacao.tipo === 'Corretor' || notificacao.tipo === 'Imobiliaria') &&
+            !notificacao.respondida &&
+            !notificacao.arquivada &&
+            !notificacao.lida
+        );
+    };
+
     const mutation = useMutation({
         mutationFn: ({ id, tipo, aprovada }: { id: number; tipo: 'corretor' | 'imobiliaria'; aprovada: boolean }) =>
             aprovada ? aprovarSolicitacao(tipo, id) : recusarSolicitacao(tipo, id),
-        onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
+        onSuccess: async (_, variables) => {
+            await queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
             setReadNotifications(prev => [...prev, variables.id]);
         }
     });
 
+    // useMemo para filtrar e ordenar notificações
     const notificacoesBase = filterStatus === "Não lidas"
         ? naoLidas
         : filterStatus === "Todos"
             ? todas
             : privadas;
 
-    const filtered = notificacoesBase.filter(n => {
+    const filtered = React.useMemo(() => notificacoesBase.filter(n => {
+        const isArquivada = n.arquivada ?? false;
+
         const status =
             filterStatus === "Todos" ||
             (filterStatus === "Não lidas" && !n.lida && !readNotifications.includes(n.id)) ||
             (filterStatus === "Lidas" && (n.lida || readNotifications.includes(n.id)));
-        const categoria = currentTab === "Todos" || n.tipo === currentTab;
-        return status && categoria;
-    });
 
-    const sorted = [...filtered].sort((a, b) => {
+        const categoria = currentTab === "Todos" || n.tipo === currentTab;
+
+        return !isArquivada && status && categoria;
+    }), [notificacoesBase, filterStatus, readNotifications, currentTab]);
+
+    const sorted = React.useMemo(() => [...filtered].sort((a, b) => {
         const ta = new Date(a.dataCriacao).getTime();
         const tb = new Date(b.dataCriacao).getTime();
         return orderBy === "Mais recentes" ? tb - ta : ta - tb;
-    });
+    }), [filtered, orderBy]);
 
     const isLoading = loadingPrivadas || loadingNaoLidas || loadingTodas;
+
+    useEffect(() => {
+        if (!canOpenCard(selectedNotification)) {
+            setSelectedNotification(null);
+        }
+    }, [selectedNotification]);
 
     return (
         <Box sx={{ px: { xs: 1, sm: 2 }, py: 2, minHeight: '100vh', bgcolor: '#f8f9fa' }}>
@@ -229,85 +232,123 @@ const InboxNotifications: React.FC = () => {
                             Nenhuma notificação encontrada.
                         </Typography>
                     ) : (
-                        sorted.map((n, index) => (
-                            <Fade in={true} timeout={300 + index * 60} key={n.id}>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: { xs: 'column', sm: 'row' },
-                                        justifyContent: 'space-between',
-                                        alignItems: { xs: 'flex-start', sm: 'center' },
-                                        gap: 1,
-                                        width: '100%',
-                                    }}
-                                >
-                                    <ListItemButton
-                                        onClick={() => {
-                                            if (n.tipo === 'Corretor' || n.tipo === 'Imobiliaria') {
-                                                setSelectedNotification(n);
-                                            }
-                                        }}
+                        sorted.map((n, index) => {
+                            const isRespondida = n.respondida ?? false;
+                            const isArquivada = n.arquivada ?? false;
+                            const isLida = n.lida ?? false;
+                            const podeAbrirCard = (n.tipo === 'Corretor' || n.tipo === 'Imobiliaria') && !isRespondida && !isArquivada && !isLida;
+
+                            return (
+                                <Fade in={true} timeout={300 + index * 60} key={n.id}>
+                                    <Box
                                         sx={{
-                                            cursor: (n.tipo === 'Corretor' || n.tipo === 'Imobiliaria') ? 'pointer' : 'default',
-                                            bgcolor: n.lida ? '#f0f0f0' : backgroundColorByType[n.tipo] || '#fff',
-                                            borderLeft: !n.lida ? '4px solid #1976d2' : undefined,
-                                            borderRadius: 2,
-                                            mb: 1,
-                                            boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                                            '&:hover': {
-                                                boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
-                                                transform: 'translateY(-1px)',
-                                                transition: '0.2s'
-                                            }
+                                            display: 'flex',
+                                            flexDirection: { xs: 'column', sm: 'row' },
+                                            justifyContent: 'space-between',
+                                            alignItems: { xs: 'flex-start', sm: 'center' },
+                                            gap: 1,
+                                            width: '100%',
                                         }}
                                     >
-                                        <ListItemIcon>{getNotificationIcon(n.tipo)}</ListItemIcon>
-                                        <ListItemText
-                                            sx={{ flexGrow: 1, maxWidth: '100%' }}
-                                            primary={
-                                                <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                                                    <Typography fontWeight={600}>{tipoLabel[n.tipo] || n.tipo}</Typography>
-                                                    <Typography variant="body1" color="text.secondary">{n.resumo}</Typography>
+                                        <ListItemButton
+                                            onClick={() => {
+                                                if (!podeAbrirCard) return;
+                                                setSelectedNotification(n);
+                                            }}
+                                            sx={{
+                                                cursor: podeAbrirCard ? 'pointer' : 'default',
+                                                bgcolor: isRespondida
+                                                    ? '#eeeeee'
+                                                    : n.lida
+                                                        ? '#f0f0f0'
+                                                        : backgroundColorByType[n.tipo] || '#fff',
+                                                borderLeft: !n.lida && !isRespondida ? '4px solid #1976d2' : undefined,
+                                                opacity: isRespondida ? 0.7 : 1,
+                                                borderRadius: 2,
+                                                mb: 1,
+                                                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                                '&:hover': {
+                                                    boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
+                                                    transform: 'translateY(-1px)',
+                                                    transition: '0.2s'
+                                                }
+                                            }}
+                                            aria-label={`Abrir detalhes da notificação ${n.titulo}`}
+                                        >
+                                            <ListItemIcon>{getNotificationIcon(n.tipo)}</ListItemIcon>
+                                            <ListItemText
+                                                sx={{ flexGrow: 1, maxWidth: '100%' }}
+                                                primary={
+                                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                                        <Typography fontWeight={600}>{tipoLabel[n.tipo] || n.tipo}</Typography>
+                                                        <Typography variant="body1" color="text.secondary">{n.resumo}</Typography>
 
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        flexWrap="wrap"
-                                                        alignItems="center"
-                                                        sx={{ mt: 1 }}
-                                                    >
-                                                        <Chip
-                                                            label={n.tipo.toUpperCase()}
-                                                            size="small"
-                                                            color={chipColor[n.tipo] as 'success' | 'info' | 'primary' | 'warning' | 'default'}
-                                                            variant="outlined"
-                                                        />
-                                                        <Tooltip title="Arquivar notificação">
-                                                            <IconButton onClick={(e) => { e.stopPropagation(); arquivar(n.id); }}>
-                                                                <ArchiveIcon fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Typography variant="caption" color="text.secondary">
-                                                            {formatTimestamp(n.dataCriacao)}
-                                                        </Typography>
-                                                        {!n.lida && !readNotifications.includes(n.id) && (
-                                                            <FiberManualRecordIcon sx={{ fontSize: 10, color: 'blue' }} />
-                                                        )}
-                                                    </Stack>
-                                                </Box>
-                                            }
-                                        />
-                                    </ListItemButton>
-                                </Box>
-                            </Fade>
-                        ))
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                            flexWrap="wrap"
+                                                            alignItems="center"
+                                                            sx={{ mt: 1 }}
+                                                        >
+                                                            <Chip
+                                                                label={n.tipo.toUpperCase()}
+                                                                size="small"
+                                                                color={chipColor[n.tipo] as 'success' | 'info' | 'primary' | 'warning' | 'default'}
+                                                                variant="outlined"
+                                                            />
+                                                            {!n.lida && !readNotifications.includes(n.id) && !isRespondida && (
+                                                                <Chip label="Nova" color="primary" size="small" />
+                                                            )}
+                                                            {isRespondida && (
+                                                                <Chip label="Respondida" color="default" size="small" />
+                                                            )}
+                                                            {!isRespondida && n.lida && (
+                                                                <Chip label="Lida" color="default" size="small" variant="outlined" />
+                                                            )}
+                                                            {isArquivada && (
+                                                                <Chip label="Arquivada" color="default" size="small" variant="outlined" />
+                                                            )}
+                                                            <Tooltip title="Arquivar notificação">
+                                                                <span>
+                                                                    <IconButton
+                                                                        aria-label="Arquivar notificação"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            arquivar(n.id, {
+                                                                                onSuccess: () => {
+                                                                                    setSnackbarMsg('Notificação arquivada com sucesso!');
+                                                                                    setSnackbarOpen(true);
+                                                                                }
+                                                                            });
+                                                                        }}
+                                                                    >
+                                                                        <ArchiveIcon fontSize="small" />
+                                                                    </IconButton>
+                                                                </span>
+                                                            </Tooltip>
+                                                            <Typography variant="caption" color="text.secondary">
+                                                                {formatTimestamp(n.dataCriacao)}
+                                                            </Typography>
+                                                            {!n.lida && !readNotifications.includes(n.id) && !isRespondida && (
+                                                                <FiberManualRecordIcon sx={{ fontSize: 10, color: 'blue' }} />
+                                                            )}
+                                                        </Stack>
+                                                    </Box>
+                                                }
+                                            />
+                                        </ListItemButton>
+                                    </Box>
+                                </Fade>
+                            );
+                        })
                     )}
                 </List>
             </Paper>
             <Dialog
-                open={!!selectedNotification}
+                open={canOpenCard(selectedNotification)}
                 onClose={() => setSelectedNotification(null)}
-                TransitionComponent={Transition}
+                slots={{ transition: Slide }}
+                slotProps={{ transition: { direction: 'up' } }}
                 keepMounted
             >
                 <Box sx={{ p: 2 }}>
@@ -316,29 +357,39 @@ const InboxNotifications: React.FC = () => {
                             <CloseIcon />
                         </IconButton>
                     </Box>
-                    {selectedNotification && (
-                        <SolicitacaoCard
-                            tipo={selectedNotification.tipo as 'Corretor' | 'Imobiliaria'}
-                            nome={selectedNotification.nomeUsuario || 'Desconhecido'}
-                            email={selectedNotification.emailUsuario || 'N/A'}
-                            creciSolicitado={selectedNotification.creciSolicitado}
-                            cnpj={selectedNotification.cnpj}
-                            imagemUrl={selectedNotification.imagemUrl}
-                            resumo={selectedNotification.resumo}
-                            onAprovar={async () => {
-                                const tipo = selectedNotification.tipo.toLowerCase() as 'corretor' | 'imobiliaria';
-                                mutation.mutate({ id: selectedNotification.id, tipo, aprovada: true });
-                                setSelectedNotification(null);
-                            }}
-                            onReprovar={async () => {
-                                const tipo = selectedNotification.tipo.toLowerCase() as 'corretor' | 'imobiliaria';
-                                mutation.mutate({ id: selectedNotification.id, tipo, aprovada: false });
-                                setSelectedNotification(null);
-                            }}
-                        />
-                    )}
+                    {selectedNotification &&
+                        canOpenCard(selectedNotification) && (
+                            <SolicitacaoCard
+                                tipo={selectedNotification.tipo as 'Corretor' | 'Imobiliaria'}
+                                resumo={selectedNotification.resumo}
+                                nome={selectedNotification.tipo === 'Corretor' ? selectedNotification.nomeUsuario : undefined}
+                                email={selectedNotification.tipo === 'Corretor' ? selectedNotification.emailUsuario : undefined}
+                                razaoSocial={selectedNotification.tipo === 'Imobiliaria' && 'nomeImobiliaria' in selectedNotification ? (selectedNotification as { nomeImobiliaria?: string }).nomeImobiliaria : undefined}
+                                creciSolicitado={selectedNotification.creciSolicitado}
+                                cnpj={selectedNotification.cnpj}
+                                imagemUrl={selectedNotification.imagemUrl}
+                                onAprovar={async () => {
+                                    const tipo = selectedNotification.tipo.toLowerCase() as 'corretor' | 'imobiliaria';
+                                    mutation.mutate({ id: selectedNotification.id, tipo, aprovada: true });
+                                    setSelectedNotification(null);
+                                }}
+                                onReprovar={async () => {
+                                    const tipo = selectedNotification.tipo.toLowerCase() as 'corretor' | 'imobiliaria';
+                                    mutation.mutate({ id: selectedNotification.id, tipo, aprovada: false });
+                                    setSelectedNotification(null);
+                                }}
+                            />
+                        )}
                 </Box>
             </Dialog>
+            {/* Snackbar para feedback visual ao arquivar */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                message={snackbarMsg}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            />
         </Box>
     );
 };
