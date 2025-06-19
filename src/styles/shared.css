@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3;
+    z-index: 1000;
 }
 
 
@@ -148,7 +148,7 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
-    z-index: 3;
+    z-index: 1050;
 }
 
 .close-button:hover, .btn-close-modal {
@@ -199,6 +199,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 1100;
 }
 
 .confirm-dialog p {
@@ -241,7 +242,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 2;
+    z-index: 9999;
 }
 
 .toast {

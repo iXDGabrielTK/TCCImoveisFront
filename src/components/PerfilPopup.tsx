@@ -26,11 +26,9 @@ interface UserProfile {
     id: number;
     nome: string;
     email: string;
+    senha: string;
     telefone: string;
-    tipo: string; // era tipo_usuario
-    cpf?: string;
-    creci?: string | null;
-    senha?: string; // opcional para alteração
+    tipo_usuario: string;
 }
 
 interface PerfilPopupProps {
@@ -56,8 +54,8 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                     return;
                 }
                 const response = await api.get(`/usuarios/${userId}`);
-                setUser({ ...response.data, senha: "" });
-                setUserOriginal({ ...response.data, senha: "" });
+                setUser(response.data);
+                setUserOriginal(response.data);
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário:", error);
                 setError("Erro ao carregar dados do usuário.");
@@ -100,7 +98,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                 user.telefone !== userOriginal.telefone ||
                 (!!user.senha && user.senha.trim().length > 0);
 
-
+            // Atualizar usuário
             if (usuarioFoiModificado) {
                 const payload: {
                     tipo: string;
@@ -109,26 +107,20 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                     email: string;
                     senha?: string;
                 } = {
-                    tipo: user.tipo || "visitante",
+                    tipo: user.tipo_usuario || "visitante",
                     nome: user.nome,
                     telefone: user.telefone,
                     email: user.email,
                 };
 
-                const senhaDigitada = user.senha?.trim() || "";
-                if (senhaDigitada.length > 0) {
-                    if (senhaDigitada.length < 6) {
-                        setError("A nova senha deve ter no mínimo 6 caracteres.");
-                        setLoading(false);
-                        return;
-                    }
-                    payload.senha = senhaDigitada;
+                if (user.senha && user.senha.trim().length > 0) {
+                    payload.senha = user.senha;
                 }
 
                 await api.put(`/usuarios/${userId}`, payload);
             }
 
-
+            // Candidatura para corretor
             if (creciTrimmed) {
                 let jaEhCorretor = false;
                 try {
@@ -178,7 +170,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
 
     return (
         <>
-            <Dialog open onClose={onClose} maxWidth="sm" fullWidth >
+            <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
                 <DialogTitle>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h5" fontWeight="bold">Meu Perfil</Typography>
@@ -206,97 +198,23 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField
-                                    fullWidth
-                                    label="Nome"
-                                    value={user.nome}
-                                    onChange={(e) => handleInputChange(e, "nome")}
-                                    sx={{
-                                        "& input": {
-                                            color: "#000",
-                                            position: "relative",
-                                            zIndex: 2,
-                                        },
-                                        "& label": {
-                                            zIndex: 2,
-                                            position: "relative",
-                                            background: "#fff",
-                                            color: "#000",
-                                        },
-                                    }}
-                                />
+                                <TextField fullWidth label="Nome" value={user.nome} onChange={(e) => handleInputChange(e, "nome")} />
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="Telefone" value={user.telefone} onChange={(e) => handleInputChange(e, "telefone")}
-                                   sx={{
-                                        "& input": {
-                                            color: "#000",
-                                            position: "relative",
-                                            zIndex: 2,
-                                        },
-                                        "& label": {
-                                            zIndex: 2,
-                                            position: "relative",
-                                            background: "#fff",
-                                            color: "#000",
-                                        },
-                                   }}
-                                />
+                                <TextField fullWidth label="Telefone" value={user.telefone} onChange={(e) => handleInputChange(e, "telefone")} />
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="Email" value={user.email} onChange={(e) => handleInputChange(e, "email")}
-                                   sx={{
-                                       "& input": {
-                                           color: "#000",
-                                           position: "relative",
-                                           zIndex: 2,
-                                       },
-                                       "& label": {
-                                           zIndex: 2,
-                                           position: "relative",
-                                           background: "#fff",
-                                           color: "#000",
-                                       },
-                                   }}
-                                />
+                                <TextField fullWidth label="Email" value={user.email} onChange={(e) => handleInputChange(e, "email")} />
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth type="password" label="Nova Senha (opcional)" value={user.senha} onChange={(e) => handleInputChange(e, "senha")}
-                                   sx={{
-                                       "& input": {
-                                           color: "#000",
-                                           position: "relative",
-                                           zIndex: 2,
-                                       },
-                                       "& label": {
-                                           zIndex: 2,
-                                           position: "relative",
-                                           background: "#fff",
-                                           color: "#000",
-                                       },
-                                   }}
-                                />
+                                <TextField fullWidth type="password" label="Nova Senha (opcional)" value={user.senha} onChange={(e) => handleInputChange(e, "senha")} />
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="CRECI (somente se quiser ser corretor)" value={creci} onChange={(e) => setCreci(e.target.value)}
-                                           sx={{
-                                               "& input": {
-                                                   color: "#000",
-                                                   position: "relative",
-                                                   zIndex: 2,
-                                               },
-                                               "& label": {
-                                                   zIndex: 2,
-                                                   position: "relative",
-                                                   background: "#fff",
-                                                   color: "#000",
-                                               },
-                                           }}
-                                />
+                                <TextField fullWidth label="CRECI (somente se quiser ser corretor)" value={creci} onChange={(e) => setCreci(e.target.value)} />
                             </Grid>
                         </Grid>
                     ) : (

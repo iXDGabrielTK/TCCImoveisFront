@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import SkeletonImovel from './SkeletonImovel.tsx';
 import { useImoveisContext } from '../context/ImoveisContext';
 import LoadingText from "./LoadingText.tsx";
+import FavoritoButton from './FavoritoButton'; // ajuste o caminho se necessário
+import { useFavoritos } from '../hooks/useFavoritos';
 
 interface ApiError {
     response?: {
@@ -31,6 +33,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
     const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
     const [tipoResidencia, setTipoResidencia] = useState<string>('');
     const [valor, setValor] = useState<string>('');
+    const [somenteFavoritos, setSomenteFavoritos] = useState<string>('todos');
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -129,8 +132,13 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
     const normalizar = (texto: string) =>
         texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
+    const { favoritosIds } = useFavoritos();
+
     const filterImoveis = useCallback(() => {
-        let filtered = [...imoveis];
+        let filtered = imoveis.map(imv => ({
+            ...imv,
+            favoritado: favoritosIds.has(imv.idImovel)
+        }));
 
         if (tipoResidencia) {
             filtered = filtered.filter(imovel => imovel.tipoImovel === tipoResidencia);
@@ -159,8 +167,12 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             });
         }
 
+        if (somenteFavoritos === 'favoritos') {
+            filtered = filtered.filter(imv => imv.favoritado === true);
+        }
+
         setFilteredImoveis(filtered);
-    }, [imoveis, tipoResidencia, valor, termoBusca]);
+    }, [imoveis, tipoResidencia, valor, termoBusca, somenteFavoritos, favoritosIds]);
 
     useEffect(() => {
         filterImoveis();
@@ -192,6 +204,18 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                         <MenuItem value="Maior Valor">Maior Valor</MenuItem>
                     </Select>
                 </FormControl>
+                <FormControl variant="standard" sx={{ minWidth: 150, marginLeft: '16px' }}>
+                    <InputLabel>Favoritos</InputLabel>
+                    <Select
+                        value={somenteFavoritos}
+                        onChange={(e) => setSomenteFavoritos(e.target.value)}
+                        disabled={isLoading}
+                    >
+                        <MenuItem value="todos">Todos</MenuItem>
+                        <MenuItem value="favoritos">Apenas Favoritos</MenuItem>
+                    </Select>
+                </FormControl>
+
             </div>
 
             {isLoading && page === 0 ? (
@@ -212,21 +236,25 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                                 : "https://placehold.co/300x200"; // Caso contrário, usa o placeholder
 
                         return (
-                            <div
-                                key={imovel.idImovel}
-                                className="imovel-card"
-                                onClick={() =>
-                                    onImovelClick
-                                        ? onImovelClick(imovel)
-                                        : navigate(`/imovel/${imovel.idImovel}`, { state: { origem } })
-                                }
-                            >
-                                <img
-                                    src={primeiraImagem}
-                                    alt={`Foto do imóvel ${imovel.tipoImovel}`}
-                                />
-                                <h3>{imovel.tipoImovel}</h3>
-                                <p>Valor: R$ {imovel.precoImovel}</p>
+                            <div key={imovel.idImovel} className="imovel-card">
+                                <div className="imagem-container">
+                                    <img src={primeiraImagem} alt={`Foto do imóvel ${imovel.tipoImovel}`} />
+                                    <div className="favorito-btn-wrapper">
+                                        <FavoritoButton idImovel={imovel.idImovel} />
+                                    </div>
+                                </div>
+
+                                <div
+                                    className="imovel-content"
+                                    onClick={() =>
+                                        onImovelClick
+                                            ? onImovelClick(imovel)
+                                            : navigate(`/imovel/${imovel.idImovel}`, { state: { origem } })
+                                    }
+                                >
+                                    <h3>{imovel.tipoImovel}</h3>
+                                    <p>Valor: R$ {imovel.precoImovel}</p>
+                                </div>
                             </div>
                         );
                     })}
@@ -251,5 +279,4 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         </div>
     );
 };
-
 export default ImoveisGrid;

@@ -22,4 +22,5 @@ export interface Imovel {
     };
     fotosImovel: FotoImovel[];
     apagado: boolean;
+    favoritado?: boolean;
 }
