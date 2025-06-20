@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import ImoveisGrid from "../components/ImoveisGrid";
 import { Imovel } from "../types/Imovel";
 import "../styles/HomePage.css";
@@ -11,9 +11,13 @@ const HomePage: React.FC = () => {
         navigate(`/imovel/${imovel.idImovel}`);
     };
 
+    const estaNaHome = location.pathname === '/home';
+
+
     return (
         <div className="home-page">
-            <ImoveisGrid onImovelClick={handleOpenDetalhes} modo={"todos"} />
+            {estaNaHome && <ImoveisGrid onImovelClick={handleOpenDetalhes} modo={"todos"} />}
+            <Outlet />
         </div>
     );
 };

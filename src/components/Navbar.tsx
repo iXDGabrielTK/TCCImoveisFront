@@ -194,6 +194,7 @@ const Navbar: React.FC = () => {
                                                 <Link to="/inbox">Inbox</Link>
                                                 <Link to="/imobiliarias">Imobiliária</Link>
                                                 <Link to="/financiamento">Financiamento</Link>
+                                                <Link to="/home/favoritos">Favoritos</Link>
                                                 <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
                                                 <button onClick={handleLogout}>Logout</button>
                                             </>

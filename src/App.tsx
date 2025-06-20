@@ -20,6 +20,7 @@ import EditarVistoriaForm from './components/EditarVistoriaForm';
 import EditarImovelForm from './components/EditarImovelForm';
 import 'leaflet/dist/leaflet.css';
 import InboxNotifications from "./pages/InboxNotifications.tsx";
+import FavoritosPage from "./pages/FavoritosPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -118,14 +119,13 @@ const App: React.FC = () => {
                                         </PrivateRoute>
                                     }
                                 />
-                                <Route
-                                    path="home"
-                                    element={
+                                <Route path="home" element={<PrivateRoute><HomePage /></PrivateRoute>}>
+                                    <Route path="favoritos" element={
                                         <PrivateRoute>
-                                            <HomePage />
-                                        </PrivateRoute>
-                                    }
-                                />
+                                            <FavoritosPage />
+                                        </PrivateRoute>}
+                                    />
+                                </Route>
                             </Route>
                             <Route path="/login" element={<LoginForm />} />
                             <Route path="/register" element={<Register />} />

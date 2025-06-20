@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import SkeletonImovel from './SkeletonImovel.tsx';
 import { useImoveisContext } from '../context/ImoveisContext';
 import LoadingText from "./LoadingText.tsx";
+import FavoritoButton from "./FavoritoButton.tsx";
 
 interface ApiError {
     response?: {
@@ -19,13 +20,14 @@ interface ApiError {
 }
 
 interface ImoveisGridProps {
-    modo: 'todos' | 'filtrados';
+    modo: 'todos' | 'filtrados' | 'favoritos';
     valorMaximo?: number;
     origem?: "simulacao" | "padrao";
     onImovelClick?: (imovel: Imovel) => void;
+    onEmpty?: () => void;
 }
 
-const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick }) => {
+const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick, onEmpty }) => {
     const navigate = useNavigate();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
@@ -47,6 +49,26 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             setPage(0);
             setImoveis([]);
             setHasMore(true);
+        }
+
+        setIsLoading(true);
+        resetMessages();
+
+        if (modo === 'favoritos') {
+            try {
+                const response = await api.get('/favoritos');
+                const favoritos = response.data;
+                setImoveis(favoritos);
+                setHasMore(false);
+                if (favoritos.length === 0 && onEmpty) onEmpty();
+            } catch (error) {
+                console.error("Erro ao buscar favoritos:", error);
+                const apiError = error as ApiError;
+                setErrorMessage(apiError?.response?.data?.message || "Erro ao buscar favoritos. Tente novamente mais tarde.");
+            } finally {
+                setIsLoading(false);
+            }
+            return;
         }
 
         setIsLoading(true);
@@ -92,7 +114,9 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         } finally {
             setIsLoading(false);
         }
-    }, [modo, valorMaximo, page, resetMessages]);
+
+    }, [resetMessages, modo, page, valorMaximo, onEmpty]);
+
 
     useEffect(() => {
         void fetchImoveis(true);
@@ -203,13 +227,10 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             ) : (
                 <div className="imoveis-grid">
                     {filteredImoveis.map((imovel) => {
-                        // MODIFICAÇÃO AQUI:
                         const primeiraImagem =
-                            imovel.fotosImovel?.[0]?.urlFotoImovel // Acessa a propriedade 'urlFotoImovel' do primeiro objeto
-                            && typeof imovel.fotosImovel[0].urlFotoImovel === "string" // Garante que é uma string
-                            && (imovel.fotosImovel[0].urlFotoImovel as string).trim() !== "" // Garante que não está vazia
-                                ? imovel.fotosImovel[0].urlFotoImovel // Usa a URL completa se todas as condições forem verdadeiras
-                                : "https://placehold.co/300x200"; // Caso contrário, usa o placeholder
+                            imovel.fotosImovel?.[0]?.urlFotoImovel?.trim() !== ""
+                                ? imovel.fotosImovel[0].urlFotoImovel
+                                : "https://placehold.co/300x200";
 
                         return (
                             <div
@@ -221,10 +242,15 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                                         : navigate(`/imovel/${imovel.idImovel}`, { state: { origem } })
                                 }
                             >
-                                <img
-                                    src={primeiraImagem}
-                                    alt={`Foto do imóvel ${imovel.tipoImovel}`}
-                                />
+                                <Box position="relative">
+                                    <img
+                                        src={primeiraImagem}
+                                        alt={`Foto do imóvel ${imovel.tipoImovel}`}
+                                        style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+                                    />
+                                    <FavoritoButton idImovel={imovel.idImovel} />
+                                </Box>
+
                                 <h3>{imovel.tipoImovel}</h3>
                                 <p>Valor: R$ {imovel.precoImovel}</p>
                             </div>
