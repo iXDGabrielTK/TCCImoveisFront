@@ -21,6 +21,7 @@ legend {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 16px;
+    background-color: transparent !important;
 }
 
 .grid {
@@ -72,36 +73,32 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #2e7d64;
 }
-
-
-.cep-wrapper {
-    display: flex;
-    align-items: end;
-    gap: 12px;
-    width: 100%;
-    flex-wrap: wrap; /* permite quebrar no mobile */
+.cep-group {
+    position: relative;
 }
 
-.cep-wrapper .form-group {
-    flex: 1;
-    min-width: 240px;
-}
-
-
-
-.cep-link {
+.cep-group .cep-link {
+    position: absolute;
+    right: 0;
+    bottom: -18px;
+    font-size: 0.8rem;
     color: #5b21b6;
-    font-size: 0.9rem;
-    font-weight: 500;
     text-decoration: none;
-    margin-bottom: 4px;
     white-space: nowrap;
 }
 
-.cep-link:hover {
+.cep-group .cep-link:hover {
     color: #7c3aed;
     text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+    .cep-group .cep-link {
+        position: static;
+        margin-top: 4px;
+    }
+}
+
 
 button[type="submit"] {
     display: block;

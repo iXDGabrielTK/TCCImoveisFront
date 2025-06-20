@@ -84,7 +84,7 @@ const ImobiliariaForm: React.FC = () => {
                             value={cnpj}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCnpj(e.target.value)}
                         >
-                            {(inputProps: React.InputHTMLAttributes<HTMLInputElement>) => (
+                            {(inputProps) => (
                                 <input
                                     {...inputProps}
                                     type="text"
@@ -95,9 +95,7 @@ const ImobiliariaForm: React.FC = () => {
                                 />
                             )}
                         </InputMask>
-
                     </div>
-
 
                     <div className="form-group">
                         <label htmlFor="email">E-mail</label>
@@ -111,27 +109,25 @@ const ImobiliariaForm: React.FC = () => {
                         />
                     </div>
 
-                    <div className="cep-wrapper">
-                        <div className="form-group">
-                            <label htmlFor="cep">CEP</label>
-                            <InputMask
-                                mask="99999-999"
-                                maskChar="_"
-                                value={cep}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCep(e.target.value)}
-                            >
-                                {(inputProps) => (
-                                    <input
-                                        {...inputProps}
-                                        type="text"
-                                        id="cep"
-                                        placeholder="Digite seu CEP"
-                                        inputMode="numeric"
-                                        pattern="\d{5}-\d{3}"
-                                    />
-                                )}
-                            </InputMask>
-                        </div>
+                    <div className="form-group cep-group">
+                        <label htmlFor="cep">CEP</label>
+                        <InputMask
+                            mask="99999-999"
+                            maskChar="_"
+                            value={cep}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCep(e.target.value)}
+                        >
+                            {(inputProps) => (
+                                <input
+                                    {...inputProps}
+                                    type="text"
+                                    id="cep"
+                                    placeholder="Digite seu CEP"
+                                    inputMode="numeric"
+                                    pattern="\d{5}-\d{3}"
+                                />
+                            )}
+                        </InputMask>
 
                         <a
                             href="https://buscacepinter.correios.com.br/app/endereco/"
@@ -142,7 +138,6 @@ const ImobiliariaForm: React.FC = () => {
                             não sei o meu CEP
                         </a>
                     </div>
-
                 </div>
             </fieldset>
 
@@ -155,3 +150,4 @@ const ImobiliariaForm: React.FC = () => {
 };
 
 export default ImobiliariaForm;
+

@@ -21,6 +21,7 @@ import {
     Delete as DeleteIcon
 } from "@mui/icons-material";
 import axios from "axios";
+import InputMask from 'react-input-mask';
 
 interface UserProfile {
     id: number;
@@ -228,21 +229,33 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="Telefone" value={user.telefone} onChange={(e) => handleInputChange(e, "telefone")}
-                                   sx={{
-                                        "& input": {
-                                            color: "#000",
-                                            position: "relative",
-                                            zIndex: 2,
-                                        },
-                                        "& label": {
-                                            zIndex: 2,
-                                            position: "relative",
-                                            background: "#fff",
-                                            color: "#000",
-                                        },
-                                   }}
-                                />
+                                <InputMask
+                                    mask="99999-9999"
+                                    maskChar="_"
+                                    value={user.telefone}
+                                    onChange={(e) => handleInputChange(e, "telefone")}
+                                >
+                                    {(inputProps) => (
+                                        <TextField
+                                            fullWidth
+                                            label="Telefone"
+                                            {...inputProps}
+                                            sx={{
+                                                "& input": {
+                                                    color: "#000",
+                                                    position: "relative",
+                                                    zIndex: 2,
+                                                },
+                                                "& label": {
+                                                    zIndex: 2,
+                                                    position: "relative",
+                                                    background: "#fff",
+                                                    color: "#000",
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                </InputMask>
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
@@ -331,3 +344,4 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
 };
 
 export default PerfilPopup;
+
