@@ -35,7 +35,7 @@ interface jsPDFWithPlugin extends jsPDF {
     };
 }
 
-// Retorna o mês/ano atual no formato YYYY-MM
+// Retorna o mês/ano atual no formato AAAA-MM
 const getCurrentMonthYear = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -90,14 +90,14 @@ const RelatorioAgendamentos: React.FC = () => {
         // Extrair ano e mês formatado para o título
         let titulo: string;
         if (selectedYear) {
-            titulo = `Relatório anual de Agendamento - ${selectedYear}`;
+            titulo = `Relatório Anual de Agendamento - ${selectedYear}`;
         } else {
             const [ano, mes] = selectedMonth.split("-");
             const mesesPt = [
                 "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
                 "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
             ];
-            titulo = `Relatório mensal de Agendamento - ${mesesPt[parseInt(mes, 10) - 1]} de ${ano}`;
+            titulo = `Relatório Mensal de Agendamento - ${mesesPt[parseInt(mes, 10) - 1]} de ${ano}`;
         }
 
         const generationDate = new Date().toLocaleDateString("pt-BR", {
@@ -130,22 +130,22 @@ const RelatorioAgendamentos: React.FC = () => {
             theme: "striped",
             styles: {
                 font: "helvetica",
-                fontSize: 10,
+                fontSize: 12,
                 cellPadding: 3,
                 valign: "middle",
                 overflow: "linebreak"
             },
             headStyles: {
-                fillColor: "#007bff",
-                textColor: "#ffffff",
-                fontStyle: "bold",
+                fillColor: "#14453e", // Cor de preenchimento do cabeçalho (verde escuro)
+                textColor: "#ffffff", // Cor do texto do cabeçalho
+                fontStyle: "bold", // Estilo da fonte do cabeçalho
                 halign: "center"
             },
             bodyStyles: {
-                textColor: "#333333"
+                textColor: "#333333" // Cor do texto do corpo
             },
             alternateRowStyles: {
-                fillColor: "#f2f2f2"
+                fillColor: "#f2f2f2" // Cor de preenchimento de linhas alternadas
             },
             columnStyles: {
                 0: {
@@ -163,27 +163,26 @@ const RelatorioAgendamentos: React.FC = () => {
             },
             didDrawPage: (data: HookData) => {
                 const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
+                // const pageHeight = doc.internal.pageSize.getHeight(); // Não usado diretamente, mas útil para referência
 
                 const imgWidth = 22;
                 const imgHeight = 22;
                 const imgY = 12;
-                doc.addImage(logoBase64, "PNG", 10, imgY, imgWidth, imgHeight);
+                doc.addImage(logoBase64, "PNG", 10, imgY, imgWidth, imgHeight); // Posição do logo
 
-                doc.setFontSize(16);
+                doc.setFontSize(16); // Tamanho da fonte do título
                 doc.setTextColor("#333333");
-                doc.text(titulo, pageWidth / 2, imgY + 14, { align: "center" });
+                doc.text(titulo, pageWidth / 2, imgY + 14, { align: "center" }); // Posição do título
 
-                doc.setFontSize(10);
+                doc.setFontSize(10); // Tamanho da fonte da data de geração
                 doc.setTextColor("#666666");
-                doc.text(`Gerado em: ${generationDate}`, pageWidth - 10, imgY + 22, { align: "right" });
+                doc.text(`Gerado em: ${generationDate}`, pageWidth - 10, imgY + 22, { align: "right" }); // Posição da data de geração
 
                 const pageCount = doc.internal.getNumberOfPages();
-                doc.setFontSize(8);
+                doc.setFontSize(8); // Tamanho da fonte do número da página
                 doc.setTextColor("#999999");
-                doc.text(`Página ${data.pageNumber} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+                doc.text(`Página ${data.pageNumber} de ${pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: "center" }); // Posição do número da página
             }
-
         });
 
         const totalAgendamentos = reportData.reduce(
