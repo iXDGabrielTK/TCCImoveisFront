@@ -1,0 +1,106 @@
+/* src/styles/RelatorioPage.css */
+
+/* Estilos gerais para a página de relatórios */
+.relatorio-page-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.relatorio-page-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Estilos para as abas (se você usar Mui Tabs ou um componente similar) */
+.relatorio-tabs .MuiTabs-flexContainer {
+    justify-content: center;
+}
+
+.relatorio-tabs .MuiTab-root {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #555;
+}
+
+.relatorio-tabs .Mui-selected {
+    color: #1976d2; /* Cor de destaque para a aba selecionada */
+}
+
+/* Estilos para o conteúdo de cada aba/relatório individual */
+.relatorio-content-box {
+    padding: 25px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Ajustes para os componentes de relatório individualmente */
+/* Você pode adicionar estilos específicos para os inputs e botões dentro de cada componente de relatório */
+.relatorio-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+.relatorio-section h5 {
+    color: #007bff;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.relatorio-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.relatorio-controls .MuiTextField-root,
+.relatorio-controls .MuiFormControl-root {
+    width: 100%;
+    max-width: 300px; /* Limita a largura dos campos de entrada */
+}
+
+.relatorio-controls .MuiButton-root {
+    width: 100%;
+    max-width: 200px; /* Limita a largura dos botões */
+    align-self: flex-start; /* Alinha o botão à esquerda */
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .relatorio-page-container {
+        padding: 10px;
+        margin: 10px auto;
+    }
+
+    .relatorio-page-container h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .relatorio-tabs .MuiTab-root {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    .relatorio-content-box {
+        padding: 15px;
+    }
+
+    .relatorio-controls .MuiTextField-root,
+    .relatorio-controls .MuiFormControl-root,
+    .relatorio-controls .MuiButton-root {
+        max-width: 100%;
+    }
+}

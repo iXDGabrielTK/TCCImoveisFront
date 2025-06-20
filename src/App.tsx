@@ -6,9 +6,7 @@ import LoginForm from './components/LoginForm';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from './components/PrivateRoute';
-import RelatorioUsuarios from './components/RelatorioUsuarios';
-import RelatorioAgendamentos from './components/RelatorioAgendamento';
-import RelatorioVistorias from './components/RelatorioVistoria';
+import RelatorioPage from './pages/RelatorioPage';
 import ImovelDetalhesPage from './pages/ImovelDetalhesPage';
 import CalculadoraFinanciamento from "./components/CalculadoraFinanciamento.tsx";
 import ImobiliariaPage from "./pages/ImobiliariaPage.tsx";
@@ -113,26 +111,10 @@ const App: React.FC = () => {
                                     }
                                 />
                                 <Route
-                                    path="relatorio-usuarios"
+                                    path="relatorios"
                                     element={
                                         <PrivateRoute>
-                                            <RelatorioUsuarios />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="relatorio-agendamentos"
-                                    element={
-                                        <PrivateRoute>
-                                            <RelatorioAgendamentos />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="relatorio-vistorias"
-                                    element={
-                                        <PrivateRoute>
-                                            <RelatorioVistorias />
+                                            <RelatorioPage />
                                         </PrivateRoute>
                                     }
                                 />

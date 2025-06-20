@@ -1,10 +1,7 @@
-// ImoveisPage.tsx
 import React, { useEffect } from 'react';
 import ImoveisGrid from '../components/ImoveisGrid';
-import RelatorioModal from '../components/RelatorioModal';
 import '../styles/ImoveisPage.css';
 import { Imovel } from '../types/Imovel';
-import useModal from '../hooks/useModal';
 import { Button, Stack } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -13,16 +10,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
 
 const ImoveisPage: React.FC = () => {
-    const relatorioModal = useModal();
     const navigate = useNavigate();
-    const isAuthenticated = true; // Exemplo de verificação de autenticação
+    const isAuthenticated = true;
 
     const handleImovelClick = (imovel: Imovel) => {
         navigate(`/imovel/${imovel.idImovel}`);
-    };
-
-    const handleGenerateReport = (tipoRelatorio: string) => {
-        console.log(`Gerando relatório: ${tipoRelatorio}`);
     };
 
     const fetchImoveis = () => {
@@ -77,7 +69,7 @@ const ImoveisPage: React.FC = () => {
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={relatorioModal.openModal}
+                        onClick={() => navigate('/relatorios')}
                         className="btn-gerar-relatorio"
                         startIcon={<ReportIcon />}
                     >
@@ -85,14 +77,6 @@ const ImoveisPage: React.FC = () => {
                     </Button>
                 </Stack>
             </div>
-
-            {relatorioModal.isOpen && (
-                <RelatorioModal
-                    isOpen={relatorioModal.isOpen}
-                    onClose={relatorioModal.closeModal}
-                    onGenerate={handleGenerateReport}
-                />
-            )}
 
             <ImoveisGrid onImovelClick={handleImovelClick} modo={'todos'} />
 
