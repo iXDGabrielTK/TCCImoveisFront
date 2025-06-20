@@ -38,18 +38,6 @@ export const useNotificacoesPrivadas = () => {
         staleTime: 1000 * 60 * 2,
     });
 };
-
-export const useNotificacoesNaoLidasVisiveis = () => {
-    return useQuery<Notificacao[]>({
-        queryKey: ["notificacoes", "todas-nao-lidas"],
-        queryFn: async () => {
-            const response = await api.get("/notificacoes/todas-nao-lidas");
-            return response.data;
-        },
-        staleTime: 1000 * 60,
-    });
-};
-
 export const useArquivarNotificacao = () => {
     const queryClient = useQueryClient();
 
@@ -63,7 +51,6 @@ export const useArquivarNotificacao = () => {
     });
 };
 
-// 🔔 Apenas notificações (públicas + privadas) que ainda não foram lidas
 export const useNotificacoesNaoLidas = () => {
     return useQuery<Notificacao[]>({
         queryKey: ["notificacoes", "nao-lidas"],
@@ -71,6 +58,6 @@ export const useNotificacoesNaoLidas = () => {
             const response = await api.get("/notificacoes/nao-lidas");
             return response.data;
         },
-        staleTime: 1000 * 60,
+        staleTime: 1000 * 60 * 2,
     });
 };
