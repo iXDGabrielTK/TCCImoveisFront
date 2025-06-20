@@ -5,7 +5,7 @@ import { createContext } from 'react';
  */
 export interface User {
     id: string;              // ID do usuário
-    tipo: string;            // Tipo/papel do usuário (ex: 'admin', 'funcionario', 'cliente')
+    tipo: string[];         // Tipos/papéis do usuário (ex: ['ADMIN', 'FUNCIONARIO'])
     nome?: string;           // Nome do usuário (opcional)
     email?: string;          // Email do usuário (opcional)
 }
@@ -25,7 +25,7 @@ export interface LoginResponse {
     access_token: string;    // Token JWT de acesso
     refresh_token: string;   // Token JWT de refresh
     usuario_Id: string;      // ID do usuário
-    tipo: string;            // Tipo/papel do usuário
+    tipo: string[];          // Tipos/papéis do usuário
     nome?: string;           // Nome do usuário (opcional)
     email?: string;          // Email do usuário (opcional)
 }
@@ -48,7 +48,7 @@ export interface AuthContextType {
     error: string | null;                                // Mensagem de erro, se houver
     login: (email: string, senha: string) => Promise<void>; // Função para fazer login
     logout: () => void;                                  // Função para fazer logout
-    hasRole: (role: string) => boolean;                  // Função para verificar se o usuário tem determinado papel
+    hasRole: (role: string | string[]) => boolean;       // Função para verificar se o usuário tem determinado papel
     refreshToken: () => Promise<boolean>;                // Função para atualizar o token de acesso
 }
 

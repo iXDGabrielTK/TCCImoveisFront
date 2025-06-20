@@ -49,7 +49,7 @@ const App: React.FC = () => {
                                 <Route
                                     path="imoveis"
                                     element={
-                                        <PrivateRoute requiredRole="funcionario">
+                                        <PrivateRoute requiredRole={["funcionario", "corretor"]} >
                                             <ImoveisPage />
                                         </PrivateRoute>
                                     }
@@ -65,7 +65,7 @@ const App: React.FC = () => {
                                 <Route
                                     path="imobiliarias"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute requiredRole={"corretor"}>
                                             <ImobiliariaPage />
                                         </PrivateRoute>
                                     }
@@ -96,7 +96,7 @@ const App: React.FC = () => {
                                     }
                                 />
                                 <Route
-                                    path="/editar-imovel" // Nova Rota
+                                    path="/editar-imovel"
                                     element={
                                         <PrivateRoute>
                                             <EditarImovelForm />
@@ -114,7 +114,7 @@ const App: React.FC = () => {
                                 <Route
                                     path="relatorios"
                                     element={
-                                        <PrivateRoute>
+                                        <PrivateRoute requiredRole={"funcionario"}>
                                             <RelatorioPage />
                                         </PrivateRoute>
                                     }

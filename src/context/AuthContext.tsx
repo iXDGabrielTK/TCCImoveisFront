@@ -90,9 +90,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const accessToken = localStorage.getItem('access_token');
         const refreshTokenValue = localStorage.getItem('refresh_token');
         const usuarioId = localStorage.getItem('usuario_Id');
-        const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+        const raw = localStorage.getItem('roles');
+        let roles: string[] = [];
+
+        try {
+            roles = raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            console.warn("Erro ao parsear roles do localStorage", e);
+            roles = [];
+        }
         const nome = localStorage.getItem('nome');
         const email = localStorage.getItem('email');
+
 
         const handleValidToken = (token: string) => {
             setUser({
@@ -184,7 +193,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem('access_token', access_token);
             localStorage.setItem('refresh_token', refresh_token);
             localStorage.setItem('usuario_Id', usuario_Id);
-            const roles = Array.isArray(tipo) ? tipo.map(r => r.nome.toUpperCase()) : [tipo.toUpperCase()];
+            const roles = Array.isArray(tipo)
+                ? tipo.map((r: string | { nome: string }) => (typeof r === 'string' ? r.toUpperCase() : r.nome.toUpperCase()))
+                : [String(tipo).toUpperCase()];
             localStorage.setItem('roles', JSON.stringify(roles));
             if (nome) localStorage.setItem('nome', nome);
             if (emailUsuario) localStorage.setItem('email', emailUsuario);
@@ -232,8 +243,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         window.location.replace('/login');
     }, []);
 
-    const hasRole = useCallback((role: string) => {
-        return !!user?.tipo?.includes(role.toUpperCase());
+    const hasRole = useCallback((rolesToCheck: string | string[]) => {
+        const userRoles = user?.tipo || [];
+
+        if (Array.isArray(rolesToCheck)) {
+            return rolesToCheck.some(role => userRoles.includes(role.toUpperCase()));
+        }
+
+        return userRoles.includes(rolesToCheck.toUpperCase());
     }, [user]);
 
     useEffect(() => {

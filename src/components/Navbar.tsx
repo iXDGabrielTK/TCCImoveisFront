@@ -82,8 +82,12 @@ const Navbar: React.FC = () => {
                                         </>
                                     ) : (
                                         <>
-                                            {hasRole("funcionario") && !isOnImoveisPage && (
-                                                <Link to="/imoveis">Imóveis</Link>
+                                            {hasRole(["FUNCIONARIO", "CORRETOR"]) && <Link to="/imoveis">Imóveis</Link>}
+                                            {hasRole("funcionario") && (
+                                                <Link to="/relatorios">Relatórios</Link>
+                                            )}
+                                            {hasRole("corretor") && (
+                                                <Link to="/imobiliarias">Imobiliária</Link>
                                             )}
                                             <button
                                                 onClick={async () => {
@@ -94,8 +98,8 @@ const Navbar: React.FC = () => {
                                                 Agendamentos
                                             </button>
                                             <Link to="/inbox">Inbox</Link>
-                                            <Link to="/imobiliarias">Imobiliária</Link>
                                             <Link to="/financiamento">Financiamento</Link>
+                                            <Link to="/home/favoritos">Favoritos</Link>
                                             <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>
                                             <button onClick={handleLogout}>Logout</button>
                                         </>
@@ -180,8 +184,12 @@ const Navbar: React.FC = () => {
                                             </>
                                         ) : (
                                             <>
-                                                {hasRole("funcionario") && !isOnImoveisPage && (
-                                                    <Link to="/imoveis">Imóveis</Link>
+                                                {hasRole(["FUNCIONARIO", "CORRETOR"]) && <Link to="/imoveis">Imóveis</Link>}
+                                                {hasRole("funcionario") && (
+                                                <Link to="/relatorios">Relatórios</Link>
+                                                )}
+                                                {hasRole("corretor") && !isOnImoveisPage && (
+                                                    <Link to="imobiliarias">Imobiliária</Link>
                                                 )}
                                                 <button
                                                     onClick={async () => {
@@ -192,7 +200,6 @@ const Navbar: React.FC = () => {
                                                     Agendamentos
                                                 </button>
                                                 <Link to="/inbox">Inbox</Link>
-                                                <Link to="/imobiliarias">Imobiliária</Link>
                                                 <Link to="/financiamento">Financiamento</Link>
                                                 <Link to="/home/favoritos">Favoritos</Link>
                                                 <button onClick={() => setShowPerfilPopup(true)}>Meu Perfil</button>

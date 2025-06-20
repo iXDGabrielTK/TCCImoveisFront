@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, useCallback } from 'react';
+import React, {FormEvent, useState, useCallback, useEffect} from 'react';
 import axios from 'axios';
 import api from '../services/api';
 import '../styles/shared.css';
@@ -27,20 +27,22 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     const [status, setStatus] = useState(true);
     const [tamanho, setTamanho] = useState('');
     const [preco, setPreco] = useState('');
-    const [fotosImovel, setFotosImovel] = useState<File[]>([]); // Estado para as fotos (File[])
+    const [fotosImovel, setFotosImovel] = useState<File[]>([]);
+    const [imobiliarias, setImobiliarias] = useState<{ id: number; nome: string }[]>([]);
+    const [imobiliariaId, setImobiliariaId] = useState<string>('');
     const [endereco, setEndereco] = useState({
         rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '',
     });
     const [historicoManutencao, setHistoricoManutencao] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({
-        tipo: '', descricao: '', tamanho: '', preco: '', fotosImovel: '',
+        tipo: '', descricao: '', tamanho: '', imobiliariaId: '', preco: '', fotosImovel: '',
         cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '',
     });
 
     const resetMessages = useCallback(() => {
         setFieldErrors({
-            tipo: '', descricao: '', tamanho: '', preco: '', fotosImovel: '',
+            tipo: '', descricao: '', tamanho: '', imobiliariaId: '', preco: '', fotosImovel: '',
             cep: '', rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '',
         });
     }, []);
@@ -131,12 +133,21 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         return true;
     };
 
+    const validateImobiliariaId = (v: string) => {
+        if (!v) {
+            setFieldErrors(prev => ({ ...prev, imobiliariaId: 'Imobiliária é obrigatória' }));
+            return false;
+        }
+        setFieldErrors(prev => ({ ...prev, imobiliariaId: '' }));
+        return true;
+    };
+
     const handleImageInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             const newFiles = Array.from(event.target.files);
             setFotosImovel(prevFotos => {
-                const updatedFotos = [...prevFotos, ...newFiles]; // CONCATENA as novas fotos com as existentes
-                validateFotosImovel(updatedFotos); // Valida o array atualizado
+                const updatedFotos = [...prevFotos, ...newFiles];
+                validateFotosImovel(updatedFotos);
                 return updatedFotos;
             });
         }
@@ -180,8 +191,14 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     };
 
     const validateFirstStep = () => {
-        const valid = validateTipo(tipo) && validateDescricao(descricao) && validateTamanho(tamanho) && validatePreco(preco) && validateFotosImovel(fotosImovel);
-        // Complemento é opcional, então apenas limpa erro se estiver preenchido, mas não o torna obrigatório
+        const valid = (
+            validateTipo(tipo) &&
+            validateDescricao(descricao) &&
+            validateTamanho(tamanho) &&
+            validatePreco(preco) &&
+            validateImobiliariaId(imobiliariaId) &&
+            validateFotosImovel(fotosImovel)
+        );
         setFieldErrors((prev) => ({ ...prev, complemento: '' }));
         return valid;
     };
@@ -206,6 +223,18 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         return valid;
     };
 
+    useEffect(() => {
+        api.get('/imobiliaria/imobiliarias-aprovadas')
+            .then(response => {
+                setImobiliarias(response.data);
+            })
+            .catch(error => {
+                showToast('Erro ao buscar imobiliárias', 'error');
+                console.error(error);
+            });
+    }, [showToast]);
+
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         resetMessages();
@@ -228,6 +257,7 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
             precoImovel: parseFloat(preco),
             historicoManutencao,
             enderecoImovel: endereco,
+            imobiliariaId: parseInt(imobiliariaId)
         };
 
         const formData = new FormData();
@@ -281,21 +311,23 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="descricao">* Descrição:</label>
-                                <input
-                                    id="descricao"
-                                    type="text"
-                                    value={descricao}
+                                <label htmlFor="imobiliariaId">* Imobiliária:</label>
+                                <select
+                                    id="imobiliariaId"
+                                    value={imobiliariaId}
                                     onChange={(e) => {
-                                        setDescricao(e.target.value);
-                                        validateDescricao(e.target.value);
+                                        setImobiliariaId(e.target.value);
+                                        validateImobiliariaId(e.target.value);
                                     }}
-                                    placeholder="Breve descrição do imóvel"
-                                    className={fieldErrors.descricao ? "input-error" : ""}
+                                    className={fieldErrors.imobiliariaId ? "input-error" : ""}
                                     required
-                                />
-                                {fieldErrors.descricao &&
-                                    <span className="field-error-message">{fieldErrors.descricao}</span>}
+                                >
+                                    <option value="">Selecione uma imobiliária</option>
+                                    {imobiliarias.map(i => (
+                                        <option key={i.id} value={i.id}>{i.nome}</option>
+                                    ))}
+                                </select>
+                                {fieldErrors.imobiliariaId && <span className="field-error-message">{fieldErrors.imobiliariaId}</span>}
                             </div>
 
                             <div className="form-group">
@@ -352,6 +384,22 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                 {fieldErrors.preco && <span className="field-error-message">{fieldErrors.preco}</span>}
                             </div>
 
+                            <div className="form-group">
+                                <label htmlFor="descricao">* Descrição:</label>
+                                <input
+                                    id="descricao"
+                                    type="text"
+                                    value={descricao}
+                                    onChange={(e) => {
+                                        setDescricao(e.target.value);
+                                        validateDescricao(e.target.value);
+                                    }}
+                                    placeholder="Breve descrição do imóvel"
+                                    className={fieldErrors.descricao ? "input-error" : ""}
+                                    required
+                                />
+                                {fieldErrors.descricao && <span className="field-error-message">{fieldErrors.descricao}</span>}
+                            </div>
 
                             {/* Histórico de Manutenção ocupa a largura total */}
                             <div className="form-group full-width">

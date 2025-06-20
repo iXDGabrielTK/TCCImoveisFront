@@ -177,8 +177,6 @@ const EditarImovelModal: React.FC<EditarImovelModalProps> = ({ isOpen, onClose }
             historicoManutencao,
         };
 
-        console.log("Payload enviado:", data);
-
         try {
             setIsLoading(true);
             resetMessages();

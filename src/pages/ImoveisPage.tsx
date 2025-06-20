@@ -5,7 +5,6 @@ import { Imovel } from '../types/Imovel';
 import { Button, Stack } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import DescriptionIcon from '@mui/icons-material/Description';
-import ReportIcon from '@mui/icons-material/Assessment';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
 
@@ -65,15 +64,6 @@ const ImoveisPage: React.FC = () => {
                         startIcon={<EditIcon />}
                     >
                         Editar Imóvel
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => navigate('/relatorios')}
-                        className="btn-gerar-relatorio"
-                        startIcon={<ReportIcon />}
-                    >
-                        Gerar Relatório
                     </Button>
                 </Stack>
             </div>
