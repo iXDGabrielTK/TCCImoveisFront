@@ -234,7 +234,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
                                     variant="contained"
                                     color="success"
                                     onClick={handleAgendarVisita}
-                                    sx={{ mt: 3 }}
+                                    sx={{ mt: 3, fontWeight: 'bold' }}
                                 >
                                     Agendar
                                 </Button>

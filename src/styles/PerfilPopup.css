@@ -76,3 +76,8 @@
 .botao-excluir:hover {
     background-color: #000000;
 }
+
+.botao-submit,
+.botao-excluir {
+    font-weight: bold;
+}

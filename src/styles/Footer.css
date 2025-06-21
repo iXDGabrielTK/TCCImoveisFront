@@ -64,6 +64,11 @@ html, body, #root, main {
     line-height: 1.6;
 }
 
+.footer-section a,
+.footer-section button {
+    font-weight: bold;
+}
+
 .social-icons a {
     color: #e8e8e8;
     text-decoration: none;

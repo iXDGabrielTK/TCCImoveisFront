@@ -45,6 +45,7 @@
     flex-shrink: 0;
     min-width: 180px;
     text-align: center;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {

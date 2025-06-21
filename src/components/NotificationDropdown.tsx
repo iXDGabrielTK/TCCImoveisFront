@@ -58,6 +58,7 @@ export default function NotificationDropdown() {
             </IconButton>
 
             <Menu
+
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
@@ -141,7 +142,7 @@ export default function NotificationDropdown() {
                         handleClose();
                         navigate("/inbox");
                     }}
-                    sx={{ justifyContent: "center", color: "primary.main" }}
+                    sx={{ justifyContent: "center", color: "primary.main", fontWeight: 'bold' }}
                 >
                     Ver todas
                 </MenuItem>

@@ -124,7 +124,7 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
 
                     <Divider sx={{ my: 1 }} />
 
-                    <Button variant="contained" color="primary" onClick={handleEnviarProposta}>
+                    <Button variant="contained" color="primary" onClick={handleEnviarProposta} sx={{ fontWeight: 'bold' }}>
                         Enviar Proposta
                     </Button>
                 </Stack>

@@ -144,7 +144,7 @@ const CalculadoraFinanciamento: React.FC = () => {
                                 fullWidth
                                 variant="outlined"
                                 color="success"
-                                sx={{ mt: 2 }}
+                                sx={{ mt: 2, fontWeight: 'bold' }}
                                 onClick={() => {
                                     navigate(`/imoveis-filtrados?valorMaximo=${resultado.poderDeCompra}`, {
                                         state: { origem: "simulacao" }

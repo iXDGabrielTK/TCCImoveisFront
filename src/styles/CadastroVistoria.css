@@ -111,6 +111,7 @@ legend {
     align-items: flex-end;
     margin-top: 32px;
     flex-wrap: nowrap;
+    font-weight: bold;
     padding: 0; /* Adicionado para igualar CadastroImovel.css */
 }
 

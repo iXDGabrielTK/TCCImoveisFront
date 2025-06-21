@@ -39,7 +39,7 @@
 }
 
 /* Botões comuns */
-.btn-submit-form, .button-meu-group, .botao-submit {
+.btn-submit-form, .button-meu-group, .botao-submit, .botao-excluir, .botao-excluir:hover, .close-button, .btn-close-modal, .dialog-buttons button, .danger-button {
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
