@@ -4,8 +4,8 @@
   align-items: center;
   height: 100vh;
   background-color: #f0f2f5;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte consistente */
-  padding: 1rem; /* Adicionado para evitar que o formulário encoste nas bordas em telas muito pequenas */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 1rem;
 }
 
 .register-form {
@@ -13,19 +13,19 @@
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   border-radius: 16px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
-  width: 100%; /* Alterado para 100% e max-width para melhor responsividade */
-  max-width: 400px; /* Largura máxima definida */
+  width: 100%;
+  max-width: 400px;
   text-align: center;
-  transition: box-shadow 0.3s ease-in-out; /* Transição mais suave */
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .register-form h2 {
-  font-size: 2.2rem; /* Levemente maior */
-  font-weight: 700; /* Negrito */
+  font-size: 2.2rem;
+  font-weight: 700;
   color: #222;
   margin-bottom: 2rem;
   letter-spacing: 1px;
-  text-transform: uppercase; /* Deixa o título em maiúsculas */
+  text-transform: uppercase;
 }
 
 .input-group {
@@ -38,18 +38,18 @@
   padding: 0.7rem 1.2rem;
   box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
   border: 1.5px solid #dee5fe;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transições para foco */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group:focus-within {
   border-color: #2e7d64;
-  box-shadow: 0 0 0 3px rgba(46, 125, 100, 0.3); /* Sombra mais destacada ao focar */
+  box-shadow: 0 0 0 3px rgba(46, 125, 100, 0.3);
 }
 
 .icon {
   position: static;
-  color: #555; /* Cor um pouco mais suave para os ícones */
-  font-size: 1.3rem; /* Ícones levemente maiores */
+  color: #555;
+  font-size: 1.3rem;
   margin-right: 0.7rem;
   transition: color 0.3s ease;
 }
@@ -60,13 +60,13 @@
   background: none;
   outline: none;
   color: #333;
-  font-size: 1.1rem; /* Fonte levemente maior no input */
+  font-size: 1.1rem;
   padding: 0.6rem 0;
   border-radius: 8px;
   transition: background 0.2s ease;
 }
 
-.input-group input::placeholder { /* Estilo para placeholder */
+.input-group input::placeholder {
   color: #888;
 }
 
@@ -74,18 +74,16 @@
   background: #f5faff;
 }
 
-/* Remover padding específico para tipos, pois já está no .input-group input */
 .input-group input[type="text"],
 .input-group input[type="number"],
 .input-group input[type="date"],
 .input-group input[type="password"],
-.input-group input[type="email"], /* Adicionado email para consistência */
+.input-group input[type="email"],
 .input-group select {
   width: 100%;
-  /* padding: 12px 20px; Removido, já é tratado pelo .input-group input */
   border: none;
   background: none;
-  font-size: 1.1rem; /* Consistente com o input geral */
+  font-size: 1.1rem;
   color: #333;
   border-radius: 8px;
 }
@@ -98,27 +96,27 @@
 
 .register-form button {
   width: 100%;
-  padding: 0.9rem; /* Padding maior para o botão */
+  padding: 0.9rem;
   border: none;
-  border-radius: 30px; /* Arredondamento do botão */
-  background: linear-gradient(90deg, #1e574c, #2e7d64); /* Degradê mais distinto */
-  box-shadow: 0 4px 12px rgba(46, 125, 100, 0.4); /* Sombra mais pronunciada no botão */
+  border-radius: 30px;
+  background: linear-gradient(90deg, #1e574c, #2e7d64);
+  box-shadow: 0 4px 12px rgba(46, 125, 100, 0.4);
   color: white;
-  font-size: 1.1rem; /* Fonte maior para o botão */
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease; /* Transição para o hover e click */
-  margin-top: 1.5rem; /* Ajuste no espaçamento superior */
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 1.5rem;
   letter-spacing: 0.5px;
 }
 
 .register-form button:hover {
   background: linear-gradient(90deg, #2e7d64, #4CAF50);
-  transform: translateY(-2px); /* Efeito de levantar no hover */
+  transform: translateY(-2px);
 }
 
 .register-form button:active {
-  transform: translateY(0); /* Retorna ao estado original no click */
+  transform: translateY(0);
 }
 
 .register-form button:disabled {
@@ -130,8 +128,8 @@
 
 .register-form .error-message,
 .register-form .success-message {
-  margin: 0.8rem 0 0.5rem 0; /* Espaçamento melhor para mensagens */
-  font-size: 0.95rem; /* Fonte ligeiramente menor */
+  margin: 0.8rem 0 0.5rem 0;
+  font-size: 0.95rem;
   text-align: center;
   font-weight: 500;
 }
@@ -151,14 +149,14 @@
 }
 
 .login-link a {
-  color: #2e7d64; /* Cor do link */
+  color: #2e7d64;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .login-link a:hover {
-  color: #1e574c; /* Escurece no hover */
+  color: #1e574c;
   text-decoration: underline;
 }
 
@@ -170,7 +168,7 @@
   position: absolute;
   right: 15px;
   color: #666;
-  font-size: 22px; /* Ícone de olho ligeiramente maior */
+  font-size: 22px;
   cursor: pointer;
   transition: color 0.3s ease;
 }
@@ -180,24 +178,23 @@
 }
 
 .senha-group input {
-  padding-right: 45px; /* Mais espaço para o ícone de olho */
+  padding-right: 45px;
 }
 
 
-/* 🔍 Media Query: Responsividade */
 @media (max-width: 480px) {
   .register-form {
-    padding: 1.5rem; /* Ajuste no padding para telas menores */
+    padding: 1.5rem;
     border-radius: 0.75rem;
   }
 
   .register-form h2 {
-    font-size: 1.8rem; /* Tamanho ajustado para telas menores */
+    font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
 
   .input-group {
-    padding: 0.5rem 1rem; /* Ajuste no padding do input */
+    padding: 0.5rem 1rem;
     margin-bottom: 1.2rem;
   }
 
@@ -215,7 +212,7 @@
   .register-form button {
     font-size: 1rem;
     padding: 0.75rem;
-    margin-top: 1rem; /* Ajuste para telas menores */
+    margin-top: 1rem;
   }
 
   .register-form .error-message,
