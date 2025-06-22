@@ -16,8 +16,9 @@ import {
     useNotificacoesPrivadas,
     useNotificacoesNaoLidas,
     useNotifications,
-    useArquivarNotificacao,
+    useArquivarNotificacao, useMarcarComoLida,
 } from '../hooks/useNotifications';
+import DoneIcon from '@mui/icons-material/Done';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SolicitacaoCard from '../components/SolicitacaoCard';
 import Fade from '@mui/material/Fade';
@@ -95,6 +96,7 @@ const InboxNotifications: React.FC = () => {
     const queryClient = useQueryClient();
 
     const { mutate: arquivar } = useArquivarNotificacao();
+    const { mutate: marcarComoLida } = useMarcarComoLida();
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -326,6 +328,24 @@ const InboxNotifications: React.FC = () => {
                                                                     </IconButton>
                                                                 </span>
                                                             </Tooltip>
+                                                            <Tooltip title="Marcar como lida">
+                                                              <span>
+                                                                <IconButton
+                                                                    aria-label="Marcar como lida"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        marcarComoLida(n.id, {
+                                                                            onSuccess: () => {
+                                                                                setSnackbarMsg('Notificação marcada como lida!');
+                                                                                setSnackbarOpen(true);
+                                                                            }
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                  <DoneIcon fontSize="small" />
+                                                                </IconButton>
+                                                              </span>
+                                                            </Tooltip>
                                                             <Typography variant="caption" color="text.secondary">
                                                                 {formatTimestamp(n.dataCriacao)}
                                                             </Typography>
@@ -382,7 +402,6 @@ const InboxNotifications: React.FC = () => {
                         )}
                 </Box>
             </Dialog>
-            {/* Snackbar para feedback visual ao arquivar */}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

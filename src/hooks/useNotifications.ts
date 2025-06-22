@@ -38,12 +38,26 @@ export const useNotificacoesPrivadas = () => {
         staleTime: 1000 * 60 * 2,
     });
 };
+
+export const useMarcarComoLida = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (id: number) => {
+            await api.patch(`/notificacoes/${id}/lida`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
+        }
+    });
+};
+
 export const useArquivarNotificacao = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (id: number) => {
-            await api.put(`/notificacoes/${id}/arquivar`);
+            await api.patch(`/notificacoes/${id}/arquivar`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notificacoes'] });
