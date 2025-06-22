@@ -6,22 +6,27 @@
   height: 100vh;
   padding: 1rem;
   background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-form {
   background-color: #ffffff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
   width: 100%;
   max-width: 400px;
   text-align: center;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .login-form h2 {
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #333;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  color: #222;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .input-group {
@@ -29,53 +34,92 @@
   align-items: center;
   background-color: #e0e7ff;
   border-radius: 30px;
-  padding: 0.5rem 1rem;
-  margin-bottom: 1.25rem;
+  padding: 0.7rem 1.2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+  border: 1.5px solid #dee5fe;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group:focus-within {
+  border-color: #2e7d64;
+  box-shadow: 0 0 0 3px rgba(46, 125, 100, 0.3);
 }
 
 .input-group .icon {
-  color: #333;
-  margin-right: 0.5rem;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.input-group .icon-senha:hover {
-  color: #2e7d64;
+  color: #555;
+  margin-right: 0.7rem;
+  font-size: 1.3rem;
+  transition: color 0.3s ease;
 }
 
 .input-group input {
   flex: 1;
   border: none;
   background: none;
-  padding: 0.5rem 0;
+  padding: 0.6rem 0;
   outline: none;
   color: #333;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: #888;
+}
+
+.input-group input:focus {
+  background: #f5faff;
 }
 
 .login-form button {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.9rem;
   border: none;
   border-radius: 30px;
-  background: linear-gradient(90deg, #14453e, #2e7d64);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(90deg, #1e574c, #2e7d64);
+  box-shadow: 0 4px 12px rgba(46, 125, 100, 0.4);
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s ease, transform 0.2s ease;
+  letter-spacing: 0.5px;
 }
 
 .login-form button:hover {
   background: linear-gradient(90deg, #2e7d64, #4CAF50);
+  transform: translateY(-2px);
+}
+
+.login-form button:active {
+  transform: translateY(0);
+}
+
+.login-form button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.8;
 }
 
 .register-link {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
+  margin-top: 2rem;
+  font-size: 1rem;
   color: #555;
+}
+
+.register-link a {
+  color: #2e7d64;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  color: #1e574c;
+  text-decoration: underline;
 }
 
 .senha-group {
@@ -86,9 +130,9 @@
   position: absolute;
   right: 15px;
   color: #666;
-  font-size: 18px;
+  font-size: 22px;
   cursor: pointer;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .icon-eye:hover {
@@ -96,31 +140,58 @@
 }
 
 .senha-group input {
-  padding-right: 40px;
+  padding-right: 45px;
 }
 
+.login-form p {
+  margin: 0.8rem 0 0 0;
+  font-size: 0.95rem;
+  text-align: center;
+  color: red;
+  font-weight: 500;
+}
 
-/* 🔍 Media Query: Responsividade */
 @media (max-width: 480px) {
   .login-form {
     padding: 1.5rem;
-  }
-
-  .input-group {
-    flex-direction: row;
-    padding: 0.4rem 0.8rem;
-  }
-
-  .input-group input {
-    font-size: 0.95rem;
+    border-radius: 0.75rem;
   }
 
   .login-form h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-group {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .input-group input {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .icon {
+    font-size: 1.1rem;
+    margin-right: 0.6rem;
   }
 
   .login-form button {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+  .register-link {
     font-size: 0.95rem;
-    padding: 0.65rem;
+    margin-top: 1.5rem;
+  }
+
+  .icon-eye {
+    font-size: 20px;
+    right: 12px;
+  }
+
+  .senha-group input {
+    padding-right: 40px;
   }
 }

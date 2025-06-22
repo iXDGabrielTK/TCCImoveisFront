@@ -20,9 +20,6 @@ function LoginForm() {
         <div className="login-page">
             <form className="login-form" onSubmit={handleLogin}>
                 <h2>Login</h2>
-                <h2></h2>
-                <h2></h2>
-                <h2></h2>
                 <div className="input-group">
                     <FaUser className="icon" />
                     <input
@@ -67,3 +64,4 @@ function LoginForm() {
 }
 
 export default LoginForm;
+

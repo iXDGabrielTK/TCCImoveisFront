@@ -20,26 +20,11 @@ const RegisterForm: React.FC = () => {
     const [confirmarSenha, setConfirmarSenha] = useState('');
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
-    const [tipo, setTipo] = useState(true);
-    const [cpf, setCpf] = useState('');
-    const [cpfError, setCpfError] = useState('');
     const [senhaError, setSenhaError] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const navigate = useNavigate();
-
-    function isValidCPF(value: string) {
-        value = value.replace(/[^\d]+/g, '');
-        if (value.length !== 11 || !!value.match(/(\d)\1{10}/)) return false;
-        const digits = value.split('').map(el => +el);
-        const getVerifyingDigit = (arr: number[]) => {
-            const reduced = arr.reduce((sum, digit, index) => sum + digit * (arr.length + 1 - index), 0);
-            return (reduced * 10) % 11 % 10;
-        };
-        return getVerifyingDigit(digits.slice(0, 9)) === digits[9] &&
-            getVerifyingDigit(digits.slice(0, 10)) === digits[10];
-    }
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -55,17 +40,8 @@ const RegisterForm: React.FC = () => {
             telefone,
             email,
             senha,
-            tipo: tipo ? "visitante" : "funcionario",
+            tipo: "visitante",
         };
-
-        if (!tipo) {
-            if (!isValidCPF(cpf)) {
-                setCpfError('CPF inválido. Por favor, verifique os números digitados.');
-                return;
-            }
-            data.cpf = cpf;
-            setCpfError('');
-        }
 
         try {
             setIsPending(true);
@@ -96,32 +72,6 @@ const RegisterForm: React.FC = () => {
                     required
                 />
             </div>
-
-            <div className="input-group">
-                <FaUser className="icon" />
-                <select
-                    value={tipo ? "Visitante" : "Funcionário"}
-                    onChange={(e) => setTipo(e.target.value === "Visitante")}
-                    required
-                >
-                    <option value="Visitante">Visitante</option>
-                    <option value="Funcionário">Funcionário</option>
-                </select>
-            </div>
-
-            {!tipo && (
-                <div className="input-group">
-                    <FaUser className="icon" />
-                    <input
-                        type="text"
-                        id="cpf"
-                        placeholder="CPF"
-                        value={cpf}
-                        onChange={(e) => setCpf(e.target.value)}
-                        required
-                    />
-                </div>
-            )}
 
             <div className="input-group">
                 <FaPhone className="icon" />
@@ -177,7 +127,6 @@ const RegisterForm: React.FC = () => {
                 )}
             </div>
 
-            {cpfError && <p className="error-message">{cpfError}</p>}
             {senhaError && <p className="error-message">{senhaError}</p>}
             {isError && <p className="error-message">Erro ao registrar usuário. Tente novamente.</p>}
             {isSuccess && <p className="success-message">Usuário registrado com sucesso!</p>}
