@@ -181,57 +181,57 @@
   padding-right: 45px;
 }
 
+.input-group.input-error {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.15);
+}
+
+.input-group.input-error input {
+  background: #fff5f5;
+}
+
 
 @media (max-width: 480px) {
   .register-form {
     padding: 1.5rem;
     border-radius: 0.75rem;
   }
-
   .register-form h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-
   .input-group {
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1.1rem;
     margin-bottom: 1.2rem;
   }
-
   .input-group input,
   .input-group select {
-    font-size: 1rem;
-    padding: 0.5rem 0;
+    font-size: 1.15rem;
+    padding: 0.7rem 0;
   }
-
   .icon {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-right: 0.6rem;
   }
-
   .register-form button {
-    font-size: 1rem;
-    padding: 0.75rem;
-    margin-top: 1rem;
+    font-size: 1.1rem;
+    padding: 1rem;
+    margin-top: 1.2rem;
   }
-
   .register-form .error-message,
   .register-form .success-message {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin: 0.6rem 0 0.4rem 0;
   }
-
   .login-link {
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin-top: 1.5rem;
   }
-
   .icon-eye {
-    font-size: 20px;
+    font-size: 22px;
     right: 12px;
   }
-
   .senha-group input {
-    padding-right: 40px;
+    padding-right: 44px;
   }
 }

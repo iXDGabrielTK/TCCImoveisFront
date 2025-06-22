@@ -112,7 +112,7 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                 } = {
                     tipo: user.tipo || "visitante",
                     nome: user.nome,
-                    telefone: user.telefone,
+                    telefone: user.telefone.replace(/\D/g, ''),
                     email: user.email,
                 };
 
@@ -128,7 +128,6 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
 
                 await api.put(`/usuarios/${userId}`, payload);
             }
-
 
             if (creciTrimmed) {
                 let jaEhCorretor = false;
@@ -212,25 +211,12 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                                     label="Nome"
                                     value={user.nome}
                                     onChange={(e) => handleInputChange(e, "nome")}
-                                    sx={{
-                                        "& input": {
-                                            color: "#000",
-                                            position: "relative",
-                                            zIndex: 2,
-                                        },
-                                        "& label": {
-                                            zIndex: 2,
-                                            position: "relative",
-                                            background: "#fff",
-                                            color: "#000",
-                                        },
-                                    }}
                                 />
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
                                 <InputMask
-                                    mask="99999-9999"
+                                    mask="(99) 99999-9999"
                                     maskChar="_"
                                     value={user.telefone}
                                     onChange={(e) => handleInputChange(e, "telefone")}
@@ -240,76 +226,21 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
                                             fullWidth
                                             label="Telefone"
                                             {...inputProps}
-                                            sx={{
-                                                "& input": {
-                                                    color: "#000",
-                                                    position: "relative",
-                                                    zIndex: 2,
-                                                },
-                                                "& label": {
-                                                    zIndex: 2,
-                                                    position: "relative",
-                                                    background: "#fff",
-                                                    color: "#000",
-                                                },
-                                            }}
                                         />
                                     )}
                                 </InputMask>
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="Email" value={user.email} onChange={(e) => handleInputChange(e, "email")}
-                                   sx={{
-                                       "& input": {
-                                           color: "#000",
-                                           position: "relative",
-                                           zIndex: 2,
-                                       },
-                                       "& label": {
-                                           zIndex: 2,
-                                           position: "relative",
-                                           background: "#fff",
-                                           color: "#000",
-                                       },
-                                   }}
-                                />
+                                <TextField fullWidth label="Email" value={user.email} onChange={(e) => handleInputChange(e, "email")}/>
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth type="password" label="Nova Senha (opcional)" value={user.senha} onChange={(e) => handleInputChange(e, "senha")}
-                                   sx={{
-                                       "& input": {
-                                           color: "#000",
-                                           position: "relative",
-                                           zIndex: 2,
-                                       },
-                                       "& label": {
-                                           zIndex: 2,
-                                           position: "relative",
-                                           background: "#fff",
-                                           color: "#000",
-                                       },
-                                   }}
-                                />
+                                <TextField fullWidth type="password" label="Nova Senha (opcional)" value={user.senha} onChange={(e) => handleInputChange(e, "senha")}/>
                             </Grid>
 
                             <Grid size={{ xs: 12 }}>
-                                <TextField fullWidth label="CRECI (somente se quiser ser corretor)" value={creci} onChange={(e) => setCreci(e.target.value)}
-                                           sx={{
-                                               "& input": {
-                                                   color: "#000",
-                                                   position: "relative",
-                                                   zIndex: 2,
-                                               },
-                                               "& label": {
-                                                   zIndex: 2,
-                                                   position: "relative",
-                                                   background: "#fff",
-                                                   color: "#000",
-                                               },
-                                           }}
-                                />
+                                <TextField fullWidth label="CRECI (somente se quiser ser corretor)" value={creci} onChange={(e) => setCreci(e.target.value)}/>
                             </Grid>
                         </Grid>
                     ) : (
@@ -344,4 +275,3 @@ const PerfilPopup: React.FC<PerfilPopupProps> = ({ onClose }) => {
 };
 
 export default PerfilPopup;
-

@@ -29,6 +29,7 @@ function LoginForm() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={loading}
+                        autoComplete="email"
                     />
                 </div>
 
@@ -64,4 +65,3 @@ function LoginForm() {
 }
 
 export default LoginForm;
-
