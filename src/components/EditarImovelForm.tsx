@@ -6,7 +6,7 @@ import api from "../services/api.ts";
 import { ApiError, getErrorMessage } from "../utils/errorHandling";
 import { useToast } from "../context/ToastContext";
 import axios from "axios";
-import InputMask from 'react-input-mask';
+import InputMask from 'react-input-mask-next';
 
 interface Imovel {
     idImovel: number;
@@ -618,22 +618,14 @@ const EditarImovelForm: React.FC = () => {
                                         <label htmlFor="cep">* CEP:</label>
                                         <InputMask
                                             mask="99999-999"
-                                            maskChar="_"
                                             value={endereco.cep}
                                             onChange={e => handleEnderecoChange('cep', e.target.value)}
                                             onBlur={buscarCep}
                                             disabled={isLoading}
-                                        >
-                                            {(inputProps) => (
-                                                <input
-                                                    {...inputProps}
-                                                    type="text"
-                                                    id="cep"
-                                                    className={fieldErrors.cep ? 'input-error' : ''}
-                                                    required
-                                                />
-                                            )}
-                                        </InputMask>
+                                            id="cep"
+                                            className={fieldErrors.cep ? 'input-error' : ''}
+                                            required
+                                        />
                                         <a
                                             href="https://buscacepinter.correios.com.br/app/endereco/"
                                             target="_blank"
