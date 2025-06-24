@@ -17,6 +17,7 @@ interface Imovel {
     precoImovel: number;
     fotosImovel?: FotoImovelExistente[]; // <--- ATUALIZADO: Agora espera um array de FotoImovelExistente
     enderecoImovel: {
+        idEncereco?: number;
         rua: string;
         numero: string;
         complemento: string;
@@ -29,7 +30,7 @@ interface Imovel {
 }
 
 interface FotoImovelExistente {
-    id: number; // <--- ID é crucial para exclusão
+    id: number;
     urlFotoImovel: string;
     isDeleted?: boolean;
 }
@@ -46,8 +47,9 @@ const EditarImovelForm: React.FC = () => {
     const [tamanhoImovel, setTamanhoImovel] = useState<number>(0);
     const [precoImovel, setPrecoImovel] = useState<number>(0);
     const [fotosImovel, setFotosImovel] = useState<File[]>([]);
-    const [fotosImovelExistentes, setFotosImovelExistentes] = useState<FotoImovelExistente[]>([]); // Fotos existentes da API
+    const [fotosImovelExistentes, setFotosImovelExistentes] = useState<FotoImovelExistente[]>([]);
     const [endereco, setEndereco] = useState({
+        idEndereco: undefined,
         rua: '',
         numero: '',
         complemento: '',
@@ -119,7 +121,8 @@ const EditarImovelForm: React.FC = () => {
             setHistoricoManutencao("");
             setFotosImovel([]);
             setFotosImovelExistentes([]);
-            setEndereco({ // Limpar o endereço para valores vazios
+            setEndereco({ // Limpar o endereço para valores vazios, incluindo idEndereco
+                idEndereco: undefined, // <-- Limpa o ID também
                 rua: '',
                 numero: '',
                 complemento: '',
@@ -154,7 +157,8 @@ const EditarImovelForm: React.FC = () => {
                     }))
                     : []
             );
-            setEndereco({ // Popula o endereço com dados do imóvel carregado
+            setEndereco({ // Popula o endereço com dados do imóvel carregado, incluindo idEndereco
+                idEndereco: imovel.enderecoImovel?.idEndereco, // <-- POPULA O ID DO ENDEREÇO
                 rua: imovel.enderecoImovel?.rua || '',
                 numero: imovel.enderecoImovel?.numero || '',
                 complemento: imovel.enderecoImovel?.complemento || '',
@@ -176,7 +180,7 @@ const EditarImovelForm: React.FC = () => {
         }
     }, [resetMessages, showToast]);
 
-    const handleEnderecoChange = useCallback((field: keyof typeof endereco, value: string) => {
+    const handleEnderecoChange = useCallback((field: keyof typeof endereco, value: string | number | undefined) => {
         setEndereco((prevEndereco) => ({
             ...prevEndereco,
             [field]: value,
@@ -185,32 +189,25 @@ const EditarImovelForm: React.FC = () => {
 
     const handleNewImageChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            setFotosImovel(Array.from(event.target.files));
+            const novasFotosSelecionadas = Array.from(event.target.files);
+
+            setFotosImovel(prevFotos => [...prevFotos, ...novasFotosSelecionadas]); // <-- LINHA ALTERADA
         }
-    }, []);
+    }, [fotosImovel]);
 
     const removeExistingPhoto = useCallback((index: number) => {
         setFotosImovelExistentes(prev => {
             const newPhotos = [...prev];
             if (newPhotos[index]) {
-                const photoToRemove = newPhotos[index];
-                // APENAS CHAME a API.delete SE o ID EXISTIR e for VÁLIDO.
-                if (photoToRemove.id !== undefined && photoToRemove.id !== null) { // <--- VERIFICAÇÃO MAIS ROBUSTA
-                    api.delete(`/fotosImovel/${photoToRemove.id}`)
-                        .then(() => {
-                            showToast("Foto excluída do servidor.", "success");
-                            const filteredPhotos = prev.filter((_, i) => i !== index);
-                            setFotosImovelExistentes(filteredPhotos);
-                        })
-                        .catch(error => {
-                            console.error("Erro ao excluir foto do servidor:", error);
-                            showToast(getErrorMessage(error) || "Erro ao excluir foto.", "error");
-                        });
-                } else {
-                    showToast("Foto sem ID de servidor, removida localmente.", "info");
-                    const filteredPhotos = prev.filter((_, i) => i !== index);
-                    setFotosImovelExistentes(filteredPhotos);
-                }
+                // Remova esta chamada API.DELETE daqui!
+                // api.delete(`/fotosImovel/${photoToRemove.id}`)
+                //     .then(...)
+                //     .catch(...)
+
+                // Em vez disso, apenas filtre a foto do estado local imediatamente
+                const filteredPhotos = prev.filter((_, i) => i !== index);
+                showToast("Foto removida localmente. Salve para aplicar as alterações.", "info");
+                return filteredPhotos; // Retorne o novo array sem a foto
             }
             return newPhotos;
         });
@@ -317,10 +314,20 @@ const EditarImovelForm: React.FC = () => {
                 tamanhoImovel,
                 precoImovel,
                 historicoManutencao,
-                enderecoImovel: endereco,
-                fotosImovel: fotosAtuais, // Enviar fotos existentes atuais (agora sem as deletadas)
-                // idsCorretores: [], // Adicione se você tiver esses campos e certifique-se que são arrays
-                // idsImobiliarias: [], // Adicione se você tiver esses campos e certifique-se que são arrays
+                // Certifique-se de que o idEndereco é enviado se existir
+                enderecoImovel: {
+                    idEndereco: endereco.idEndereco, // <-- Incluindo idEndereco
+                    rua: endereco.rua,
+                    numero: endereco.numero,
+                    complemento: endereco.complemento,
+                    bairro: endereco.bairro,
+                    cidade: endereco.cidade,
+                    estado: endereco.estado,
+                    cep: endereco.cep,
+                },
+                fotosImovel: fotosAtuais, // Enviar fotos existentes atuais
+                // idsCorretores: [],
+                // idsImobiliarias: [],
             };
 
             const formData = new FormData();
@@ -351,7 +358,7 @@ const EditarImovelForm: React.FC = () => {
             setHistoricoManutencao("");
             setFotosImovel([]);
             setFotosImovelExistentes([]);
-            setEndereco({ rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '' });
+            setEndereco({ idEndereco: undefined, rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '' }); // <-- Resetar idEndereco
 
         } catch (error: unknown) {
             console.error("Erro ao editar imóvel:", error);
@@ -389,7 +396,7 @@ const EditarImovelForm: React.FC = () => {
             setHistoricoManutencao("");
             setFotosImovel([]);
             setFotosImovelExistentes([]);
-            setEndereco({ rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '' });
+            setEndereco({ idEndereco: undefined, rua: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '', cep: '' }); // <-- Resetar idEndereco
         } catch (error: unknown) {
             console.error("Erro ao cancelar imóvel:", error);
             const apiError = error as ApiError;

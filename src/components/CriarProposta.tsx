@@ -46,9 +46,10 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                 usuarioId,
                 entrada: entradaValor,
                 rendaMensal: rendaValor,
-                numeroParcelas: parcelas,
+                numeroParcelas: parcelas, // Você ainda pode manter isso se for necessário para outra lógica
                 valorImovel: precoImovel,
                 observacoes,
+                prazo: parcelas, // ADICIONE ESTA LINHA
             });
 
             alert("Proposta enviada com sucesso!");
