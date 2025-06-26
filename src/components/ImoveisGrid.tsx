@@ -25,9 +25,10 @@ interface ImoveisGridProps {
     origem?: "simulacao" | "padrao";
     onImovelClick?: (imovel: Imovel) => void;
     onEmpty?: () => void;
+    selectedImobiliariaId?: number | '';
 }
 
-const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick, onEmpty }) => {
+const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "padrao", onImovelClick, onEmpty, selectedImobiliariaId }) => { // <--- selectedImobiliariaId adicionado aqui
     const navigate = useNavigate();
     const [imoveis, setImoveis] = useState<Imovel[]>([]);
     const [filteredImoveis, setFilteredImoveis] = useState<Imovel[]>([]);
@@ -51,10 +52,9 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             setHasMore(true);
         }
 
-        setIsLoading(true);
-        resetMessages();
-
         if (modo === 'favoritos') {
+            setIsLoading(true);
+            resetMessages();
             try {
                 const response = await api.get('/favoritos');
                 const favoritos = response.data;
@@ -74,6 +74,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         setIsLoading(true);
         resetMessages();
 
+        let endpoint = '/imoveis';
         const params: {
             page: number;
             size: number;
@@ -82,18 +83,17 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
         } = {
             page: reset ? 0 : page,
             size: 8,
-            sort: 'idImovel,asc',
+            sort: 'idImovel,desc',
         };
 
-        if (modo === 'filtrados' && valorMaximo) {
+        if (selectedImobiliariaId) {
+            endpoint = `/imoveis/por-imobiliaria/${selectedImobiliariaId}`;
+        } else if (modo === 'filtrados' && valorMaximo) {
+            endpoint = '/imoveis/disponiveis';
             params.valorMax = valorMaximo;
         }
 
         try {
-            const endpoint = modo === 'filtrados' && valorMaximo
-                ? '/imoveis/disponiveis'
-                : '/imoveis';
-
             const response = await api.get(endpoint, { params });
             const pageData = response.data;
             const novosImoveis = pageData.content;
@@ -104,7 +104,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                 return [...prev, ...novosFiltrados];
             });
 
-            if (pageData.last || novosImoveis.length < 8) {
+            if (pageData.last || novosImoveis.length < params.size) {
                 setHasMore(false);
             }
         } catch (error) {
@@ -115,12 +115,11 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
             setIsLoading(false);
         }
 
-    }, [resetMessages, modo, page, valorMaximo, onEmpty]);
-
+    }, [resetMessages, modo, page, valorMaximo, onEmpty, selectedImobiliariaId]);
 
     useEffect(() => {
         void fetchImoveis(true);
-    }, [tipoResidencia, valor, termoBusca, fetchImoveis]);
+    }, [tipoResidencia, valor, termoBusca, fetchImoveis, selectedImobiliariaId]);
 
     useEffect(() => {
         if (page !== 0) void fetchImoveis();
@@ -204,7 +203,7 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                     <InputLabel>Tipo</InputLabel>
                     <Select value={tipoResidencia} onChange={(e) => setTipoResidencia(e.target.value)} disabled={isLoading}>
                         <MenuItem value="">Todos</MenuItem>
-                        <MenuItem value="Apartamento"                                               >Apartamento</MenuItem>
+                        <MenuItem value="Apartamento">Apartamento</MenuItem>
                         <MenuItem value="Casa">Casa</MenuItem>
                     </Select>
                 </FormControl>
