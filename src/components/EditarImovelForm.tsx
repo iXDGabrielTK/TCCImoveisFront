@@ -90,7 +90,7 @@ const EditarImovelForm: React.FC = () => {
         resetMessages();
         try {
             const role = localStorage.getItem('roles');
-            const endpoint = role === 'CORRETOR' ? '/imoveis/por-corretor' : '/imoveis';
+            const endpoint = role && role.includes('FUNCIONARIO') ? '/imoveis' : '/imoveis/por-corretor';
             const response = await api.get(endpoint, {
                 params: { page: 0, size: 1000, sort: 'idImovel,asc' }
             });

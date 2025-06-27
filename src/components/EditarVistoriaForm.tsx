@@ -64,7 +64,8 @@ const EditarVistoriaForm: React.FC = () => {
         try {
             setIsLoading(true);
             const role = localStorage.getItem('roles');
-            const endpoint = role === 'CORRETOR' ? '/vistorias/por-corretor' : '/vistorias';
+            console.log('Valor de localStorage.getItem("roles"):', role); // DEBUG
+            const endpoint = role && role.includes('FUNCIONARIO') ? '/vistorias' : '/vistorias/por-corretor';
             const response = await api.get(endpoint);
             if (Array.isArray(response.data)) {
                 setVistorias(response.data);

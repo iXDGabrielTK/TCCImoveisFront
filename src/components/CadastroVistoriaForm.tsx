@@ -44,9 +44,9 @@ const CadastroVistoriaForm: React.FC = () => {
 
     useEffect(() => {
         const role = localStorage.getItem('roles');
-        const endpoint = role === 'CORRETOR'
-            ? '/imoveis/por-corretor'
-            : '/imoveis';
+        const endpoint = role && role.includes('FUNCIONARIO')
+            ? '/imoveis'
+            : '/imoveis/por-corretor';
 
         api.get(endpoint)
             .then(res => {
