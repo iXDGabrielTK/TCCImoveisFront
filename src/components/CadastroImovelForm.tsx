@@ -190,13 +190,29 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
         }
     };
 
+    // Corrige o valor de roles para aceitar string ou array stringificado
+    let role = localStorage.getItem('roles');
+    if (role) {
+        try {
+            const parsed = JSON.parse(role);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                role = parsed[0];
+            } else if (typeof parsed === 'string') {
+                role = parsed;
+            }
+        } catch {
+            // Se não for JSON, mantém o valor original
+        }
+    }
+    console.log('role:', role); // Para depuração
+
     const validateFirstStep = () => {
         const valid = (
             validateTipo(tipo) &&
             validateDescricao(descricao) &&
             validateTamanho(tamanho) &&
             validatePreco(preco) &&
-            validateImobiliariaId(imobiliariaId) &&
+            (role === 'FUNCIONARIO' || validateImobiliariaId(imobiliariaId)) &&
             validateFotosImovel(fotosImovel)
         );
         setFieldErrors((prev) => ({ ...prev, complemento: '' }));
@@ -224,15 +240,17 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
     };
 
     useEffect(() => {
-        api.get('/imobiliaria/imobiliarias-aprovadas')
-            .then(response => {
-                setImobiliarias(response.data);
-            })
-            .catch(error => {
-                showToast('Erro ao buscar imobiliárias', 'error');
-                console.error(error);
-            });
-    }, [showToast]);
+        if (role && role !== 'FUNCIONARIO') {
+            api.get('/imobiliaria/imobiliarias-aprovadas')
+                .then(response => {
+                    setImobiliarias(response.data);
+                })
+                .catch(error => {
+                    showToast('Erro ao buscar imobiliárias', 'error');
+                    console.error(error);
+                });
+        }
+    }, [showToast, role]);
 
 
     const handleSubmit = async (e: FormEvent) => {
@@ -310,25 +328,28 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
                                 {fieldErrors.tipo && <span className="field-error-message">{fieldErrors.tipo}</span>}
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="imobiliariaId">* Imobiliária:</label>
-                                <select
-                                    id="imobiliariaId"
-                                    value={imobiliariaId}
-                                    onChange={(e) => {
-                                        setImobiliariaId(e.target.value);
-                                        validateImobiliariaId(e.target.value);
-                                    }}
-                                    className={fieldErrors.imobiliariaId ? "input-error" : ""}
-                                    required
-                                >
-                                    <option value="">Selecione uma imobiliária</option>
-                                    {imobiliarias.map(i => (
-                                        <option key={i.id} value={i.id}>{i.nome}</option>
-                                    ))}
-                                </select>
-                                {fieldErrors.imobiliariaId && <span className="field-error-message">{fieldErrors.imobiliariaId}</span>}
-                            </div>
+                            {/* Só mostra o campo de imobiliária se não for FUNCIONARIO */}
+                            {role !== 'FUNCIONARIO' && (
+                                <div className="form-group">
+                                    <label htmlFor="imobiliariaId">* Imobiliária:</label>
+                                    <select
+                                        id="imobiliariaId"
+                                        value={imobiliariaId}
+                                        onChange={(e) => {
+                                            setImobiliariaId(e.target.value);
+                                            validateImobiliariaId(e.target.value);
+                                        }}
+                                        className={fieldErrors.imobiliariaId ? "input-error" : ""}
+                                        required
+                                    >
+                                        <option value="">Selecione uma imobiliária</option>
+                                        {imobiliarias.map(i => (
+                                            <option key={i.id} value={i.id}>{i.nome}</option>
+                                        ))}
+                                    </select>
+                                    {fieldErrors.imobiliariaId && <span className="field-error-message">{fieldErrors.imobiliariaId}</span>}
+                                </div>
+                            )}
 
                             <div className="form-group">
                                 <label htmlFor="status">* Status:</label>
@@ -651,3 +672,4 @@ const CadastroImovelForm: React.FC<CadastroImovelFormProps> = ({ onClose }) => {
 };
 
 export default CadastroImovelForm;
+

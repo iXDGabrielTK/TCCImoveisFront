@@ -63,7 +63,9 @@ const EditarVistoriaForm: React.FC = () => {
     const fetchVistorias = useCallback(async () => {
         try {
             setIsLoading(true);
-            const response = await api.get("/vistorias");
+            const role = localStorage.getItem('roles');
+            const endpoint = role === 'CORRETOR' ? '/vistorias/por-corretor' : '/vistorias';
+            const response = await api.get(endpoint);
             if (Array.isArray(response.data)) {
                 setVistorias(response.data);
             } else if (Array.isArray(response.data.content)) {

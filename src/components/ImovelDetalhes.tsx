@@ -97,13 +97,23 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
 
     return (
         <Box sx={{ width: "100%", backgroundColor: "#ededed" }}>
-            <Box sx={{ width: "100%", maxHeight: "70vh", overflow: "hidden" }}>
+            <Box sx={{
+                width: "100%",
+                position: "relative",
+                zIndex: 1,
+                marginBottom: 2
+            }}>
                 <Slider images={imageUrls} />
             </Box>
 
-            <Box sx={{ maxWidth: "1400px", margin: "0 auto", padding: 3 }}>
-                <Grid container spacing={{ xs: 2, md: 4 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    <Grid size={{ xs: 4, md: 8 }}>
+            <Box sx={{
+                maxWidth: "1400px",
+                margin: "0 auto",
+                padding: { xs: 2, md: 3 },
+                marginTop: { xs: 1, md: 2 }
+            }}>
+                <Grid container spacing={{ xs: 2, md: 4 }} columns={12}>
+                    <Grid size={{ xs: 12, md: 8 }}>
                         <Typography variant="h4" fontWeight="bold" gutterBottom>
                             {imovel.tipoImovel === "Residencial" ? "Residência" : "Imóvel Comercial"}
                         </Typography>
@@ -155,7 +165,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
                         </Grid>
                     </Grid>
 
-                    <Grid size={{ xs: 4, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         {origem === "simulacao" ? (
                             <CriarProposta
                                 imovelId={imovel.idImovel}

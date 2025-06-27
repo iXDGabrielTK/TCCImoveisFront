@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import '../styles/shared.css';
-import '../styles/CadastroVistoria.css'; // Importa os estilos de layout principais
+import '../styles/CadastroVistoria.css';
 import {isValidDate } from '../utils/errorHandling';
 
 interface Imovel {
@@ -43,7 +43,12 @@ const CadastroVistoriaForm: React.FC = () => {
     });
 
     useEffect(() => {
-        api.get('/imoveis')
+        const role = localStorage.getItem('roles');
+        const endpoint = role === 'CORRETOR'
+            ? '/imoveis/por-corretor'
+            : '/imoveis';
+
+        api.get(endpoint)
             .then(res => {
                 if (Array.isArray(res.data)) {
                     setImoveis(res.data);

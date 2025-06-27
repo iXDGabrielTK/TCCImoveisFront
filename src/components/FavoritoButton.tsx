@@ -53,10 +53,10 @@ const FavoritoButton = ({ idImovel }: Props) => {
                 top: 8,
                 right: 8,
                 zIndex: 2,
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255,255,255,0.5)',
                 boxShadow: 1,
                 '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    backgroundColor: 'rgba(255,255,255,0.8)',
                 },
             }}
         >

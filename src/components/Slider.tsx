@@ -29,7 +29,10 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
             sx={{
                 position: "relative",
                 width: "100%",
-                aspectRatio: "16 / 9",
+                aspectRatio: {
+                    xs: '16/9',
+                    md: '21/9'
+                },
                 overflow: "hidden",
                 borderRadius: 0,
                 backgroundColor: "#000",

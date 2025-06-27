@@ -9,6 +9,7 @@ import SkeletonImovel from './SkeletonImovel.tsx';
 import { useImoveisContext } from '../context/ImoveisContext';
 import LoadingText from "./LoadingText.tsx";
 import FavoritoButton from "./FavoritoButton.tsx";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 interface ApiError {
     response?: {
@@ -241,17 +242,54 @@ const ImoveisGrid: React.FC<ImoveisGridProps> = ({ modo, valorMaximo, origem = "
                                         : navigate(`/imovel/${imovel.idImovel}`, { state: { origem } })
                                 }
                             >
-                                <Box position="relative">
+                                <Box position="relative" style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}>
                                     <img
                                         src={primeiraImagem}
                                         alt={`Foto do imóvel ${imovel.tipoImovel}`}
                                         style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
                                     />
+                                    <div style={{position: 'absolute', top: '8px', left: '8px', zIndex: 2,
+                                        background: '#2563eb', color: 'white',
+                                        padding: '4px 12px', borderRadius: '20px', fontSize: '14px',
+                                        boxShadow: '0 2px 8px rgba(0,0,0,0.10)'}}>
+                                        {imovel.tipoImovel}
+                                    </div>
                                     <FavoritoButton idImovel={imovel.idImovel} />
                                 </Box>
 
-                                <h3>{imovel.tipoImovel}</h3>
-                                <p>Valor: R$ {imovel.precoImovel}</p>
+                                <div style={{fontSize: '24px', fontWeight: 'bold', color: '#16a34a', marginBottom: '12px',
+                                    borderRadius: '8px', padding: '8px 0',
+                                    textAlign: 'center'}}>
+                                    R$ {imovel.precoImovel.toLocaleString('pt-BR')}
+                                </div>
+
+                                <div style={{marginBottom: '12px', fontSize: '14px', color: '#6b7280', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                                    <LocationOnIcon style={{ color: '#2563eb', fontSize: 25, flexShrink: 0 }} />
+                                    <span>
+                                        <strong>{imovel.enderecoImovel?.bairro}</strong><br/>
+                                         {imovel.enderecoImovel?.rua}, {imovel.enderecoImovel?.cidade}, {imovel.enderecoImovel?.estado}
+                                    </span>
+                                </div>
+
+                                <hr style={{ width: '100%', border: 'none', borderTop: '1px solid #808080', margin: '8px 0 12px 0'}} />
+
+                                {imovel.descricaoImovel && (
+                                    <div style={{fontSize: '14px', color: '#6b7280', maxHeight: '56px', overflow: 'hidden', position: 'relative', marginBottom: '8px', textAlign: 'left'}}>
+                                        {imovel.descricaoImovel.length > 100
+                                            ? `${imovel.descricaoImovel.substring(0, 100)}...`
+                                            : imovel.descricaoImovel
+                                        }
+                                        {imovel.descricaoImovel.length > 100 && (
+                                            <span style={{
+                                                position: 'absolute', right: 0, bottom: 0, paddingLeft: '8px',
+                                                background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, #fff 80%)',
+                                                color: '#2563eb', cursor: 'pointer', fontWeight: 500
+                                            }}>
+                                                ver mais
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

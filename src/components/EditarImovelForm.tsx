@@ -89,10 +89,12 @@ const EditarImovelForm: React.FC = () => {
         setIsLoading(true);
         resetMessages();
         try {
-            const response = await api.get('/imoveis', {
+            const role = localStorage.getItem('roles');
+            const endpoint = role === 'CORRETOR' ? '/imoveis/por-corretor' : '/imoveis';
+            const response = await api.get(endpoint, {
                 params: { page: 0, size: 1000, sort: 'idImovel,asc' }
             });
-            setImoveis(response.data?.content ?? []);
+            setImoveis(response.data?.content ?? response.data ?? []);
         } catch (error: unknown) {
             console.error("Erro ao buscar imóveis:", error);
             const apiError = error as ApiError;
@@ -193,7 +195,7 @@ const EditarImovelForm: React.FC = () => {
 
             setFotosImovel(prevFotos => [...prevFotos, ...novasFotosSelecionadas]); // <-- LINHA ALTERADA
         }
-    }, [fotosImovel]);
+    }, []);
 
     const removeExistingPhoto = useCallback((index: number) => {
         setFotosImovelExistentes(prev => {
