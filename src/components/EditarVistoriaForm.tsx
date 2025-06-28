@@ -2,9 +2,8 @@ import React, { FormEvent, useEffect, useState, useCallback } from 'react';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import '../styles/shared.css';
-import '../styles/CadastroImovel.css'; // Estilos de layout principais
-import '../styles/CadastroVistoria.css'; // Estilos específicos de vistoria
-
+import '../styles/CadastroImovel.css';
+import '../styles/CadastroVistoria.css';
 import { ApiError, getErrorMessage, isValidDate } from '../utils/errorHandling';
 
 interface VistoriaExistente {
@@ -300,6 +299,34 @@ const EditarVistoriaForm: React.FC = () => {
         }
     };
 
+    const handleCancelarVistoria = async () => {
+        if (!selectedVistoriaId) return;
+
+        try {
+            setIsLoading(true);
+            const token = localStorage.getItem('access_token');
+
+            await api.put(`/vistorias/${selectedVistoriaId}/cancelar`, null, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            showToast('Vistoria cancelada com sucesso!', 'success');
+            await fetchVistorias();
+            setSelectedVistoriaId('');
+            setTipoVistoria('');
+            setLaudoVistoria('');
+            setDataVistoria('');
+            setAmbientes([]);
+        } catch (error) {
+            console.error('Erro ao cancelar vistoria:', error);
+            showToast('Erro ao cancelar vistoria.', 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="cadastro-imovel-page"> {/* Reutiliza a classe de layout principal */}
             <h1>Editar Vistoria</h1>
@@ -484,14 +511,14 @@ const EditarVistoriaForm: React.FC = () => {
                             </div>
                         </fieldset>
 
-                        <div className="navigation-buttons">
-                            <button type="submit" className="btn-step btn-next-step" disabled={isLoading}>
+                        <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                            <button type="button" className="btn-step btn-next-step" disabled={isLoading}>
                                 {isLoading ? 'Salvando Edição...' : 'Salvar Edição da Vistoria'}
                             </button>
-                            {/* Opcional: Adicionar botão de cancelar vistoria aqui se for uma funcionalidade da página */}
-                            {/* <button type="button" className="btn-step btn-remove-ambiente" onClick={handleCancelarVistoria} disabled={isLoading}>
-                                Cancelar Vistoria
-                            </button> */}
+
+                            <button type="button" className="btn-step btn-remove-ambiente" onClick={handleCancelarVistoria} disabled={isLoading}>
+                                {isLoading ? 'Cancelando Vistoria...' : 'Cancelar Vistoria'}
+                            </button>
                         </div>
                     </>
                 )}

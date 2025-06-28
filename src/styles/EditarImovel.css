@@ -1,4 +1,3 @@
-/* EditarImovel.css - Atualizado com base em EditarVistoria.css */
 
 .modal h2 {
     margin: 0;
@@ -148,8 +147,6 @@
         transform: translateY(0);
     }
 }
-
-/* Estilos herdados/adaptados do EditarVistoria.css para consistência */
 
 /* Ajuste para o botão "Remover Ambiente" que agora pode ser vermelho */
 .btn-remove-ambiente {
