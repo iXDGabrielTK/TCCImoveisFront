@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -15,13 +15,23 @@ import api from "../services/api";
 interface CriarPropostaProps {
     imovelId: number;
     precoImovel: number;
+    entradaInicial?: string;
+    rendaMensalInicial?: string;
+    parcelasIniciais?: number;
+    onPropostaEnviada?: () => void;
 }
 
-const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) => {
-    const [entrada, setEntrada] = useState("");
-    const [rendaMensal, setRendaMensal] = useState("");
-    const [parcelas, setParcelas] = useState(240);
+const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel, entradaInicial = "", rendaMensalInicial = "", parcelasIniciais = 240, onPropostaEnviada }) => {
+    const [entrada, setEntrada] = useState(entradaInicial);
+    const [rendaMensal, setRendaMensal] = useState(rendaMensalInicial);
+    const [parcelas, setParcelas] = useState(parcelasIniciais);
     const [observacoes, setObservacoes] = useState("");
+
+    useEffect(() => {
+        setEntrada(entradaInicial);
+        setRendaMensal(rendaMensalInicial);
+        setParcelas(parcelasIniciais);
+    }, [entradaInicial, rendaMensalInicial, parcelasIniciais]);
 
     const handleEnviarProposta = async () => {
         const usuarioIdRaw = localStorage.getItem("usuario_Id");
@@ -46,13 +56,14 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                 usuarioId,
                 entrada: entradaValor,
                 rendaMensal: rendaValor,
-                numeroParcelas: parcelas, // Você ainda pode manter isso se for necessário para outra lógica
+                numeroParcelas: parcelas,
                 valorImovel: precoImovel,
                 observacoes,
-                prazo: parcelas, // ADICIONE ESTA LINHA
+                prazo: parcelas,
             });
 
             alert("Proposta enviada com sucesso!");
+            if (onPropostaEnviada) onPropostaEnviada();
         } catch (error) {
             console.error("Erro ao enviar proposta:", error);
             alert("Erro ao enviar proposta. Verifique os dados e tente novamente.");
@@ -71,11 +82,7 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                         label="Valor do Imóvel"
                         value={`R$ ${precoImovel.toLocaleString()}`}
                         fullWidth
-                        slotProps={{
-                            input: {
-                                readOnly: true,
-                            },
-                        }}
+                        inputProps={{ readOnly: true }}
                     />
 
                     <NumericFormat
@@ -85,7 +92,8 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                         decimalSeparator=","
                         prefix="R$ "
                         value={entrada}
-                        onValueChange={(values: { value: string }) => setEntrada(values.value)}
+                        onValueChange={(values) => setEntrada(values.value)}
+                        inputProps={{ readOnly: true }}
                         fullWidth
                     />
 
@@ -96,7 +104,8 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                         decimalSeparator=","
                         prefix="R$ "
                         value={rendaMensal}
-                        onValueChange={(values: { value: string }) => setRendaMensal(values.value)}
+                        onValueChange={(values) => setRendaMensal(values.value)}
+                        inputProps={{ readOnly: true }}
                         fullWidth
                     />
 
@@ -105,6 +114,7 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                         select
                         value={parcelas}
                         onChange={(e) => setParcelas(parseInt(e.target.value, 10))}
+                        InputProps={{ readOnly: true }}
                         fullWidth
                     >
                         {[120, 180, 240, 300, 360].map((opcao) => (
@@ -117,7 +127,7 @@ const CriarProposta: React.FC<CriarPropostaProps> = ({ imovelId, precoImovel }) 
                     <TextField
                         label="Observações"
                         multiline
-                        rows={2} // menor altura do campo
+                        rows={2}
                         value={observacoes}
                         onChange={(e) => setObservacoes(e.target.value)}
                         fullWidth

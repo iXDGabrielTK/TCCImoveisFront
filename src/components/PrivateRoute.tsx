@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
+// Alterado para aceitar string ou string[]
 type PrivateRouteProps = {
     children: React.ReactElement;
-    requiredRole?: string;
+    requiredRole?: string | string[];
 };
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredRole }) => {

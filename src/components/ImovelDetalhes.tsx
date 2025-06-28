@@ -18,6 +18,7 @@ import api from "../services/api";
 import axios from "axios";
 import CriarProposta from "./CriarProposta";
 import MapaEndereco from "./MapaEndereco.tsx";
+import { useFinanciamento } from '../context/FinanciamentoContext';
 
 interface ImovelDetalhesProps {
     imovel: Imovel;
@@ -44,6 +45,7 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
     const [periodo, setPeriodo] = useState<string>("Manhã");
     const [nomeVisitante, setNomeVisitante] = useState<string>("");
     const holidays = getHolidays(new Date().getFullYear());
+    const { simulacao, resetSimulacao } = useFinanciamento();
 
     const handleAgendarVisita = async () => {
         const token = localStorage.getItem("access_token");
@@ -170,6 +172,10 @@ const ImovelDetalhes: React.FC<ImovelDetalhesProps> = ({ imovel, origem = "padra
                             <CriarProposta
                                 imovelId={imovel.idImovel}
                                 precoImovel={imovel.precoImovel}
+                                entradaInicial={simulacao?.entrada}
+                                rendaMensalInicial={simulacao?.rendaMensal}
+                                parcelasIniciais={simulacao?.prazo}
+                                onPropostaEnviada={() => resetSimulacao()}
                             />
                         ) : (
                             <Card elevation={3} sx={{ p: 3, borderRadius: 3 }}>

@@ -21,6 +21,7 @@ import EditarImovelForm from './components/EditarImovelForm';
 import 'leaflet/dist/leaflet.css';
 import InboxNotifications from "./pages/InboxNotifications.tsx";
 import FavoritosPage from "./pages/FavoritosPage.tsx";
+import {FinanciamentoProvider} from "./context/FinanciamentoContext.tsx";
 
 const App: React.FC = () => {
     return (
@@ -28,108 +29,110 @@ const App: React.FC = () => {
             <Router>
                 <ImoveisProvider>
                     <AuthProvider>
-                        <Routes>
-                            <Route path="/" element={<MainLayout />}>
-                                <Route
-                                    path="/imoveis-filtrados"
-                                    element={
-                                        <PrivateRoute>
-                                            <ImoveisFiltradosPage />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="financiamento"
-                                    element={
-                                        <PrivateRoute>
-                                            <CalculadoraFinanciamento />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="imoveis"
-                                    element={
-                                        <PrivateRoute requiredRole={["funcionario", "corretor"]} >
-                                            <ImoveisPage />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="inbox"
-                                    element={
-                                        <PrivateRoute>
-                                            <InboxNotifications />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="imobiliarias"
-                                    element={
-                                        <PrivateRoute requiredRole={"corretor"}>
-                                            <ImobiliariaPage />
-                                        </PrivateRoute>
-                                    }
-                                />
-
-                                <Route
-                                    path="/cadastro-imovel"
-                                    element={
-                                        <PrivateRoute>
-                                            <CadastroImovelForm/>
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/cadastro-vistoria"
-                                    element={
-                                    <PrivateRoute>
-                                        <CadastroVistoriaForm />
-                                    </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/editar-vistoria"
-                                    element={
-                                        <PrivateRoute>
-                                            <EditarVistoriaForm />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/editar-imovel"
-                                    element={
-                                        <PrivateRoute>
-                                            <EditarImovelForm />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="imovel/:id"
-                                    element={
-                                        <PrivateRoute>
-                                            <ImovelDetalhesPage />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route
-                                    path="relatorios"
-                                    element={
-                                        <PrivateRoute requiredRole={"funcionario"}>
-                                            <RelatorioPage />
-                                        </PrivateRoute>
-                                    }
-                                />
-                                <Route path="home" element={<PrivateRoute><HomePage /></PrivateRoute>}>
-                                    <Route path="favoritos" element={
-                                        <PrivateRoute>
-                                            <FavoritosPage />
-                                        </PrivateRoute>}
+                        <FinanciamentoProvider>
+                            <Routes>
+                                <Route path="/" element={<MainLayout />}>
+                                    <Route
+                                        path="/imoveis-filtrados"
+                                        element={
+                                            <PrivateRoute>
+                                                <ImoveisFiltradosPage />
+                                            </PrivateRoute>
+                                        }
                                     />
+                                    <Route
+                                        path="financiamento"
+                                        element={
+                                            <PrivateRoute>
+                                                <CalculadoraFinanciamento />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="imoveis"
+                                        element={
+                                            <PrivateRoute requiredRole={["funcionario", "corretor"]} >
+                                                <ImoveisPage />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="inbox"
+                                        element={
+                                            <PrivateRoute>
+                                                <InboxNotifications />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="imobiliarias"
+                                        element={
+                                            <PrivateRoute requiredRole={"corretor"}>
+                                                <ImobiliariaPage />
+                                            </PrivateRoute>
+                                        }
+                                    />
+
+                                    <Route
+                                        path="/cadastro-imovel"
+                                        element={
+                                            <PrivateRoute>
+                                                <CadastroImovelForm/>
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/cadastro-vistoria"
+                                        element={
+                                        <PrivateRoute>
+                                            <CadastroVistoriaForm />
+                                        </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/editar-vistoria"
+                                        element={
+                                            <PrivateRoute>
+                                                <EditarVistoriaForm />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/editar-imovel"
+                                        element={
+                                            <PrivateRoute>
+                                                <EditarImovelForm />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="imovel/:id"
+                                        element={
+                                            <PrivateRoute>
+                                                <ImovelDetalhesPage />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="relatorios"
+                                        element={
+                                            <PrivateRoute requiredRole={"funcionario"}>
+                                                <RelatorioPage />
+                                            </PrivateRoute>
+                                        }
+                                    />
+                                    <Route path="home" element={<PrivateRoute><HomePage /></PrivateRoute>}>
+                                        <Route path="favoritos" element={
+                                            <PrivateRoute>
+                                                <FavoritosPage />
+                                            </PrivateRoute>}
+                                        />
+                                    </Route>
                                 </Route>
-                            </Route>
-                            <Route path="/login" element={<LoginForm />} />
-                            <Route path="/register" element={<Register />} />
-                        </Routes>
+                                <Route path="/login" element={<LoginForm />} />
+                                <Route path="/register" element={<Register />} />
+                            </Routes>
+                        </FinanciamentoProvider>
                     </AuthProvider>
                 </ImoveisProvider>
             </Router>

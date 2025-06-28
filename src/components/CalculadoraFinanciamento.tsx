@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -12,6 +12,7 @@ import {
 import { NumericFormat } from "react-number-format";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { useFinanciamento } from '../context/FinanciamentoContext';
 
 interface ResultadoFinanciamento {
     valorMaxParcela?: number;
@@ -27,6 +28,7 @@ const CalculadoraFinanciamento: React.FC = () => {
     const [resultado, setResultado] = useState<ResultadoFinanciamento | null>(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { setSimulacao } = useFinanciamento();
 
     const prazosDisponiveis = [120, 180, 240, 300, 360]; // prazos válidos
 
@@ -51,10 +53,11 @@ const CalculadoraFinanciamento: React.FC = () => {
                 }
             );
             setResultado(response.data);
-        } catch (error: any) {
-            if (error.response) {
-                console.error("🔴 Erro resposta:", error.response);
-                alert(`Erro ${error.response.status}: ${error.response.data.message}`);
+        } catch (error: unknown) {
+            if (typeof error === "object" && error !== null && "response" in error) {
+                const err = error as { response: { status: number; data: { message: string } } };
+                console.error("🔴 Erro resposta:", err.response);
+                alert(`Erro ${err.response.status}: ${err.response.data.message}`);
             } else {
                 console.error("🔴 Erro desconhecido:", error);
                 alert("Erro desconhecido ao calcular.");
@@ -146,6 +149,7 @@ const CalculadoraFinanciamento: React.FC = () => {
                                 color="success"
                                 sx={{ mt: 2, fontWeight: 'bold' }}
                                 onClick={() => {
+                                    setSimulacao({ entrada, rendaMensal, prazo })
                                     navigate(`/imoveis-filtrados?valorMaximo=${resultado.poderDeCompra}`, {
                                         state: { origem: "simulacao" }
                                     });
