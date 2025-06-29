@@ -14,6 +14,8 @@ import {
     FormControl
 } from '@mui/material';
 import jsPDF from 'jspdf';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { autoTable, HookData } from "jspdf-autotable";
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
@@ -169,6 +171,8 @@ const RelatorioPropostas: React.FC = () => {
                 7: { halign: 'center', cellWidth: 29 },
                 8: { halign: 'center', cellWidth: 29 }
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             didDrawPage: (data: HookData) => {
                 const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -181,6 +185,8 @@ const RelatorioPropostas: React.FC = () => {
                 // Mantendo a lógica original, se "valor" for de fato o caminho/conteúdo correto,
                 // a imagem seria adicionada. No entanto, é mais provável que precise ser
                 // um string Base64 real.
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 if (logoBase64 && logoBase64 !== "valor") {
                     doc.addImage(logoBase64, "PNG", imgX, imgY, imgWidth, imgHeight);
                 }

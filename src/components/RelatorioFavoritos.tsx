@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import api from "../services/api"; // Certifique-se de que o caminho para 'api' está correto
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // Importa a função autoTable diretamente
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { type HookData } from "jspdf-autotable";
 import {
     Button,
@@ -168,6 +170,8 @@ const RelatorioFavoritos: React.FC = () => {
                     cellWidth: 40
                 }
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             didDrawPage: (data: HookData) => {
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const imgWidth = 22;

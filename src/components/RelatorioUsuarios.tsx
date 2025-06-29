@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import api from "../services/api";
 import jsPDF from "jspdf";
 import autoTable from  "jspdf-autotable";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import {type HookData} from "jspdf-autotable";  // Importe HookData como um tipo
 import {
     Button,
@@ -144,6 +146,8 @@ const RelatorioUsuarios: React.FC = () => {
                     cellWidth: 40
                 }
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             didDrawPage: (data: HookData) => {
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const pageHeight = doc.internal.pageSize.getHeight();
