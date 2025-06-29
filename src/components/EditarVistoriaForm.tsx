@@ -512,7 +512,7 @@ const EditarVistoriaForm: React.FC = () => {
                         </fieldset>
 
                         <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-                            <button type="button" className="btn-step btn-next-step" disabled={isLoading}>
+                            <button type="submit" className="btn-step btn-next-step" disabled={isLoading}>
                                 {isLoading ? 'Salvando Edição...' : 'Salvar Edição da Vistoria'}
                             </button>
 
